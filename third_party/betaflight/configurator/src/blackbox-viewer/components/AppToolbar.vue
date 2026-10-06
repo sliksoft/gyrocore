@@ -1,0 +1,206 @@
+<template>
+    <!-- Single top bar: open file + current log name on the left; exports + settings on the right -->
+    <div class="toolbar-bar">
+        <div class="toolbar-group toolbar-group--start">
+            <LogFileInput size="xs" label="Open log file" @files-selected="$emit('files-selected', $event)" />
+            <UTooltip
+                :text="
+                    downloadAvailable
+                        ? 'Download the onboard log from the connected flight controller'
+                        : 'Connect a flight controller that has a recorded log'
+                "
+            >
+                <UButton
+                    size="xs"
+                    color="primary"
+                    variant="soft"
+                    icon="i-lucide-download"
+                    :loading="pulling"
+                    :disabled="!downloadAvailable || pulling"
+                    :label="pulling ? `Downloading… ${Math.round(progress)}%` : 'Download from FC'"
+                    @click="$emit('download-from-fc')"
+                />
+            </UTooltip>
+            <span v-if="appStore.logFilename" class="toolbar-filename" :title="appStore.logFilename">
+                {{ appStore.logFilename }}
+            </span>
+        </div>
+
+        <div class="toolbar-group">
+            <template v-if="logStore.hasLog">
+                <UButton
+                    variant="ghost"
+                    color="neutral"
+                    label="CSV"
+                    icon="i-lucide-file-spreadsheet"
+                    size="xs"
+                    @click="$emit('export-csv')"
+                />
+                <UButton
+                    variant="ghost"
+                    color="neutral"
+                    label="GPX"
+                    icon="i-lucide-map-pin"
+                    size="xs"
+                    @click="$emit('export-gpx')"
+                />
+                <UButton
+                    variant="ghost"
+                    color="neutral"
+                    label="Export Workspaces"
+                    icon="i-lucide-file-json"
+                    size="xs"
+                    title="Export your workspace configurations to file"
+                    @click="$emit('export-workspaces')"
+                />
+                <UTooltip :text="videoExportTitle" :delay-duration="300">
+                    <span
+                        data-testid="video-export-capability"
+                        class="inline-flex"
+                        :role="videoExportDisabled ? 'group' : undefined"
+                        :aria-disabled="videoExportDisabled || undefined"
+                        :aria-label="videoExportDisabled ? `Export Video unavailable: ${videoExportTitle}` : undefined"
+                        :tabindex="videoExportDisabled ? 0 : undefined"
+                    >
+                        <UButton
+                            variant="ghost"
+                            color="neutral"
+                            label="Export Video"
+                            icon="i-lucide-video"
+                            size="xs"
+                            :disabled="videoExportDisabled"
+                            :class="{ 'pointer-events-none': videoExportDisabled }"
+                            @click="$emit('export-video')"
+                        />
+                    </span>
+                </UTooltip>
+                <USeparator orientation="vertical" class="h-4" />
+            </template>
+            <UButton
+                variant="ghost"
+                color="neutral"
+                icon="i-lucide-settings"
+                size="xs"
+                title="User Settings"
+                @click="$emit('open-settings')"
+            />
+            <UButton
+                variant="ghost"
+                color="neutral"
+                icon="i-lucide-keyboard"
+                size="xs"
+                title="Keyboard Shortcuts"
+                @click="$emit('open-keys')"
+            />
+            <UButton
+                variant="ghost"
+                color="neutral"
+                :icon="graphStore.isFullscreen ? 'i-lucide-minimize' : 'i-lucide-maximize'"
+                size="xs"
+                :title="graphStore.isFullscreen ? 'Exit Full Screen (F)' : 'Full Screen (F)'"
+                :aria-pressed="graphStore.isFullscreen"
+                @click="$emit('toggle-fullscreen')"
+            />
+        </div>
+    </div>
+</template>
+
+<script setup lang="ts">
+import { computed, inject, ref, watch } from "vue";
+import type { DataflashHost } from "../host_capabilities";
+import { useLogStore } from "../stores/log";
+import { useAppStore } from "../stores/app";
+import { useGraphStore } from "../stores/graph";
+import { probeVideoExport } from "../video_export.js";
+import LogFileInput from "./LogFileInput.vue";
+
+defineEmits([
+    "files-selected",
+    "download-from-fc",
+    "export-csv",
+    "export-gpx",
+    "export-workspaces",
+    "export-video",
+    "open-settings",
+    "open-keys",
+    "toggle-fullscreen",
+]);
+
+const logStore = useLogStore();
+const appStore = useAppStore();
+const graphStore = useGraphStore();
+/** Result of probing for video-encoding support; null until the probe resolves. */
+const videoCapability = ref<{ canEncode: boolean; reason?: string } | null>(null);
+let probeGeneration = 0;
+
+const videoExportDisabled = computed(() => !videoCapability.value?.canEncode);
+
+const videoExportTitle = computed(() => {
+    if (!videoCapability.value) {
+        return "Checking video export support…";
+    }
+    return videoCapability.value.canEncode ? "Render the marked range to a video file" : videoCapability.value.reason;
+});
+
+watch(
+    () => logStore.hasLog,
+    async (hasLog) => {
+        const generation = ++probeGeneration;
+        videoCapability.value = null;
+        if (!hasLog) {
+            return;
+        }
+        let result;
+        try {
+            result = await probeVideoExport({ width: 1280, height: 720 });
+        } catch (error) {
+            result = {
+                canEncode: false,
+                reason: `Video capability detection failed: ${error instanceof Error ? error.message : String(error)}`,
+            };
+        }
+        if (generation === probeGeneration) {
+            videoCapability.value = result;
+        }
+    },
+    { immediate: true },
+);
+
+// Host-provided FC dataflash pull capability (null when not embedded / unavailable). Shared
+// with WelcomePage.vue via the same injection so both surfaces reflect one source of truth.
+const dataflash = inject<DataflashHost | null>("bbvDataflash", null);
+const downloadAvailable = computed(() => !!dataflash?.available?.value);
+const pulling = computed(() => !!dataflash?.pulling?.value);
+const progress = computed(() => dataflash?.progress?.value ?? 0);
+</script>
+
+<style scoped>
+.toolbar-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding: 0.3rem 0.75rem;
+    background: var(--surface-100);
+    border-bottom: 1px solid var(--surface-300);
+}
+
+.toolbar-group {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.toolbar-group--start {
+    min-width: 0;
+}
+
+.toolbar-filename {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    max-width: 360px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+</style>

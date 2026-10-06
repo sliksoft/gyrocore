@@ -1,0 +1,14 @@
+{
+    // Environment settings
+    "browser": true,
+    "typed": true,
+    "devel": true,
+    "globalstrict": true,
+    
+    "globals": {
+        "$"                : false,
+        "jQuery"           : false,
+        "THREE"            : false,
+        "Modernizr"        : false
+    }
+}

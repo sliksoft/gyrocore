@@ -1,0 +1,85 @@
+{
+  "_comment": "WU5 fixtures mirroring Betaflight Configurator useAutotune.computeSampleRate. Do not 'correct' expected rates here — they encode upstream behavior.",
+  "upstream": {
+    "repository": "https://github.com/betaflight/betaflight-configurator",
+    "path": "src/composables/useAutotune.ts",
+    "symbol": "computeSampleRate",
+    "formula": "1e6 / (looptimeUs * pid_process_denom * frameIntervalPDenom)"
+  },
+  "cases": [
+    {
+      "id": "full_rate_8k_pid_denom_1",
+      "description": "8 kHz looptime, PID every loop, blackbox every PID loop",
+      "sysConfig": {
+        "looptime": 125,
+        "pid_process_denom": 1,
+        "frameIntervalPNum": 1,
+        "frameIntervalPDenom": 1
+      },
+      "expected_sample_rate_hz": 8000.0,
+      "expected_pid_loop_hz": 8000.0,
+      "blackbox_slower_than_pid": false
+    },
+    {
+      "id": "half_rate_log_vs_pid",
+      "description": "Same PID rate but P interval denom=2 (log every 2nd loop) — Blackbox rate < PID rate",
+      "sysConfig": {
+        "looptime": 125,
+        "pid_process_denom": 1,
+        "frameIntervalPNum": 1,
+        "frameIntervalPDenom": 2
+      },
+      "expected_sample_rate_hz": 4000.0,
+      "expected_pid_loop_hz": 8000.0,
+      "blackbox_slower_than_pid": true
+    },
+    {
+      "id": "pid_denom_2_full_bb",
+      "description": "Gyro 8 kHz, PID denom 2 (4 kHz PID), blackbox every PID loop",
+      "sysConfig": {
+        "looptime": 125,
+        "pid_process_denom": 2,
+        "frameIntervalPNum": 1,
+        "frameIntervalPDenom": 1
+      },
+      "expected_sample_rate_hz": 4000.0,
+      "expected_pid_loop_hz": 4000.0,
+      "blackbox_slower_than_pid": false
+    },
+    {
+      "id": "pid_denom_2_and_bb_denom_2",
+      "description": "4 kHz PID with log every 2nd PID sample → 2 kHz analysis rate",
+      "sysConfig": {
+        "looptime": 125,
+        "pid_process_denom": 2,
+        "frameIntervalPNum": 1,
+        "frameIntervalPDenom": 2
+      },
+      "expected_sample_rate_hz": 2000.0,
+      "expected_pid_loop_hz": 4000.0,
+      "blackbox_slower_than_pid": true
+    },
+    {
+      "id": "missing_fields_use_upstream_defaults",
+      "description": "Upstream || defaults: looptime 125, denoms 1 → 8 kHz",
+      "sysConfig": {},
+      "expected_sample_rate_hz": 8000.0,
+      "expected_pid_loop_hz": 8000.0,
+      "blackbox_slower_than_pid": false
+    },
+    {
+      "id": "frame_interval_p_num_ignored",
+      "description": "Upstream formula ignores frameIntervalPNum; only denom scales rate",
+      "sysConfig": {
+        "looptime": 125,
+        "pid_process_denom": 1,
+        "frameIntervalPNum": 3,
+        "frameIntervalPDenom": 2
+      },
+      "expected_sample_rate_hz": 4000.0,
+      "expected_pid_loop_hz": 8000.0,
+      "blackbox_slower_than_pid": true,
+      "notes": "RISK: num!=1 is ignored by computeSampleRate — documented for later WU"
+    }
+  ]
+}

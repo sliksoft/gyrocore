@@ -1,0 +1,3 @@
+a84755c5e897c1a3a580424b64c0df066c12c6b4
+2026-09-03 10:05:04 +0200
+Bump brace-expansion from 2.1.1 to 2.1.4 (#943)
