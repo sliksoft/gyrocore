@@ -16,6 +16,92 @@ from gyrocore.parse.blackbox_csv import parse_csv
 from apps.desktop.worker.demo_scenarios import build_workspace_payload
 
 
+def _build_diagnostics(
+    samples: list,
+    *,
+    sample_rate_hz: float | None,
+    cli_text: str | None,
+    analysis: dict[str, Any],
+) -> dict[str, Any]:
+    """WU13 read-only diagnostics. Never calls authorize_cli / safety pipeline."""
+    from gyrocore.filter_evidence import analyze_filter_evidence
+    from gyrocore.throttle_analysis import analyze_throttle_response, compute_throttle_spectrogram
+    from gyrocore.throttle_analysis.spectrogram import band_noise_for_filter_evidence
+    from gyrocore.verification import compare_tuning_flights
+
+    out: dict[str, Any] = {
+        "filter_evidence": {"available": False, "actionable": False},
+        "throttle": {"available": False, "actionable": False, "tpa_value": None, "tpa_cli": None},
+        "verification": {
+            "available": False,
+            "actionable": False,
+            "overall_status": "INSUFFICIENT_EVIDENCE",
+            "note": "Load a second comparable flight to run before/after verification",
+        },
+        "note": "WU13 diagnostics are non-actionable; CLI still requires WU10/WU11 only.",
+    }
+    if not samples:
+        return out
+    try:
+        # Extract series for throttle modules
+        def col(keys: tuple[str, ...]) -> list[float]:
+            vals: list[float] = []
+            for row in samples:
+                if not isinstance(row, dict):
+                    continue
+                for k in keys:
+                    if k in row and row[k] is not None:
+                        try:
+                            vals.append(float(row[k]))
+                            break
+                        except (TypeError, ValueError):
+                            pass
+            return vals
+
+        fs = float(sample_rate_hz or analysis.get("sample_rate_hz") or 0.0) or 1000.0
+        thr = col(("rcCommand[3]", "setpoint[3]", "throttle"))
+        g0 = col(("gyroADC[0]", "gyro[0]"))
+        g1 = col(("gyroADC[1]", "gyro[1]"))
+        g2 = col(("gyroADC[2]", "gyro[2]"))
+        sp0 = col(("setpoint[0]", "gyroADC[0]"))
+        if thr and g0:
+            spec = compute_throttle_spectrogram(thr, [g0, g1 or g0, g2 or g0], fs)
+            band_noise = band_noise_for_filter_evidence(spec)
+            fe = analyze_filter_evidence(
+                samples,
+                sample_rate_hz=fs,
+                cli_dump=cli_text,
+                throttle_band_noise=band_noise,
+            )
+            out["filter_evidence"] = fe.to_dict()
+            tr = analyze_throttle_response(thr, sp0 or g0, g0, fs)
+            out["throttle"] = tr.to_dict()
+            # Self-compare stub marks insufficient (need two flights)
+            ver = compare_tuning_flights(
+                {
+                    "craft_name": analysis.get("craft"),
+                    "betaflight_version": analysis.get("betaflight_version"),
+                    "sample_rate_hz": fs,
+                    "quality_score": 0.5,
+                    "noise_floor_db": fe.noise_floor_db,
+                },
+                {
+                    "craft_name": analysis.get("craft"),
+                    "betaflight_version": analysis.get("betaflight_version"),
+                    "sample_rate_hz": fs,
+                    "quality_score": 0.5,
+                    "noise_floor_db": fe.noise_floor_db,
+                },
+            )
+            out["verification"] = {
+                **ver.to_dict(),
+                "note": "Single-log self-check only; load a second flight for real verification",
+            }
+    except Exception as exc:  # noqa: BLE001
+        out["error"] = f"{type(exc).__name__}:{str(exc)[:200]}"
+    return out
+
+
 def inspect_log(path: str) -> dict[str, Any]:
     p = Path(path).expanduser().resolve()
     if not p.is_file():
@@ -233,6 +319,13 @@ def analyze_log(
     else:
         raise InvalidInputError(f"unsupported_log_type:{suffix}")
 
+    diagnostics = _build_diagnostics(
+        list(samples) if isinstance(samples, list) else [],
+        sample_rate_hz=analysis.get("sample_rate_hz") if isinstance(analysis, dict) else None,
+        cli_text=cli_text,
+        analysis=analysis if isinstance(analysis, dict) else {},
+    )
+
     if not cli_text:
         return {
             "kind": "gyrocore_desktop_workspace",
@@ -258,6 +351,7 @@ def analyze_log(
             "tune": None,
             "safety": None,
             "compare": None,
+            "diagnostics": diagnostics,
             "cli": {
                 "state": "denied",
                 "authorized": False,
@@ -293,4 +387,5 @@ def analyze_log(
     )
     base_bb = payload.get("blackbox") if isinstance(payload.get("blackbox"), dict) else {}
     payload["blackbox"] = {**base_bb, **blackbox_meta}
+    payload["diagnostics"] = diagnostics
     return payload

@@ -12,6 +12,13 @@ export interface WorkspacePayload {
   safety: SafetyPayload | null;
   compare: ComparePayload | null;
   cli: CliPayload;
+  diagnostics?: {
+    filter_evidence?: Record<string, unknown>;
+    throttle?: Record<string, unknown>;
+    verification?: Record<string, unknown>;
+    note?: string;
+    [key: string]: unknown;
+  };
   blackbox: Record<string, unknown>;
   controls: {
     fc_apply_button: boolean;
@@ -110,4 +117,5 @@ export type NavId =
   | "tune"
   | "safety"
   | "compare"
-  | "cli";
+  | "cli"
+  | "diagnostics";

@@ -58,6 +58,18 @@ describe("GyroCore desktop shell", () => {
     expect(screen.getByText(/blackbox-log-viewer/i)).toBeInTheDocument();
   });
 
+  it("shows WU13 diagnostics summaries for pass demo", async () => {
+    const user = userEvent.setup();
+    render(<App />);
+    await user.click(demoBtn("pass"));
+    await user.click(screen.getByTestId("nav-diagnostics"));
+    expect(await screen.findByTestId("diagnostics-page")).toBeInTheDocument();
+    expect(screen.getByTestId("diag-filter")).toBeInTheDocument();
+    expect(screen.getByTestId("diag-throttle")).toBeInTheDocument();
+    expect(screen.getByTestId("diag-verification")).toBeInTheDocument();
+    expect(screen.getByText(/Actionable:/i)).toBeInTheDocument();
+  });
+
   it("shows CHIRP available graphs for pass demo", async () => {
     const user = userEvent.setup();
     render(<App />);

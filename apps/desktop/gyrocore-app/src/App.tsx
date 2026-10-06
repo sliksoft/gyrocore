@@ -5,6 +5,7 @@ import { BlackboxPage } from "./pages/BlackboxPage";
 import { ChirpPage } from "./pages/ChirpPage";
 import { CliPage } from "./pages/CliPage";
 import { ComparePage } from "./pages/ComparePage";
+import { DiagnosticsPage } from "./pages/DiagnosticsPage";
 import { OpenPage } from "./pages/OpenPage";
 import { OverviewPage } from "./pages/OverviewPage";
 import { SafetyPage } from "./pages/SafetyPage";
@@ -21,6 +22,7 @@ const NAV: Array<{ id: NavId; label: string }> = [
   { id: "safety", label: "Safety" },
   { id: "compare", label: "Compare" },
   { id: "cli", label: "CLI" },
+  { id: "diagnostics", label: "Diagnostics" },
 ];
 
 export default function App() {
@@ -83,6 +85,7 @@ export default function App() {
           {nav === "safety" && ws && <SafetyPage ws={ws} />}
           {nav === "compare" && ws && <ComparePage ws={ws} />}
           {nav === "cli" && ws && <CliPage ws={ws} />}
+          {nav === "diagnostics" && ws && <DiagnosticsPage ws={ws} />}
           {nav !== "open" && !ws && (
             <div className="panel">
               <p className="muted">Load a log or demo fixture first.</p>

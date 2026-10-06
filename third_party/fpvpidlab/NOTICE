@@ -1,0 +1,15 @@
+FPVPIDlab selective vendor (WU13)
+=================================
+Upstream: https://github.com/eddycek/fpvpidlab
+Commit:   76354a022b331a9b466727f9a67ba369a12067ac
+License:  GPL-3.0-only (see LICENSE)
+Copyright (C) 2025-2026 Eduard Čekel
+
+These files are provenance / reference copies only. GyroCore does not execute
+the TypeScript. Python ports live under core/gyrocore/{filter_evidence,throttle_analysis,verification}/.
+
+Explicitly NOT vendored (REJECT_DUPLICATE / OUT_OF_SCOPE):
+- FFTCompute.ts, TransferFunctionEstimator.ts, SystemIdentifier.ts
+- PIDRecommender.ts, BayesianPIDOptimizer.ts, SliderMapper.ts
+- FilterPlacementOptimizer.ts, RpmFilterRecommender.ts
+- Blackbox parser, MSP, license/telemetry workers, Electron UI

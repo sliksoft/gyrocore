@@ -200,6 +200,47 @@ def _filters(tune: Any) -> dict[str, int | None]:
     return {k: flat.get(k) for k in keys}
 
 
+def _diagnostics_demo(scenario: str) -> dict[str, Any]:
+    """Read-only WU13 summaries for desktop demos (synthetic, non-actionable)."""
+    filter_ev = {
+        "available": True,
+        "actionable": False,
+        "overall_noise_level": "medium" if scenario != "block" else "unknown",
+        "confidence": "medium",
+        "noise_floor_db": {"roll": -38.0, "pitch": -37.0, "yaw": -32.0},
+        "group_delay": {"gyro_total_ms": 1.2, "dterm_total_ms": 2.1, "gyro_over_budget": False},
+        "dynamic_lpf": {"recommended": scenario == "warn", "summary": "demo dynamic LPF evidence"},
+        "candidate": {"actionable": False, "gyro_lpf1_hz": 220, "dterm_lpf1_hz": 140},
+        "warnings": [] if scenario != "block" else ["insufficient_stable_segment"],
+        "label": "SYNTHETIC filter evidence",
+    }
+    throttle = {
+        "available": scenario not in {"block", "no_autotune"},
+        "actionable": False,
+        "tpa_advisory": "stable_across_throttle" if scenario == "pass" else "tpa_review_recommended",
+        "tpa_value": None,
+        "tpa_cli": None,
+        "usable_bands": 4,
+        "high_throttle_degradation": scenario == "warn",
+        "label": "SYNTHETIC throttle / TPA advisory",
+    }
+    verification = {
+        "available": scenario == "pass",
+        "actionable": False,
+        "comparable": scenario == "pass",
+        "overall_status": "IMPROVING" if scenario == "pass" else "INSUFFICIENT_EVIDENCE",
+        "rollback_advisory": False,
+        "auto_rollback": False,
+        "label": "SYNTHETIC verification (no second log in demo)",
+    }
+    return {
+        "filter_evidence": filter_ev,
+        "throttle": throttle,
+        "verification": verification,
+        "note": "WU13 diagnostics are non-actionable; CLI still requires WU10/WU11 only.",
+    }
+
+
 def build_workspace_payload(
     *,
     scenario: str,
@@ -208,6 +249,8 @@ def build_workspace_payload(
     chirp: dict[str, Any],
     demo: bool = True,
 ) -> dict[str, Any]:
+    # SAFETY PATH UNCHANGED: run_safety_pipeline → authorize_cli only.
+    # WU13 diagnostics are attached as a separate read-only payload field.
     final = run_safety_pipeline(proposal, analysis=analysis)
     auth = authorize_cli(final)
     current = proposal.current
@@ -330,6 +373,7 @@ def build_workspace_payload(
             },
         },
         "cli": cli_section,
+        "diagnostics": _diagnostics_demo(scenario),
         "blackbox": {
             "viewer": "third_party/betaflight/blackbox-log-viewer",
             "host": "apps/desktop/blackbox-host",

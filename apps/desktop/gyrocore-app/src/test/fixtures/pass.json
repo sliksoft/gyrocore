@@ -2594,6 +2594,55 @@
     },
     "warnings": []
   },
+  "diagnostics": {
+    "filter_evidence": {
+      "available": true,
+      "actionable": false,
+      "overall_noise_level": "medium",
+      "confidence": "medium",
+      "noise_floor_db": {
+        "roll": -38.0,
+        "pitch": -37.0,
+        "yaw": -32.0
+      },
+      "group_delay": {
+        "gyro_total_ms": 1.2,
+        "dterm_total_ms": 2.1,
+        "gyro_over_budget": false
+      },
+      "dynamic_lpf": {
+        "recommended": false,
+        "summary": "demo dynamic LPF evidence"
+      },
+      "candidate": {
+        "actionable": false,
+        "gyro_lpf1_hz": 220,
+        "dterm_lpf1_hz": 140
+      },
+      "warnings": [],
+      "label": "SYNTHETIC filter evidence"
+    },
+    "throttle": {
+      "available": true,
+      "actionable": false,
+      "tpa_advisory": "stable_across_throttle",
+      "tpa_value": null,
+      "tpa_cli": null,
+      "usable_bands": 4,
+      "high_throttle_degradation": false,
+      "label": "SYNTHETIC throttle / TPA advisory"
+    },
+    "verification": {
+      "available": true,
+      "actionable": false,
+      "comparable": true,
+      "overall_status": "IMPROVING",
+      "rollback_advisory": false,
+      "auto_rollback": false,
+      "label": "SYNTHETIC verification (no second log in demo)"
+    },
+    "note": "WU13 diagnostics are non-actionable; CLI still requires WU10/WU11 only."
+  },
   "blackbox": {
     "viewer": "third_party/betaflight/blackbox-log-viewer",
     "host": "apps/desktop/blackbox-host",

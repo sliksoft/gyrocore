@@ -114,6 +114,26 @@ policy: `AUTOTUNE_GLOBAL_SLIDER_POLICY.md`.
 Reference tooling (not shipped in Core): `tools/simplified_tuning_reference/`
 compiles the vendored `simplified_tuning.c` as the discrete oracle.
 
+## Selective FPVPIDlab (WU13)
+
+Upstream: https://github.com/eddycek/fpvpidlab  
+Commit: `76354a022b331a9b466727f9a67ba369a12067ac`  
+License: **GPL-3.0-only** (copyright Eduard Čekel; LICENSE retained under
+`third_party/fpvpidlab/LICENSE`).
+
+Only provenance TypeScript slices required for the three missing diagnostics
+are vendored. GyroCore does **not** execute them. Python ports:
+
+| Capability | GyroCore | Actionable |
+|------------|----------|------------|
+| Filter evidence / group delay | `core/gyrocore/filter_evidence/` | **No** |
+| Throttle spectrogram + TPA advisory | `core/gyrocore/throttle_analysis/` | **No** |
+| Before/after verification | `core/gyrocore/verification/` | **No** |
+
+Audit: `FPVPIDLAB_SELECTIVE_AUDIT.md`. Explicitly rejected duplicates: FFT engine,
+SystemIdentifier, TransferFunctionEstimator, PIDRecommender, Bayesian optimizer,
+SliderMapper, MSP, Blackbox parser, FilterPlacementOptimizer.
+
 ## Source map (concise)
 
 ```
@@ -126,4 +146,7 @@ betaflight-configurator/.../autotune*      -> third_party/betaflight/configurato
 
 betaflight/blackbox-tools/src/*            -> third_party/betaflight/blackbox-tools/src/
 betaflight 2026.6.2 simplified_tuning*     -> third_party/betaflight/firmware/
+
+fpvpidlab (selective)                      -> third_party/fpvpidlab/ (provenance only)
+                                           -> core/gyrocore/{filter_evidence,throttle_analysis,verification}/
 ```
