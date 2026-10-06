@@ -200,17 +200,20 @@ def _pairs_from_mapping(mapping: Mapping[str, Any]) -> list[tuple[str, Any]]:
     return pairs
 
 
-def parse_chirp_sysconfig(source: bytes | str | Mapping[str, Any], *, log_index: int = 0) -> ChirpSysConfig:
-    """Build :class:`ChirpSysConfig` from a BBL, header text, Field/Value CSV or mapping."""
+def header_pairs(source: bytes | str | Mapping[str, Any], *, log_index: int = 0) -> list[tuple[str, Any]]:
+    """Normalized ``(key, raw value)`` header pairs, in log order, from any accepted source."""
     if isinstance(source, (bytes, bytearray)):
         source = read_bbl_header_text(bytes(source), log_index)
-    pairs: list[tuple[str, Any]]
     if isinstance(source, Mapping):
-        pairs = _pairs_from_mapping(source)
-    elif any(line.startswith("H ") for line in source.splitlines()[:5]):
-        pairs = [(_normalize_field_key(k), v) for k, v in _h_lines(source)]
-    else:
-        pairs = list(_parse_headers_flat(source).items())
+        return _pairs_from_mapping(source)
+    if any(line.startswith("H ") for line in source.splitlines()[:5]):
+        return [(_normalize_field_key(k), v) for k, v in _h_lines(source)]
+    return list(_parse_headers_flat(source).items())
+
+
+def parse_chirp_sysconfig(source: bytes | str | Mapping[str, Any], *, log_index: int = 0) -> ChirpSysConfig:
+    """Build :class:`ChirpSysConfig` from a BBL, header text, Field/Value CSV or mapping."""
+    pairs = header_pairs(source, log_index=log_index)
 
     values: dict[str, Any] = {}
     present: set[str] = set()
@@ -259,6 +262,7 @@ __all__ = [
     "LOG_START_MARKER",
     "UPSTREAM_DEFAULTS",
     "find_log_boundaries",
+    "header_pairs",
     "js_parse_int",
     "parse_chirp_sysconfig",
     "read_bbl_header_text",

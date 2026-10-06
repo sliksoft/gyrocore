@@ -185,6 +185,11 @@ analysis band (chirp start/end from header, capped at 0.9·Nyquist) ∩
 
 ## 7. Before `recommendGains` can be ported
 
+> WU8 has since ported `recommendGains` as a non-actionable recommendation in
+> `core/gyrocore/autotune/` (record: `AUTOTUNE_RECOMMENDATION_PARITY.md`). The
+> WU7 pipeline itself still stops before it. Open items below that WU8 did not
+> close (real flight logs, the safety chain) are carried over there.
+
 - Real CHIRP flight logs (several frames / firmware versions) added as fixtures,
   with upstream reference vectors, to complement the synthetic set.
 - Port `extractMetrics`, crossover / phase-margin search, loop-delay estimate,

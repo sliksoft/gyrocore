@@ -47,3 +47,8 @@ WU7 ports CHIRP extraction and system identification to Python Core with
 numeric parity against the vendored TypeScript (up to, not including,
 `recommendGains`). GyroCore's separate spectral/FFT analysis from the AeroTuner
 extract stays distinct. The desktop adapter needs no code changes for WU7.
+
+WU8 ports `recommendGains` to `core/gyrocore/autotune/` as a non-actionable
+recommendation (`AutotuneRecommendationResult.actionable == False`). This
+adapter does not consume it and gains no apply path; see
+`docs/upstream/AUTOTUNE_RECOMMENDATION_PARITY.md`.

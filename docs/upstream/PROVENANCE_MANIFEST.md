@@ -57,6 +57,26 @@ Reference tooling (not shipped in Core): `tools/chirp_reference/` — BBL writer
 case generator, and a Node harness that runs temporary copies of the vendored
 TypeScript to produce `tests/fixtures/chirp/wu7/upstream_*.json`.
 
+## Python ports (WU8)
+
+Autotune gain recommendation, recommendations only (non-actionable; no MSP /
+CLI / apply). Parity record: `AUTOTUNE_RECOMMENDATION_PARITY.md`.
+
+| Upstream | GyroCore |
+| --- | --- |
+| `spectral_analysis.ts` `recommendGains`, `extractMetrics`, `computeGainScales`, `buildProposedSliders`, `findOpenLoopCrossover`, `findTargetCrossover`, `peakSensitivityAtGain`, `scanSensitivity`, `robustGain`, `findMaxAchievablePhaseMargin`, `estimateLoopDelayMs`, `findBandwidth`, `findResonantPeak`, `computeLowFreqError`, `findNoiseFloor`, `computeMeanCoherence`, `resonanceBackoffs`, `gainClampLimitOf`, `integralScale` + constants | `core/gyrocore/autotune/recommend.py` |
+| `utils/common.ts` `clamp` | `core/gyrocore/autotune/recommend.py` `js_clamp` |
+| `useAutotune.ts` `extractCurrentSliders`, `buildGains` | `core/gyrocore/autotune/{current_tune,recommend}.py` |
+| `chirp_bbl_parser.ts` `parseHeader` (slider / PID keys) | `core/gyrocore/chirp/sysconfig.py` `header_pairs` + `core/gyrocore/autotune/current_tune.py` |
+| `useAutotune.ts` `applyGains`, `GainRecommendation.vue` `onApply` | **not ported** |
+
+Reference tooling (not shipped in Core): `tools/autotune_reference/` — case
+generator (synthetic `makeSyntheticTf` parameters + closed-loop CHIRP BBLs) and
+a Node harness running temporary copies of the vendored TypeScript (and the
+vendored test helper `makeSyntheticTf`) to produce
+`tests/fixtures/autotune/wu8/upstream_autotune_reference.json.gz`. Staging is
+shared with WU7 via `tools/chirp_reference/stage_vendored.mjs`.
+
 ## Source map (concise)
 
 ```

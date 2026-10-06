@@ -1,0 +1,1278 @@
+{
+ "presets": [
+  50.0,
+  60.0,
+  72.5
+ ],
+ "cases": [
+  {
+   "case_id": "nominal_three_axis",
+   "description": "Roll, pitch, yaw closed loops at 1 kHz; default sliders, RPY mode.",
+   "classification": [
+    "exact_upstream_parity"
+   ],
+   "bbl": "bbl/nominal_three_axis.bbl.gz",
+   "bbl_sha256": "ec98012d9d336b63b447d7816449c07df163aecf89e4b766436232c5a17e07cc",
+   "seed": 101,
+   "headers": {
+    "Data version": "2",
+    "I interval": "32",
+    "P interval": "1/1",
+    "Firmware type": "Cleanflight",
+    "Firmware revision": "Betaflight 2026.6.0 (synthetic) STM32F7X2",
+    "Board information": "SYNT SYNTHETIC",
+    "looptime": "250",
+    "pid_process_denom": "4",
+    "debug_mode": "96",
+    "blackbox_high_resolution": "0",
+    "chirp_lag_freq_hz": "3",
+    "chirp_lead_freq_hz": "30",
+    "chirp_amplitude_roll": "150",
+    "chirp_amplitude_pitch": "150",
+    "chirp_amplitude_yaw": "150",
+    "chirp_frequency_start_deci_hz": "20",
+    "chirp_frequency_end_deci_hz": "2500",
+    "chirp_time_seconds": "6",
+    "rollPID": "45,80,30",
+    "pitchPID": "47,84,34",
+    "yawPID": "45,80,0",
+    "simplified_pids_mode": "2",
+    "simplified_master_multiplier": "100",
+    "simplified_pi_gain": "100",
+    "simplified_i_gain": "100",
+    "simplified_d_gain": "100",
+    "simplified_feedforward_gain": "100",
+    "simplified_dterm_filter_multiplier": "100",
+    "simplified_dterm_filter": "1"
+   },
+   "nominal_log_rate_hz": 1000.0,
+   "axes": [
+    {
+     "axis": 0,
+     "pid": [
+      45,
+      80,
+      30
+     ],
+     "plant_scale": 1.0,
+     "delay_samples": 2,
+     "noise_std": 0.5,
+     "amplitude": 150.0,
+     "samples": 6000
+    },
+    {
+     "axis": 1,
+     "pid": [
+      47,
+      84,
+      34
+     ],
+     "plant_scale": 1.0,
+     "delay_samples": 2,
+     "noise_std": 0.5,
+     "amplitude": 150.0,
+     "samples": 6000
+    },
+    {
+     "axis": 2,
+     "pid": [
+      45,
+      80,
+      0
+     ],
+     "plant_scale": 1.0,
+     "delay_samples": 2,
+     "noise_std": 0.5,
+     "amplitude": 150.0,
+     "samples": 6000
+    }
+   ],
+   "covers": [
+    "nominal_roll",
+    "nominal_pitch",
+    "nominal_yaw"
+   ],
+   "expect": {
+    "status": "proposed_with_warnings",
+    "axes": [
+     0,
+     1,
+     2
+    ]
+   }
+  },
+  {
+   "case_id": "low_plant_gain",
+   "description": "Roll airframe gain x0.2: low crossover, asks for more gain.",
+   "classification": [
+    "exact_upstream_parity"
+   ],
+   "bbl": "bbl/low_plant_gain.bbl.gz",
+   "bbl_sha256": "38d407fe85a99b2273a89b4d00c344ba84efabc80dc6d2462138a606358d3f6f",
+   "seed": 102,
+   "headers": {
+    "Data version": "2",
+    "I interval": "32",
+    "P interval": "1/1",
+    "Firmware type": "Cleanflight",
+    "Firmware revision": "Betaflight 2026.6.0 (synthetic) STM32F7X2",
+    "Board information": "SYNT SYNTHETIC",
+    "looptime": "250",
+    "pid_process_denom": "4",
+    "debug_mode": "96",
+    "blackbox_high_resolution": "0",
+    "chirp_lag_freq_hz": "3",
+    "chirp_lead_freq_hz": "30",
+    "chirp_amplitude_roll": "150",
+    "chirp_amplitude_pitch": "150",
+    "chirp_amplitude_yaw": "150",
+    "chirp_frequency_start_deci_hz": "20",
+    "chirp_frequency_end_deci_hz": "2500",
+    "chirp_time_seconds": "6",
+    "rollPID": "45,80,30",
+    "pitchPID": "47,84,34",
+    "yawPID": "45,80,0",
+    "simplified_pids_mode": "2",
+    "simplified_master_multiplier": "100",
+    "simplified_pi_gain": "100",
+    "simplified_i_gain": "100",
+    "simplified_d_gain": "100",
+    "simplified_feedforward_gain": "100",
+    "simplified_dterm_filter_multiplier": "100",
+    "simplified_dterm_filter": "1"
+   },
+   "nominal_log_rate_hz": 1000.0,
+   "axes": [
+    {
+     "axis": 0,
+     "pid": [
+      45,
+      80,
+      30
+     ],
+     "plant_scale": 0.2,
+     "delay_samples": 2,
+     "noise_std": 0.5,
+     "amplitude": 150.0,
+     "samples": 6000
+    }
+   ],
+   "covers": [
+    "low_plant_gain"
+   ],
+   "expect": {
+    "blocked": false
+   }
+  },
+  {
+   "case_id": "high_plant_gain",
+   "description": "Roll airframe gain x2: high crossover, sensitivity bound holds the gain back.",
+   "classification": [
+    "exact_upstream_parity"
+   ],
+   "bbl": "bbl/high_plant_gain.bbl.gz",
+   "bbl_sha256": "679e903cb44856a293ec862a32487e25829e8459cdf0d0332d72b33f872eea0c",
+   "seed": 103,
+   "headers": {
+    "Data version": "2",
+    "I interval": "32",
+    "P interval": "1/1",
+    "Firmware type": "Cleanflight",
+    "Firmware revision": "Betaflight 2026.6.0 (synthetic) STM32F7X2",
+    "Board information": "SYNT SYNTHETIC",
+    "looptime": "250",
+    "pid_process_denom": "4",
+    "debug_mode": "96",
+    "blackbox_high_resolution": "0",
+    "chirp_lag_freq_hz": "3",
+    "chirp_lead_freq_hz": "30",
+    "chirp_amplitude_roll": "150",
+    "chirp_amplitude_pitch": "150",
+    "chirp_amplitude_yaw": "150",
+    "chirp_frequency_start_deci_hz": "20",
+    "chirp_frequency_end_deci_hz": "2500",
+    "chirp_time_seconds": "6",
+    "rollPID": "45,80,30",
+    "pitchPID": "47,84,34",
+    "yawPID": "45,80,0",
+    "simplified_pids_mode": "2",
+    "simplified_master_multiplier": "100",
+    "simplified_pi_gain": "100",
+    "simplified_i_gain": "100",
+    "simplified_d_gain": "100",
+    "simplified_feedforward_gain": "100",
+    "simplified_dterm_filter_multiplier": "100",
+    "simplified_dterm_filter": "1"
+   },
+   "nominal_log_rate_hz": 1000.0,
+   "axes": [
+    {
+     "axis": 0,
+     "pid": [
+      45,
+      80,
+      30
+     ],
+     "plant_scale": 2.0,
+     "delay_samples": 2,
+     "noise_std": 0.5,
+     "amplitude": 150.0,
+     "samples": 6000
+    }
+   ],
+   "covers": [
+    "high_plant_gain"
+   ],
+   "expect": {
+    "blocked": false
+   }
+  },
+  {
+   "case_id": "delayed_plant",
+   "description": "Roll with 4-sample measurement delay.",
+   "classification": [
+    "exact_upstream_parity"
+   ],
+   "bbl": "bbl/delayed_plant.bbl.gz",
+   "bbl_sha256": "596715de9d032dc15354eb1d19b738cec320b96bb61b6729d19349aa3894f6a3",
+   "seed": 104,
+   "headers": {
+    "Data version": "2",
+    "I interval": "32",
+    "P interval": "1/1",
+    "Firmware type": "Cleanflight",
+    "Firmware revision": "Betaflight 2026.6.0 (synthetic) STM32F7X2",
+    "Board information": "SYNT SYNTHETIC",
+    "looptime": "250",
+    "pid_process_denom": "4",
+    "debug_mode": "96",
+    "blackbox_high_resolution": "0",
+    "chirp_lag_freq_hz": "3",
+    "chirp_lead_freq_hz": "30",
+    "chirp_amplitude_roll": "150",
+    "chirp_amplitude_pitch": "150",
+    "chirp_amplitude_yaw": "150",
+    "chirp_frequency_start_deci_hz": "20",
+    "chirp_frequency_end_deci_hz": "2500",
+    "chirp_time_seconds": "6",
+    "rollPID": "45,80,30",
+    "pitchPID": "47,84,34",
+    "yawPID": "45,80,0",
+    "simplified_pids_mode": "2",
+    "simplified_master_multiplier": "100",
+    "simplified_pi_gain": "100",
+    "simplified_i_gain": "100",
+    "simplified_d_gain": "100",
+    "simplified_feedforward_gain": "100",
+    "simplified_dterm_filter_multiplier": "100",
+    "simplified_dterm_filter": "1"
+   },
+   "nominal_log_rate_hz": 1000.0,
+   "axes": [
+    {
+     "axis": 0,
+     "pid": [
+      45,
+      80,
+      30
+     ],
+     "plant_scale": 1.0,
+     "delay_samples": 4,
+     "noise_std": 0.5,
+     "amplitude": 150.0,
+     "samples": 6000
+    }
+   ],
+   "covers": [
+    "delayed_plant"
+   ],
+   "expect": {
+    "blocked": false
+   }
+  },
+  {
+   "case_id": "noisy_usable",
+   "description": "Roll with gyro noise sigma 12 deg/s (usable).",
+   "classification": [
+    "exact_upstream_parity"
+   ],
+   "bbl": "bbl/noisy_usable.bbl.gz",
+   "bbl_sha256": "551653a7fc63c571277ab96db2b953d9e56def40eec7fd8b67e985c5a6402d0c",
+   "seed": 105,
+   "headers": {
+    "Data version": "2",
+    "I interval": "32",
+    "P interval": "1/1",
+    "Firmware type": "Cleanflight",
+    "Firmware revision": "Betaflight 2026.6.0 (synthetic) STM32F7X2",
+    "Board information": "SYNT SYNTHETIC",
+    "looptime": "250",
+    "pid_process_denom": "4",
+    "debug_mode": "96",
+    "blackbox_high_resolution": "0",
+    "chirp_lag_freq_hz": "3",
+    "chirp_lead_freq_hz": "30",
+    "chirp_amplitude_roll": "150",
+    "chirp_amplitude_pitch": "150",
+    "chirp_amplitude_yaw": "150",
+    "chirp_frequency_start_deci_hz": "20",
+    "chirp_frequency_end_deci_hz": "2500",
+    "chirp_time_seconds": "6",
+    "rollPID": "45,80,30",
+    "pitchPID": "47,84,34",
+    "yawPID": "45,80,0",
+    "simplified_pids_mode": "2",
+    "simplified_master_multiplier": "100",
+    "simplified_pi_gain": "100",
+    "simplified_i_gain": "100",
+    "simplified_d_gain": "100",
+    "simplified_feedforward_gain": "100",
+    "simplified_dterm_filter_multiplier": "100",
+    "simplified_dterm_filter": "1"
+   },
+   "nominal_log_rate_hz": 1000.0,
+   "axes": [
+    {
+     "axis": 0,
+     "pid": [
+      45,
+      80,
+      30
+     ],
+     "plant_scale": 1.0,
+     "delay_samples": 2,
+     "noise_std": 12.0,
+     "amplitude": 150.0,
+     "samples": 6000
+    }
+   ],
+   "covers": [
+    "noisy_usable"
+   ],
+   "expect": {
+    "blocked": false
+   }
+  },
+  {
+   "case_id": "near_quality_threshold",
+   "description": "Roll noise tuned so mean 5-100 Hz coherence sits just above 0.6.",
+   "classification": [
+    "exact_upstream_parity",
+    "intentional_gyrocore_hardening"
+   ],
+   "bbl": "bbl/near_quality_threshold.bbl.gz",
+   "bbl_sha256": "6cb747ef3238e67f446fa1804a512b024f8e0ace581456c242e73d7b1784ac0d",
+   "seed": 106,
+   "headers": {
+    "Data version": "2",
+    "I interval": "32",
+    "P interval": "1/1",
+    "Firmware type": "Cleanflight",
+    "Firmware revision": "Betaflight 2026.6.0 (synthetic) STM32F7X2",
+    "Board information": "SYNT SYNTHETIC",
+    "looptime": "250",
+    "pid_process_denom": "4",
+    "debug_mode": "96",
+    "blackbox_high_resolution": "0",
+    "chirp_lag_freq_hz": "3",
+    "chirp_lead_freq_hz": "30",
+    "chirp_amplitude_roll": "150",
+    "chirp_amplitude_pitch": "150",
+    "chirp_amplitude_yaw": "150",
+    "chirp_frequency_start_deci_hz": "20",
+    "chirp_frequency_end_deci_hz": "2500",
+    "chirp_time_seconds": "6",
+    "rollPID": "45,80,30",
+    "pitchPID": "47,84,34",
+    "yawPID": "45,80,0",
+    "simplified_pids_mode": "2",
+    "simplified_master_multiplier": "100",
+    "simplified_pi_gain": "100",
+    "simplified_i_gain": "100",
+    "simplified_d_gain": "100",
+    "simplified_feedforward_gain": "100",
+    "simplified_dterm_filter_multiplier": "100",
+    "simplified_dterm_filter": "1"
+   },
+   "nominal_log_rate_hz": 1000.0,
+   "axes": [
+    {
+     "axis": 0,
+     "pid": [
+      45,
+      80,
+      30
+     ],
+     "plant_scale": 1.0,
+     "delay_samples": 2,
+     "noise_std": 25.0,
+     "amplitude": 60.0,
+     "samples": 6000
+    }
+   ],
+   "covers": [
+    "near_quality_threshold"
+   ],
+   "expect": {
+    "blocked": false
+   }
+  },
+  {
+   "case_id": "low_coherence",
+   "description": "Roll buried in sigma 400 noise: WU7 low_coherence gate blocks.",
+   "classification": [
+    "exact_upstream_parity",
+    "intentional_gyrocore_hardening"
+   ],
+   "bbl": "bbl/low_coherence.bbl.gz",
+   "bbl_sha256": "4d64fb3476e63696f54b5b9fab88b844935730593c07422161155beafd3bb77f",
+   "seed": 107,
+   "headers": {
+    "Data version": "2",
+    "I interval": "32",
+    "P interval": "1/1",
+    "Firmware type": "Cleanflight",
+    "Firmware revision": "Betaflight 2026.6.0 (synthetic) STM32F7X2",
+    "Board information": "SYNT SYNTHETIC",
+    "looptime": "250",
+    "pid_process_denom": "4",
+    "debug_mode": "96",
+    "blackbox_high_resolution": "0",
+    "chirp_lag_freq_hz": "3",
+    "chirp_lead_freq_hz": "30",
+    "chirp_amplitude_roll": "150",
+    "chirp_amplitude_pitch": "150",
+    "chirp_amplitude_yaw": "150",
+    "chirp_frequency_start_deci_hz": "20",
+    "chirp_frequency_end_deci_hz": "2500",
+    "chirp_time_seconds": "6",
+    "rollPID": "45,80,30",
+    "pitchPID": "47,84,34",
+    "yawPID": "45,80,0",
+    "simplified_pids_mode": "2",
+    "simplified_master_multiplier": "100",
+    "simplified_pi_gain": "100",
+    "simplified_i_gain": "100",
+    "simplified_d_gain": "100",
+    "simplified_feedforward_gain": "100",
+    "simplified_dterm_filter_multiplier": "100",
+    "simplified_dterm_filter": "1"
+   },
+   "nominal_log_rate_hz": 1000.0,
+   "axes": [
+    {
+     "axis": 0,
+     "pid": [
+      45,
+      80,
+      30
+     ],
+     "plant_scale": 1.0,
+     "delay_samples": 2,
+     "noise_std": 400.0,
+     "amplitude": 40.0,
+     "samples": 6000
+    }
+   ],
+   "covers": [
+    "low_coherence"
+   ],
+   "expect": {
+    "blocked": true,
+    "reasons": [
+     "system_id:low_coherence"
+    ]
+   }
+  },
+  {
+   "case_id": "insufficient_frequency_range",
+   "description": "Sweep 0.2-3 Hz only: no usable band.",
+   "classification": [
+    "exact_upstream_parity",
+    "intentional_gyrocore_hardening"
+   ],
+   "bbl": "bbl/insufficient_frequency_range.bbl.gz",
+   "bbl_sha256": "041a846af9b7128a7e691413f12f1743457c7629951917aa9f8131f9919e405d",
+   "seed": 108,
+   "headers": {
+    "Data version": "2",
+    "I interval": "32",
+    "P interval": "1/1",
+    "Firmware type": "Cleanflight",
+    "Firmware revision": "Betaflight 2026.6.0 (synthetic) STM32F7X2",
+    "Board information": "SYNT SYNTHETIC",
+    "looptime": "250",
+    "pid_process_denom": "4",
+    "debug_mode": "96",
+    "blackbox_high_resolution": "0",
+    "chirp_lag_freq_hz": "3",
+    "chirp_lead_freq_hz": "30",
+    "chirp_amplitude_roll": "150",
+    "chirp_amplitude_pitch": "150",
+    "chirp_amplitude_yaw": "150",
+    "chirp_frequency_start_deci_hz": "2",
+    "chirp_frequency_end_deci_hz": "30",
+    "chirp_time_seconds": "6",
+    "rollPID": "45,80,30",
+    "pitchPID": "47,84,34",
+    "yawPID": "45,80,0",
+    "simplified_pids_mode": "2",
+    "simplified_master_multiplier": "100",
+    "simplified_pi_gain": "100",
+    "simplified_i_gain": "100",
+    "simplified_d_gain": "100",
+    "simplified_feedforward_gain": "100",
+    "simplified_dterm_filter_multiplier": "100",
+    "simplified_dterm_filter": "1"
+   },
+   "nominal_log_rate_hz": 1000.0,
+   "axes": [
+    {
+     "axis": 0,
+     "pid": [
+      45,
+      80,
+      30
+     ],
+     "plant_scale": 1.0,
+     "delay_samples": 2,
+     "noise_std": 0.5,
+     "amplitude": 150.0,
+     "samples": 6000
+    }
+   ],
+   "covers": [
+    "insufficient_frequency_range"
+   ],
+   "expect": {
+    "blocked": true,
+    "reasons": [
+     "system_id:unusable_frequency_range"
+    ]
+   }
+  },
+  {
+   "case_id": "invalid_sample_rate",
+   "description": "No rate headers and frozen timestamps: no defensible rate (upstream assumes 8 kHz).",
+   "classification": [
+    "intentional_gyrocore_hardening"
+   ],
+   "bbl": "bbl/invalid_sample_rate.bbl.gz",
+   "bbl_sha256": "08232fdc13bcede60276124bbd6da9b2419d7a777a82912018d45ebe285de31a",
+   "seed": 109,
+   "headers": {
+    "Data version": "2",
+    "I interval": "32",
+    "Firmware type": "Cleanflight",
+    "Firmware revision": "Betaflight 2026.6.0 (synthetic) STM32F7X2",
+    "Board information": "SYNT SYNTHETIC",
+    "debug_mode": "96",
+    "blackbox_high_resolution": "0",
+    "chirp_lag_freq_hz": "3",
+    "chirp_lead_freq_hz": "30",
+    "chirp_amplitude_roll": "150",
+    "chirp_amplitude_pitch": "150",
+    "chirp_amplitude_yaw": "150",
+    "chirp_frequency_start_deci_hz": "20",
+    "chirp_frequency_end_deci_hz": "2500",
+    "chirp_time_seconds": "6",
+    "rollPID": "45,80,30",
+    "pitchPID": "47,84,34",
+    "yawPID": "45,80,0",
+    "simplified_pids_mode": "2",
+    "simplified_master_multiplier": "100",
+    "simplified_pi_gain": "100",
+    "simplified_i_gain": "100",
+    "simplified_d_gain": "100",
+    "simplified_feedforward_gain": "100",
+    "simplified_dterm_filter_multiplier": "100",
+    "simplified_dterm_filter": "1"
+   },
+   "nominal_log_rate_hz": 1000.0,
+   "axes": [
+    {
+     "axis": 0,
+     "pid": [
+      45,
+      80,
+      30
+     ],
+     "plant_scale": 1.0,
+     "delay_samples": 2,
+     "noise_std": 0.5,
+     "amplitude": 150.0,
+     "samples": 6000
+    }
+   ],
+   "covers": [
+    "invalid_sample_rate"
+   ],
+   "expect": {
+    "blocked": true,
+    "reasons": [
+     "system_id:invalid_sample_rate"
+    ]
+   }
+  },
+  {
+   "case_id": "slider_upper_clamp",
+   "description": "Sliders near 250 on a low-gain airframe: proposals clamp at 250.",
+   "classification": [
+    "exact_upstream_parity"
+   ],
+   "bbl": "bbl/slider_upper_clamp.bbl.gz",
+   "bbl_sha256": "91e7ea0ee9fc7b1e8897f25ac7a6399dd4037e227a5277dab55e4e67d89eaba5",
+   "seed": 110,
+   "headers": {
+    "Data version": "2",
+    "I interval": "32",
+    "P interval": "1/1",
+    "Firmware type": "Cleanflight",
+    "Firmware revision": "Betaflight 2026.6.0 (synthetic) STM32F7X2",
+    "Board information": "SYNT SYNTHETIC",
+    "looptime": "250",
+    "pid_process_denom": "4",
+    "debug_mode": "96",
+    "blackbox_high_resolution": "0",
+    "chirp_lag_freq_hz": "3",
+    "chirp_lead_freq_hz": "30",
+    "chirp_amplitude_roll": "150",
+    "chirp_amplitude_pitch": "150",
+    "chirp_amplitude_yaw": "150",
+    "chirp_frequency_start_deci_hz": "20",
+    "chirp_frequency_end_deci_hz": "2500",
+    "chirp_time_seconds": "6",
+    "rollPID": "45,80,30",
+    "pitchPID": "47,84,34",
+    "yawPID": "45,80,0",
+    "simplified_pids_mode": "2",
+    "simplified_master_multiplier": "100",
+    "simplified_pi_gain": "240",
+    "simplified_i_gain": "245",
+    "simplified_d_gain": "100",
+    "simplified_feedforward_gain": "245",
+    "simplified_dterm_filter_multiplier": "100",
+    "simplified_dterm_filter": "1"
+   },
+   "nominal_log_rate_hz": 1000.0,
+   "axes": [
+    {
+     "axis": 0,
+     "pid": [
+      45,
+      80,
+      30
+     ],
+     "plant_scale": 0.2,
+     "delay_samples": 2,
+     "noise_std": 0.5,
+     "amplitude": 150.0,
+     "samples": 6000
+    }
+   ],
+   "covers": [
+    "slider_clamp_upper"
+   ],
+   "expect": {
+    "blocked": false
+   }
+  },
+  {
+   "case_id": "slider_lower_clamp",
+   "description": "Sliders near 25 on a high-gain airframe: proposals clamp at 25.",
+   "classification": [
+    "exact_upstream_parity"
+   ],
+   "bbl": "bbl/slider_lower_clamp.bbl.gz",
+   "bbl_sha256": "e2b5f0253a5626246c0cdd3b0871c2e1194931ada0e98fbd764c79408d9fc168",
+   "seed": 111,
+   "headers": {
+    "Data version": "2",
+    "I interval": "32",
+    "P interval": "1/1",
+    "Firmware type": "Cleanflight",
+    "Firmware revision": "Betaflight 2026.6.0 (synthetic) STM32F7X2",
+    "Board information": "SYNT SYNTHETIC",
+    "looptime": "250",
+    "pid_process_denom": "4",
+    "debug_mode": "96",
+    "blackbox_high_resolution": "0",
+    "chirp_lag_freq_hz": "3",
+    "chirp_lead_freq_hz": "30",
+    "chirp_amplitude_roll": "150",
+    "chirp_amplitude_pitch": "150",
+    "chirp_amplitude_yaw": "150",
+    "chirp_frequency_start_deci_hz": "20",
+    "chirp_frequency_end_deci_hz": "2500",
+    "chirp_time_seconds": "6",
+    "rollPID": "45,80,30",
+    "pitchPID": "47,84,34",
+    "yawPID": "45,80,0",
+    "simplified_pids_mode": "2",
+    "simplified_master_multiplier": "100",
+    "simplified_pi_gain": "30",
+    "simplified_i_gain": "30",
+    "simplified_d_gain": "100",
+    "simplified_feedforward_gain": "30",
+    "simplified_dterm_filter_multiplier": "100",
+    "simplified_dterm_filter": "1"
+   },
+   "nominal_log_rate_hz": 1000.0,
+   "axes": [
+    {
+     "axis": 0,
+     "pid": [
+      45,
+      80,
+      30
+     ],
+     "plant_scale": 3.0,
+     "delay_samples": 2,
+     "noise_std": 0.5,
+     "amplitude": 150.0,
+     "samples": 6000
+    }
+   ],
+   "covers": [
+    "slider_clamp_lower"
+   ],
+   "expect": {
+    "blocked": false
+   }
+  },
+  {
+   "case_id": "unusual_pids",
+   "description": "Unusual roll PIDs 120/20/80 (simulated loop uses them).",
+   "classification": [
+    "exact_upstream_parity"
+   ],
+   "bbl": "bbl/unusual_pids.bbl.gz",
+   "bbl_sha256": "00232a50f8de8d807c6aa0859b00b73a7a17c0d3863ca37c4b68c474b2fda732",
+   "seed": 112,
+   "headers": {
+    "Data version": "2",
+    "I interval": "32",
+    "P interval": "1/1",
+    "Firmware type": "Cleanflight",
+    "Firmware revision": "Betaflight 2026.6.0 (synthetic) STM32F7X2",
+    "Board information": "SYNT SYNTHETIC",
+    "looptime": "250",
+    "pid_process_denom": "4",
+    "debug_mode": "96",
+    "blackbox_high_resolution": "0",
+    "chirp_lag_freq_hz": "3",
+    "chirp_lead_freq_hz": "30",
+    "chirp_amplitude_roll": "150",
+    "chirp_amplitude_pitch": "150",
+    "chirp_amplitude_yaw": "150",
+    "chirp_frequency_start_deci_hz": "20",
+    "chirp_frequency_end_deci_hz": "2500",
+    "chirp_time_seconds": "6",
+    "rollPID": "120,20,80",
+    "pitchPID": "47,84,34",
+    "yawPID": "45,80,0",
+    "simplified_pids_mode": "2",
+    "simplified_master_multiplier": "100",
+    "simplified_pi_gain": "100",
+    "simplified_i_gain": "100",
+    "simplified_d_gain": "100",
+    "simplified_feedforward_gain": "100",
+    "simplified_dterm_filter_multiplier": "100",
+    "simplified_dterm_filter": "1"
+   },
+   "nominal_log_rate_hz": 1000.0,
+   "axes": [
+    {
+     "axis": 0,
+     "pid": [
+      120,
+      20,
+      80
+     ],
+     "plant_scale": 1.0,
+     "delay_samples": 2,
+     "noise_std": 0.5,
+     "amplitude": 150.0,
+     "samples": 6000
+    }
+   ],
+   "covers": [
+    "unusual_current_pids"
+   ],
+   "expect": {
+    "blocked": false
+   }
+  },
+  {
+   "case_id": "missing_tune_headers",
+   "description": "No simplified_* / PID headers: upstream defaults to 100, GyroCore blocks.",
+   "classification": [
+    "exact_upstream_parity",
+    "intentional_gyrocore_hardening"
+   ],
+   "bbl": "bbl/missing_tune_headers.bbl.gz",
+   "bbl_sha256": "654b550e99e75c4247b3ff1c5ead8bcb5358505c5448803c3f838b1aa8ef99f9",
+   "seed": 113,
+   "headers": {
+    "Data version": "2",
+    "I interval": "32",
+    "P interval": "1/1",
+    "Firmware type": "Cleanflight",
+    "Firmware revision": "Betaflight 2026.6.0 (synthetic) STM32F7X2",
+    "Board information": "SYNT SYNTHETIC",
+    "looptime": "250",
+    "pid_process_denom": "4",
+    "debug_mode": "96",
+    "blackbox_high_resolution": "0",
+    "chirp_lag_freq_hz": "3",
+    "chirp_lead_freq_hz": "30",
+    "chirp_amplitude_roll": "150",
+    "chirp_amplitude_pitch": "150",
+    "chirp_amplitude_yaw": "150",
+    "chirp_frequency_start_deci_hz": "20",
+    "chirp_frequency_end_deci_hz": "2500",
+    "chirp_time_seconds": "6"
+   },
+   "nominal_log_rate_hz": 1000.0,
+   "axes": [
+    {
+     "axis": 0,
+     "pid": [
+      45,
+      80,
+      30
+     ],
+     "plant_scale": 1.0,
+     "delay_samples": 2,
+     "noise_std": 0.5,
+     "amplitude": 150.0,
+     "samples": 6000
+    }
+   ],
+   "covers": [
+    "missing_current_tune"
+   ],
+   "expect": {
+    "blocked": true,
+    "reasons": [
+     "current_tune_missing:pi_gain"
+    ]
+   }
+  },
+  {
+   "case_id": "zero_slider",
+   "description": "simplified_feedforward_gain 0: upstream reads it as 100, GyroCore blocks.",
+   "classification": [
+    "exact_upstream_parity",
+    "intentional_gyrocore_hardening"
+   ],
+   "bbl": "bbl/zero_slider.bbl.gz",
+   "bbl_sha256": "71f5c2800b88697ccef867f76998996cdd11311f144966235dec49685baa6bb9",
+   "seed": 114,
+   "headers": {
+    "Data version": "2",
+    "I interval": "32",
+    "P interval": "1/1",
+    "Firmware type": "Cleanflight",
+    "Firmware revision": "Betaflight 2026.6.0 (synthetic) STM32F7X2",
+    "Board information": "SYNT SYNTHETIC",
+    "looptime": "250",
+    "pid_process_denom": "4",
+    "debug_mode": "96",
+    "blackbox_high_resolution": "0",
+    "chirp_lag_freq_hz": "3",
+    "chirp_lead_freq_hz": "30",
+    "chirp_amplitude_roll": "150",
+    "chirp_amplitude_pitch": "150",
+    "chirp_amplitude_yaw": "150",
+    "chirp_frequency_start_deci_hz": "20",
+    "chirp_frequency_end_deci_hz": "2500",
+    "chirp_time_seconds": "6",
+    "rollPID": "45,80,30",
+    "pitchPID": "47,84,34",
+    "yawPID": "45,80,0",
+    "simplified_pids_mode": "2",
+    "simplified_master_multiplier": "100",
+    "simplified_pi_gain": "100",
+    "simplified_i_gain": "100",
+    "simplified_d_gain": "100",
+    "simplified_feedforward_gain": "0",
+    "simplified_dterm_filter_multiplier": "100",
+    "simplified_dterm_filter": "1"
+   },
+   "nominal_log_rate_hz": 1000.0,
+   "axes": [
+    {
+     "axis": 0,
+     "pid": [
+      45,
+      80,
+      30
+     ],
+     "plant_scale": 1.0,
+     "delay_samples": 2,
+     "noise_std": 0.5,
+     "amplitude": 150.0,
+     "samples": 6000
+    }
+   ],
+   "covers": [
+    "zero_slider"
+   ],
+   "expect": {
+    "blocked": true,
+    "reasons": [
+     "current_tune_zero:feedforward_gain"
+    ]
+   }
+  },
+  {
+   "case_id": "pids_mode_off",
+   "description": "simplified_pids_mode 0: sliders do not drive PIDs.",
+   "classification": [
+    "exact_upstream_parity",
+    "intentional_gyrocore_hardening"
+   ],
+   "bbl": "bbl/pids_mode_off.bbl.gz",
+   "bbl_sha256": "f6fa4f83b1245563fa330bebaf08d904596e54d468b5af4d15ee3c8adcef598f",
+   "seed": 115,
+   "headers": {
+    "Data version": "2",
+    "I interval": "32",
+    "P interval": "1/1",
+    "Firmware type": "Cleanflight",
+    "Firmware revision": "Betaflight 2026.6.0 (synthetic) STM32F7X2",
+    "Board information": "SYNT SYNTHETIC",
+    "looptime": "250",
+    "pid_process_denom": "4",
+    "debug_mode": "96",
+    "blackbox_high_resolution": "0",
+    "chirp_lag_freq_hz": "3",
+    "chirp_lead_freq_hz": "30",
+    "chirp_amplitude_roll": "150",
+    "chirp_amplitude_pitch": "150",
+    "chirp_amplitude_yaw": "150",
+    "chirp_frequency_start_deci_hz": "20",
+    "chirp_frequency_end_deci_hz": "2500",
+    "chirp_time_seconds": "6",
+    "rollPID": "45,80,30",
+    "pitchPID": "47,84,34",
+    "yawPID": "45,80,0",
+    "simplified_pids_mode": "0",
+    "simplified_master_multiplier": "100",
+    "simplified_pi_gain": "100",
+    "simplified_i_gain": "100",
+    "simplified_d_gain": "100",
+    "simplified_feedforward_gain": "100",
+    "simplified_dterm_filter_multiplier": "100",
+    "simplified_dterm_filter": "1"
+   },
+   "nominal_log_rate_hz": 1000.0,
+   "axes": [
+    {
+     "axis": 0,
+     "pid": [
+      45,
+      80,
+      30
+     ],
+     "plant_scale": 1.0,
+     "delay_samples": 2,
+     "noise_std": 0.5,
+     "amplitude": 150.0,
+     "samples": 6000
+    }
+   ],
+   "covers": [
+    "pids_mode_off"
+   ],
+   "expect": {
+    "blocked": true,
+    "reasons": [
+     "simplified_pids_mode_off"
+    ]
+   }
+  },
+  {
+   "case_id": "pids_mode_rp_yaw",
+   "description": "simplified_pids_mode RP with three axes: yaw is not slider-controlled.",
+   "classification": [
+    "exact_upstream_parity",
+    "intentional_gyrocore_hardening"
+   ],
+   "bbl": "bbl/pids_mode_rp_yaw.bbl.gz",
+   "bbl_sha256": "9cf9d1783a1766f40f532e87e559e1ccf6b2ac44bfe4f6204e9cd267d3c97e73",
+   "seed": 116,
+   "headers": {
+    "Data version": "2",
+    "I interval": "32",
+    "P interval": "1/1",
+    "Firmware type": "Cleanflight",
+    "Firmware revision": "Betaflight 2026.6.0 (synthetic) STM32F7X2",
+    "Board information": "SYNT SYNTHETIC",
+    "looptime": "250",
+    "pid_process_denom": "4",
+    "debug_mode": "96",
+    "blackbox_high_resolution": "0",
+    "chirp_lag_freq_hz": "3",
+    "chirp_lead_freq_hz": "30",
+    "chirp_amplitude_roll": "150",
+    "chirp_amplitude_pitch": "150",
+    "chirp_amplitude_yaw": "150",
+    "chirp_frequency_start_deci_hz": "20",
+    "chirp_frequency_end_deci_hz": "2500",
+    "chirp_time_seconds": "6",
+    "rollPID": "45,80,30",
+    "pitchPID": "47,84,34",
+    "yawPID": "45,80,0",
+    "simplified_pids_mode": "1",
+    "simplified_master_multiplier": "100",
+    "simplified_pi_gain": "100",
+    "simplified_i_gain": "100",
+    "simplified_d_gain": "100",
+    "simplified_feedforward_gain": "100",
+    "simplified_dterm_filter_multiplier": "100",
+    "simplified_dterm_filter": "1"
+   },
+   "nominal_log_rate_hz": 1000.0,
+   "axes": [
+    {
+     "axis": 0,
+     "pid": [
+      45,
+      80,
+      30
+     ],
+     "plant_scale": 1.0,
+     "delay_samples": 2,
+     "noise_std": 0.5,
+     "amplitude": 150.0,
+     "samples": 6000
+    },
+    {
+     "axis": 1,
+     "pid": [
+      47,
+      84,
+      34
+     ],
+     "plant_scale": 1.0,
+     "delay_samples": 2,
+     "noise_std": 0.5,
+     "amplitude": 150.0,
+     "samples": 6000
+    },
+    {
+     "axis": 2,
+     "pid": [
+      45,
+      80,
+      0
+     ],
+     "plant_scale": 1.0,
+     "delay_samples": 2,
+     "noise_std": 0.5,
+     "amplitude": 150.0,
+     "samples": 6000
+    }
+   ],
+   "covers": [
+    "pids_mode_rp"
+   ],
+   "expect": {
+    "blocked_axes": [
+     2
+    ]
+   }
+  },
+  {
+   "case_id": "log_rate_2k",
+   "description": "PID 2 kHz logged 1/1 (2 kHz).",
+   "classification": [
+    "exact_upstream_parity"
+   ],
+   "bbl": "bbl/log_rate_2k.bbl.gz",
+   "bbl_sha256": "44c1c6b93ee0492b4d87718b841fdda0e4a2698c058c02e8641f0e80b8b0f8c2",
+   "seed": 117,
+   "headers": {
+    "Data version": "2",
+    "I interval": "32",
+    "P interval": "1/1",
+    "Firmware type": "Cleanflight",
+    "Firmware revision": "Betaflight 2026.6.0 (synthetic) STM32F7X2",
+    "Board information": "SYNT SYNTHETIC",
+    "looptime": "125",
+    "pid_process_denom": "4",
+    "debug_mode": "96",
+    "blackbox_high_resolution": "0",
+    "chirp_lag_freq_hz": "3",
+    "chirp_lead_freq_hz": "30",
+    "chirp_amplitude_roll": "150",
+    "chirp_amplitude_pitch": "150",
+    "chirp_amplitude_yaw": "150",
+    "chirp_frequency_start_deci_hz": "20",
+    "chirp_frequency_end_deci_hz": "2500",
+    "chirp_time_seconds": "6",
+    "rollPID": "45,80,30",
+    "pitchPID": "47,84,34",
+    "yawPID": "45,80,0",
+    "simplified_pids_mode": "2",
+    "simplified_master_multiplier": "100",
+    "simplified_pi_gain": "100",
+    "simplified_i_gain": "100",
+    "simplified_d_gain": "100",
+    "simplified_feedforward_gain": "100",
+    "simplified_dterm_filter_multiplier": "100",
+    "simplified_dterm_filter": "1"
+   },
+   "nominal_log_rate_hz": 2000.0,
+   "axes": [
+    {
+     "axis": 0,
+     "pid": [
+      45,
+      80,
+      30
+     ],
+     "plant_scale": 1.0,
+     "delay_samples": 2,
+     "noise_std": 0.5,
+     "amplitude": 150.0,
+     "samples": 12000
+    }
+   ],
+   "covers": [
+    "logging_rate_2k"
+   ],
+   "expect": {
+    "blocked": false
+   }
+  },
+  {
+   "case_id": "log_rate_4k",
+   "description": "PID 8 kHz logged at P interval 1/2 (4 kHz).",
+   "classification": [
+    "exact_upstream_parity"
+   ],
+   "bbl": "bbl/log_rate_4k.bbl.gz",
+   "bbl_sha256": "8661e5b8338207b617ee4e0c3d141f8fc61cc4aca611b0444a6fac07cb4b4f90",
+   "seed": 118,
+   "headers": {
+    "Data version": "2",
+    "I interval": "32",
+    "P interval": "1/2",
+    "Firmware type": "Cleanflight",
+    "Firmware revision": "Betaflight 2026.6.0 (synthetic) STM32F7X2",
+    "Board information": "SYNT SYNTHETIC",
+    "looptime": "125",
+    "pid_process_denom": "1",
+    "debug_mode": "96",
+    "blackbox_high_resolution": "0",
+    "chirp_lag_freq_hz": "3",
+    "chirp_lead_freq_hz": "30",
+    "chirp_amplitude_roll": "150",
+    "chirp_amplitude_pitch": "150",
+    "chirp_amplitude_yaw": "150",
+    "chirp_frequency_start_deci_hz": "20",
+    "chirp_frequency_end_deci_hz": "2500",
+    "chirp_time_seconds": "6",
+    "rollPID": "45,80,30",
+    "pitchPID": "47,84,34",
+    "yawPID": "45,80,0",
+    "simplified_pids_mode": "2",
+    "simplified_master_multiplier": "100",
+    "simplified_pi_gain": "100",
+    "simplified_i_gain": "100",
+    "simplified_d_gain": "100",
+    "simplified_feedforward_gain": "100",
+    "simplified_dterm_filter_multiplier": "100",
+    "simplified_dterm_filter": "1"
+   },
+   "nominal_log_rate_hz": 4000.0,
+   "axes": [
+    {
+     "axis": 0,
+     "pid": [
+      45,
+      80,
+      30
+     ],
+     "plant_scale": 1.0,
+     "delay_samples": 2,
+     "noise_std": 0.5,
+     "amplitude": 150.0,
+     "samples": 24000
+    }
+   ],
+   "covers": [
+    "logging_rate_4k"
+   ],
+   "expect": {
+    "blocked": false
+   }
+  },
+  {
+   "case_id": "log_rate_below_pid",
+   "description": "PID 4 kHz logged at P interval 1/4 (1 kHz).",
+   "classification": [
+    "exact_upstream_parity"
+   ],
+   "bbl": "bbl/log_rate_below_pid.bbl.gz",
+   "bbl_sha256": "753d315561ba91859b5eab1e6f6b2f8d6a4f01688ffb78ff55296dfef8a57db4",
+   "seed": 119,
+   "headers": {
+    "Data version": "2",
+    "I interval": "32",
+    "P interval": "1/4",
+    "Firmware type": "Cleanflight",
+    "Firmware revision": "Betaflight 2026.6.0 (synthetic) STM32F7X2",
+    "Board information": "SYNT SYNTHETIC",
+    "looptime": "125",
+    "pid_process_denom": "2",
+    "debug_mode": "96",
+    "blackbox_high_resolution": "0",
+    "chirp_lag_freq_hz": "3",
+    "chirp_lead_freq_hz": "30",
+    "chirp_amplitude_roll": "150",
+    "chirp_amplitude_pitch": "150",
+    "chirp_amplitude_yaw": "150",
+    "chirp_frequency_start_deci_hz": "20",
+    "chirp_frequency_end_deci_hz": "2500",
+    "chirp_time_seconds": "6",
+    "rollPID": "45,80,30",
+    "pitchPID": "47,84,34",
+    "yawPID": "45,80,0",
+    "simplified_pids_mode": "2",
+    "simplified_master_multiplier": "100",
+    "simplified_pi_gain": "100",
+    "simplified_i_gain": "100",
+    "simplified_d_gain": "100",
+    "simplified_feedforward_gain": "100",
+    "simplified_dterm_filter_multiplier": "100",
+    "simplified_dterm_filter": "1"
+   },
+   "nominal_log_rate_hz": 1000.0,
+   "axes": [
+    {
+     "axis": 0,
+     "pid": [
+      45,
+      80,
+      30
+     ],
+     "plant_scale": 1.0,
+     "delay_samples": 2,
+     "noise_std": 0.5,
+     "amplitude": 150.0,
+     "samples": 6000
+    }
+   ],
+   "covers": [
+    "logging_rate_below_pid"
+   ],
+   "expect": {
+    "blocked": false
+   }
+  }
+ ]
+}
