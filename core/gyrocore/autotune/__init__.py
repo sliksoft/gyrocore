@@ -4,8 +4,10 @@ Port of Betaflight Configurator ``recommendGains`` (``spectral_analysis.ts``)
 on top of the WU7 CHIRP system identification (:mod:`gyrocore.chirp`).
 
 Output is an :class:`AutotuneRecommendationResult` with ``actionable == False``.
-Nothing in this package writes MSP, emits CLI or applies a tune; results must
-still pass mechanical safety, safe-tune clamps and ``tuning_output_safety``.
+WU9 adds a non-actionable :class:`AbsoluteTuneProposal` (firmware simplified
+tuning + GyroCore global-slider merge). Nothing in this package writes MSP,
+emits CLI or applies a tune; results must still pass mechanical safety,
+safe-tune clamps and ``tuning_output_safety``.
 """
 
 from .current_tune import (
@@ -30,6 +32,18 @@ from .engine import (
     recommend_autotune_from_bbl,
     recommend_from_system_id,
 )
+from .merge import (
+    MERGE_REQUIRES_REVIEW,
+    POLICY_ID,
+    GlobalSliderMerge,
+    merge_autotune_sliders,
+)
+from .absolute import (
+    AbsoluteTune,
+    AbsoluteTuneProposal,
+    extract_absolute_tune,
+    propose_absolute_tune,
+)
 from .recommend import (
     GAIN_SCALE_MAX,
     GAIN_SCALE_MIN,
@@ -49,8 +63,13 @@ from .recommend import (
 
 __all__ = [
     "AXES",
+    "AbsoluteTune",
+    "AbsoluteTuneProposal",
     "AutotuneRecommendationResult",
     "AxisRecommendation",
+    "GlobalSliderMerge",
+    "MERGE_REQUIRES_REVIEW",
+    "POLICY_ID",
     "CurrentSliders",
     "CurrentTune",
     "GAIN_SCALE_MAX",
@@ -76,7 +95,10 @@ __all__ = [
     "ValueSource",
     "build_gains",
     "current_tune_from_sliders",
+    "extract_absolute_tune",
     "extract_current_tune",
+    "merge_autotune_sliders",
+    "propose_absolute_tune",
     "recommend_autotune_from_bbl",
     "recommend_from_system_id",
     "recommend_gains",

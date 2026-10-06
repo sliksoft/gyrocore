@@ -27,6 +27,22 @@ from .vocabulary import (
     enrich_cli_status_vocabulary,
     resolve_user_facing_cli_state,
 )
+from .simplified_tuning import (
+    FIRMWARE_PROVENANCE,
+    AxisPid,
+    FilterSet,
+    GyroConfigState,
+    PidProfileState,
+    SimplifiedSliders,
+    SliderValidity,
+    apply_simplified_tuning,
+    apply_simplified_tuning_dterm_filters,
+    apply_simplified_tuning_gyro_filters,
+    apply_simplified_tuning_pids,
+    firmware_default_gyro,
+    firmware_default_pid_profile,
+    validate_simplified_tuning,
+)
 
 __all__ = [
     "build_board_overlay",
@@ -48,4 +64,18 @@ __all__ = [
     "resolve_user_facing_cli_state",
     "tuning_profile_cli_strictly_valid",
     "validate_config_log_consistency",
+    "FIRMWARE_PROVENANCE",
+    "AxisPid",
+    "FilterSet",
+    "GyroConfigState",
+    "PidProfileState",
+    "SimplifiedSliders",
+    "SliderValidity",
+    "apply_simplified_tuning",
+    "apply_simplified_tuning_dterm_filters",
+    "apply_simplified_tuning_gyro_filters",
+    "apply_simplified_tuning_pids",
+    "firmware_default_gyro",
+    "firmware_default_pid_profile",
+    "validate_simplified_tuning",
 ]
