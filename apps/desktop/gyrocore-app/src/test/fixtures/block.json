@@ -1,0 +1,1079 @@
+{
+  "kind": "gyrocore_desktop_workspace",
+  "demo": true,
+  "demo_label": "SYNTHETIC / DEMO DATA \u2014 not a real flight blackbox",
+  "scenario": "block",
+  "overview": {
+    "craft": "Demo F7X2",
+    "target": "STM32F7X2",
+    "betaflight_version": "2026.6.2",
+    "pid_profile": 0,
+    "log_duration_s": 42.5,
+    "sample_rate_hz": 2000.0,
+    "detected_issues": [],
+    "mechanical_safety": "BLOCK",
+    "chirp_detected": false,
+    "tune_recommendation": "proposed",
+    "cli_authorization": "DENIED",
+    "final_safety": "BLOCK"
+  },
+  "analysis": {
+    "ok": false,
+    "quality": {
+      "status": "ok",
+      "score": 90
+    },
+    "confidence": {
+      "score": 0.92,
+      "label": "high"
+    },
+    "problems": {
+      "problems": []
+    },
+    "metrics": {
+      "noise": {
+        "value": 90.0,
+        "hf_ratio": 0.05,
+        "level": "LOW"
+      }
+    },
+    "motors": {
+      "diagnostics": {
+        "motors": [],
+        "health": 100
+      }
+    },
+    "resonance": {
+      "severity": "low"
+    },
+    "spectral": {
+      "summary": "demo_fft",
+      "axes": {
+        "roll": {
+          "peaks": [
+            {
+              "hz": 120.0,
+              "magnitude": 0.4
+            }
+          ]
+        },
+        "pitch": {
+          "peaks": [
+            {
+              "hz": 125.0,
+              "magnitude": 0.35
+            }
+          ]
+        },
+        "yaw": {
+          "peaks": []
+        }
+      }
+    },
+    "step_response": {
+      "ok": true,
+      "demo": true
+    },
+    "d_effectiveness": {
+      "ok": true,
+      "demo": true
+    },
+    "erpm": {
+      "ok": true,
+      "demo": true
+    },
+    "saturation": {
+      "ok": true,
+      "level": "low"
+    },
+    "sample_rate_hz": 2000.0,
+    "duration_s": 42.5,
+    "message": "no_usable_samples"
+  },
+  "chirp": {
+    "available": false,
+    "reason": "no_chirp_segment_detected",
+    "magnitude": [],
+    "phase": [],
+    "coherence": []
+  },
+  "tune": {
+    "merge_status": "proposed",
+    "review_reasons": [],
+    "per_axis_recommendations": {
+      "roll": {
+        "slider_master_multiplier": 100,
+        "slider_pi_gain": 100,
+        "slider_i_gain": 100,
+        "slider_d_gain": 100,
+        "slider_feedforward_gain": 100,
+        "slider_dterm_filter_multiplier": 100
+      },
+      "pitch": {
+        "slider_master_multiplier": 100,
+        "slider_pi_gain": 100,
+        "slider_i_gain": 100,
+        "slider_d_gain": 100,
+        "slider_feedforward_gain": 100,
+        "slider_dterm_filter_multiplier": 100
+      },
+      "yaw": {
+        "slider_master_multiplier": 100,
+        "slider_pi_gain": 100,
+        "slider_i_gain": 100,
+        "slider_d_gain": 100,
+        "slider_feedforward_gain": 100,
+        "slider_dterm_filter_multiplier": 100
+      }
+    },
+    "merged_sliders": {
+      "slider_master_multiplier": 100,
+      "slider_pi_gain": 100,
+      "slider_i_gain": 100,
+      "slider_d_gain": 100,
+      "slider_feedforward_gain": 100,
+      "slider_dterm_filter_multiplier": 100
+    },
+    "merge": {
+      "status": "merged",
+      "policy_id": "gyrocore.autotune.global_slider.merge.v1",
+      "policy_kind": "gyrocore",
+      "upstream_or_gyrocore": "gyrocore",
+      "participating_axes": [
+        "roll",
+        "pitch",
+        "yaw"
+      ],
+      "fields": {
+        "slider_master_multiplier": {
+          "key": "slider_master_multiplier",
+          "values_by_axis": {
+            "roll": 100,
+            "pitch": 100,
+            "yaw": 100
+          },
+          "agreed": true,
+          "chosen": 100,
+          "constrained_by": [
+            "roll",
+            "pitch",
+            "yaw"
+          ],
+          "reason": "unanimous"
+        },
+        "slider_pi_gain": {
+          "key": "slider_pi_gain",
+          "values_by_axis": {
+            "roll": 100,
+            "pitch": 100,
+            "yaw": 100
+          },
+          "agreed": true,
+          "chosen": 100,
+          "constrained_by": [
+            "roll",
+            "pitch",
+            "yaw"
+          ],
+          "reason": "unanimous"
+        },
+        "slider_i_gain": {
+          "key": "slider_i_gain",
+          "values_by_axis": {
+            "roll": 100,
+            "pitch": 100,
+            "yaw": 100
+          },
+          "agreed": true,
+          "chosen": 100,
+          "constrained_by": [
+            "roll",
+            "pitch",
+            "yaw"
+          ],
+          "reason": "unanimous"
+        },
+        "slider_d_gain": {
+          "key": "slider_d_gain",
+          "values_by_axis": {
+            "roll": 100,
+            "pitch": 100,
+            "yaw": 100
+          },
+          "agreed": true,
+          "chosen": 100,
+          "constrained_by": [
+            "roll",
+            "pitch",
+            "yaw"
+          ],
+          "reason": "unanimous"
+        },
+        "slider_feedforward_gain": {
+          "key": "slider_feedforward_gain",
+          "values_by_axis": {
+            "roll": 100,
+            "pitch": 100,
+            "yaw": 100
+          },
+          "agreed": true,
+          "chosen": 100,
+          "constrained_by": [
+            "roll",
+            "pitch",
+            "yaw"
+          ],
+          "reason": "unanimous"
+        },
+        "slider_dterm_filter_multiplier": {
+          "key": "slider_dterm_filter_multiplier",
+          "values_by_axis": {
+            "roll": 100,
+            "pitch": 100,
+            "yaw": 100
+          },
+          "agreed": true,
+          "chosen": 100,
+          "constrained_by": [
+            "roll",
+            "pitch",
+            "yaw"
+          ],
+          "reason": "unanimous"
+        }
+      },
+      "proposed_sliders": {
+        "slider_master_multiplier": 100,
+        "slider_pi_gain": 100,
+        "slider_i_gain": 100,
+        "slider_d_gain": 100,
+        "slider_feedforward_gain": 100,
+        "slider_dterm_filter_multiplier": 100
+      },
+      "simplified": {
+        "pids_mode": 2,
+        "master_multiplier": 100,
+        "i_gain": 100,
+        "d_gain": 100,
+        "pi_gain": 100,
+        "d_max_gain": 100,
+        "feedforward_gain": 100,
+        "pitch_d_gain": 100,
+        "pitch_pi_gain": 100,
+        "dterm_filter": 1,
+        "dterm_filter_multiplier": 100,
+        "gyro_filter": 1,
+        "gyro_filter_multiplier": 100
+      },
+      "review_reasons": [],
+      "notes": [
+        "GyroCore merge; upstream Autotune applies one selected axis with no merge.",
+        "Autotune does not propose d_max / pitch_pi / pitch_d / gyro-filter sliders; those stay at current."
+      ]
+    },
+    "current": {
+      "axes": {
+        "roll": {
+          "p": 45,
+          "i": 80,
+          "d": 30,
+          "d_max": 40,
+          "ff": 120
+        },
+        "pitch": {
+          "p": 47,
+          "i": 84,
+          "d": 34,
+          "d_max": 46,
+          "ff": 125
+        },
+        "yaw": {
+          "p": 45,
+          "i": 80,
+          "d": 0,
+          "d_max": 0,
+          "ff": 120
+        }
+      },
+      "filters": {
+        "gyro_lpf1_dyn_min_hz": 250,
+        "gyro_lpf1_dyn_max_hz": 500,
+        "gyro_lpf1_static_hz": 250,
+        "gyro_lpf2_static_hz": 500,
+        "dterm_lpf1_dyn_min_hz": 75,
+        "dterm_lpf1_dyn_max_hz": 150,
+        "dterm_lpf1_static_hz": 75,
+        "dterm_lpf2_static_hz": 150
+      },
+      "sliders": {
+        "pids_mode": 2,
+        "master_multiplier": 100,
+        "i_gain": 100,
+        "d_gain": 100,
+        "pi_gain": 100,
+        "d_max_gain": 100,
+        "feedforward_gain": 100,
+        "pitch_d_gain": 100,
+        "pitch_pi_gain": 100,
+        "dterm_filter": 1,
+        "dterm_filter_multiplier": 100,
+        "gyro_filter": 1,
+        "gyro_filter_multiplier": 100
+      }
+    },
+    "wu8_autotune": {
+      "note": "Per-axis Autotune slider recommendations (non-actionable)",
+      "axes": {
+        "roll": {
+          "slider_master_multiplier": 100,
+          "slider_pi_gain": 100,
+          "slider_i_gain": 100,
+          "slider_d_gain": 100,
+          "slider_feedforward_gain": 100,
+          "slider_dterm_filter_multiplier": 100
+        },
+        "pitch": {
+          "slider_master_multiplier": 100,
+          "slider_pi_gain": 100,
+          "slider_i_gain": 100,
+          "slider_d_gain": 100,
+          "slider_feedforward_gain": 100,
+          "slider_dterm_filter_multiplier": 100
+        },
+        "yaw": {
+          "slider_master_multiplier": 100,
+          "slider_pi_gain": 100,
+          "slider_i_gain": 100,
+          "slider_d_gain": 100,
+          "slider_feedforward_gain": 100,
+          "slider_dterm_filter_multiplier": 100
+        }
+      }
+    },
+    "wu9_absolute_proposal": {
+      "axes": {
+        "roll": {
+          "p": 45,
+          "i": 80,
+          "d": 30,
+          "d_max": 40,
+          "ff": 120
+        },
+        "pitch": {
+          "p": 47,
+          "i": 84,
+          "d": 34,
+          "d_max": 46,
+          "ff": 125
+        },
+        "yaw": {
+          "p": 45,
+          "i": 80,
+          "d": 0,
+          "d_max": 0,
+          "ff": 120
+        }
+      },
+      "filters": {
+        "gyro_lpf1_dyn_min_hz": 250,
+        "gyro_lpf1_dyn_max_hz": 500,
+        "gyro_lpf1_static_hz": 250,
+        "gyro_lpf2_static_hz": 500,
+        "dterm_lpf1_dyn_min_hz": 75,
+        "dterm_lpf1_dyn_max_hz": 150,
+        "dterm_lpf1_static_hz": 75,
+        "dterm_lpf2_static_hz": 150
+      },
+      "sliders": {
+        "pids_mode": 2,
+        "master_multiplier": 100,
+        "i_gain": 100,
+        "d_gain": 100,
+        "pi_gain": 100,
+        "d_max_gain": 100,
+        "feedforward_gain": 100,
+        "pitch_d_gain": 100,
+        "pitch_pi_gain": 100,
+        "dterm_filter": 1,
+        "dterm_filter_multiplier": 100,
+        "gyro_filter": 1,
+        "gyro_filter_multiplier": 100
+      }
+    },
+    "wu10_safe_target": {
+      "axes": null,
+      "filters": null,
+      "clamp_ids": [],
+      "status": "BLOCK"
+    }
+  },
+  "safety": {
+    "mechanical": {
+      "stage": "mechanical_safety",
+      "status": "block",
+      "mechanical_block": true,
+      "mechanical_limited": false,
+      "mechanical_caution": false,
+      "mechanical_outcome": "mechanical_block",
+      "recommended_action": "guidance_only",
+      "reasons": [
+        "missing_required_analysis"
+      ],
+      "blocking_reasons": [
+        "missing_required_analysis"
+      ],
+      "limited_reasons": [],
+      "caution_reasons": [],
+      "max_delta_scale": 0.0,
+      "evidence": {
+        "max_delta_scale": 0.0
+      },
+      "checks": [
+        {
+          "rule_id": "mechanical.missing_required_analysis",
+          "verdict": "block",
+          "message": "no_usable_samples",
+          "before": null,
+          "after": null,
+          "evidence": {}
+        },
+        {
+          "rule_id": "mechanical.block.missing_required_analysis",
+          "verdict": "block",
+          "message": "missing_required_analysis",
+          "before": null,
+          "after": null,
+          "evidence": {
+            "max_delta_scale": 0.0
+          }
+        }
+      ],
+      "provenance": {
+        "function": "build_mechanical_safety_gate",
+        "donor": "backend.services.mechanical_safety_gate",
+        "analysis_ok": false
+      }
+    },
+    "safe_tune": {
+      "stage": "safe_tune_clamps",
+      "status": "block",
+      "actionable": false,
+      "clamp_ids": [],
+      "blocked_reasons": [
+        "mechanical_hard_block"
+      ],
+      "warnings": [],
+      "max_delta_used": {
+        "filters": {
+          "gyro_lpf1_static_hz": 0.0,
+          "gyro_lpf1_dyn_min_hz": 0.0,
+          "gyro_lpf1_dyn_max_hz": 0.0,
+          "gyro_lpf2_static_hz": 0.0,
+          "dterm_lpf1_dyn_min_hz": 0.0,
+          "dterm_lpf1_dyn_max_hz": 0.0,
+          "dterm_lpf2_static_hz": 0.0,
+          "dyn_notch_count": 0.0,
+          "dyn_notch_min_hz": 0.0,
+          "dyn_notch_max_hz": 0.0,
+          "dyn_notch_width_percent": 0.0,
+          "rpm_filter_harmonics": 0.0,
+          "rpm_filter_min_hz": 0.0,
+          "rpm_filter_max_hz": 0.0,
+          "rpm_filter_fade_range_hz": 0.0,
+          "feedforward_boost": 0.0,
+          "feedforward_smooth_factor": 0.0,
+          "feedforward_jitter_factor": 0.0,
+          "feedforward_transition": 0.0,
+          "rc_smoothing": 0.0,
+          "rc_smoothing_feedforward": 0.0,
+          "dyn_idle_min_rpm": 0.0,
+          "anti_gravity_gain": 0.0,
+          "anti_gravity_cutoff": 0.0,
+          "anti_gravity_p_gain": 0.0,
+          "iterm_relax": 0.0,
+          "iterm_rotation": 0.0,
+          "tpa_rate": 0.0,
+          "tpa_breakpoint": 0.0,
+          "throttle_boost": 0.0,
+          "motor_output_limit": 0.0
+        },
+        "pid": {
+          "roll": {
+            "p": 0.0,
+            "i": 0.0,
+            "d": 0.0,
+            "ff": 0.0,
+            "d_max": 0.0
+          },
+          "pitch": {
+            "p": 0.0,
+            "i": 0.0,
+            "d": 0.0,
+            "ff": 0.0,
+            "d_max": 0.0
+          },
+          "yaw": {
+            "p": 0.0,
+            "i": 0.0,
+            "d": 0.0,
+            "ff": 0.0,
+            "d_max": 0.0
+          }
+        }
+      },
+      "current_config": {
+        "pid": {
+          "roll": {
+            "p": 45.0,
+            "i": 80.0,
+            "d": 30.0,
+            "ff": 120.0,
+            "d_max": 40.0
+          },
+          "pitch": {
+            "p": 47.0,
+            "i": 84.0,
+            "d": 34.0,
+            "ff": 125.0,
+            "d_max": 46.0
+          },
+          "yaw": {
+            "p": 45.0,
+            "i": 80.0,
+            "d": 0.0,
+            "ff": 120.0,
+            "d_max": 0.0
+          }
+        },
+        "filters": {
+          "dterm_lpf1_dyn_min_hz": 75.0,
+          "dterm_lpf1_dyn_max_hz": 150.0,
+          "dterm_lpf1_static_hz": 75.0,
+          "dterm_lpf2_static_hz": 150.0,
+          "gyro_lpf1_dyn_min_hz": 250.0,
+          "gyro_lpf1_dyn_max_hz": 500.0,
+          "gyro_lpf1_static_hz": 250.0,
+          "gyro_lpf2_static_hz": 500.0
+        }
+      },
+      "proposed_config": {
+        "pid": {
+          "roll": {
+            "p": 45.0,
+            "i": 80.0,
+            "d": 30.0,
+            "ff": 120.0,
+            "d_max": 40.0
+          },
+          "pitch": {
+            "p": 47.0,
+            "i": 84.0,
+            "d": 34.0,
+            "ff": 125.0,
+            "d_max": 46.0
+          },
+          "yaw": {
+            "p": 45.0,
+            "i": 80.0,
+            "d": 0.0,
+            "ff": 120.0,
+            "d_max": 0.0
+          }
+        },
+        "filters": {
+          "dterm_lpf1_dyn_min_hz": 75.0,
+          "dterm_lpf1_dyn_max_hz": 150.0,
+          "dterm_lpf1_static_hz": 75.0,
+          "dterm_lpf2_static_hz": 150.0,
+          "gyro_lpf1_dyn_min_hz": 250.0,
+          "gyro_lpf1_dyn_max_hz": 500.0,
+          "gyro_lpf1_static_hz": 250.0,
+          "gyro_lpf2_static_hz": 500.0
+        }
+      },
+      "clamped_config": null,
+      "clamped_tune": null,
+      "checks": [
+        {
+          "rule_id": "safe_tune.max_delta_scale",
+          "verdict": "block",
+          "message": "mechanical max_delta_scale",
+          "before": 1.0,
+          "after": 0.0,
+          "evidence": {}
+        }
+      ],
+      "mechanical": {
+        "stage": "mechanical_safety",
+        "status": "block",
+        "mechanical_block": true,
+        "mechanical_limited": false,
+        "mechanical_caution": false,
+        "mechanical_outcome": "mechanical_block",
+        "recommended_action": "guidance_only",
+        "reasons": [
+          "missing_required_analysis"
+        ],
+        "blocking_reasons": [
+          "missing_required_analysis"
+        ],
+        "limited_reasons": [],
+        "caution_reasons": [],
+        "max_delta_scale": 0.0,
+        "evidence": {
+          "max_delta_scale": 0.0
+        },
+        "checks": [
+          {
+            "rule_id": "mechanical.missing_required_analysis",
+            "verdict": "block",
+            "message": "no_usable_samples",
+            "before": null,
+            "after": null,
+            "evidence": {}
+          },
+          {
+            "rule_id": "mechanical.block.missing_required_analysis",
+            "verdict": "block",
+            "message": "missing_required_analysis",
+            "before": null,
+            "after": null,
+            "evidence": {
+              "max_delta_scale": 0.0
+            }
+          }
+        ],
+        "provenance": {
+          "function": "build_mechanical_safety_gate",
+          "donor": "backend.services.mechanical_safety_gate",
+          "analysis_ok": false
+        }
+      },
+      "provenance": {
+        "stage": "safe_tune_clamps",
+        "donor": [
+          "tuning_safe_v2.apply_to_baseline",
+          "tuning_safe_v2.apply_safety",
+          "tuning_safety_policy.clamp_targets_to_baseline_thermal"
+        ],
+        "gyrocore_bridges": [
+          "d_max_uses_d_step_cap",
+          "zero_hz_filter_off_preserved",
+          "zero_pid_yaw_d_preserved",
+          "firmware_pid_gain_ceilings"
+        ]
+      }
+    },
+    "tuning_output_safety": {
+      "stage": "tuning_output_safety",
+      "status": "block",
+      "donor_status": "blocked",
+      "cli_actionable": false,
+      "blocking_reasons": [
+        "mechanical_hard_block",
+        "missing_required_analysis",
+        "safe_tune_candidate_blocked"
+      ],
+      "warning_reasons": [],
+      "checks": [
+        {
+          "rule_id": "tos.mechanical_stage_present",
+          "verdict": "pass",
+          "message": "mechanical stage token present",
+          "before": null,
+          "after": null,
+          "evidence": {}
+        },
+        {
+          "rule_id": "tos.safe_tune_stage_present",
+          "verdict": "pass",
+          "message": "safe-tune stage token present",
+          "before": null,
+          "after": null,
+          "evidence": {}
+        },
+        {
+          "rule_id": "tos.mechanical_not_blocked",
+          "verdict": "block",
+          "message": "mechanical_hard_block",
+          "before": null,
+          "after": null,
+          "evidence": {}
+        },
+        {
+          "rule_id": "tos.required_analysis",
+          "verdict": "block",
+          "message": "missing_required_analysis",
+          "before": null,
+          "after": null,
+          "evidence": {}
+        },
+        {
+          "rule_id": "tos.cli_actionable_frozen_false",
+          "verdict": "pass",
+          "message": "WU10 never exposes actionable CLI",
+          "before": null,
+          "after": false,
+          "evidence": {}
+        },
+        {
+          "rule_id": "tos.final_verdict",
+          "verdict": "block",
+          "message": "blocked",
+          "before": null,
+          "after": null,
+          "evidence": {
+            "blocking": [
+              "mechanical_hard_block",
+              "missing_required_analysis",
+              "safe_tune_candidate_blocked"
+            ],
+            "warnings": []
+          }
+        }
+      ],
+      "candidate": {
+        "stage": "safe_tune_clamps",
+        "status": "block",
+        "actionable": false,
+        "clamp_ids": [],
+        "blocked_reasons": [
+          "mechanical_hard_block"
+        ],
+        "warnings": [],
+        "max_delta_used": {
+          "filters": {
+            "gyro_lpf1_static_hz": 0.0,
+            "gyro_lpf1_dyn_min_hz": 0.0,
+            "gyro_lpf1_dyn_max_hz": 0.0,
+            "gyro_lpf2_static_hz": 0.0,
+            "dterm_lpf1_dyn_min_hz": 0.0,
+            "dterm_lpf1_dyn_max_hz": 0.0,
+            "dterm_lpf2_static_hz": 0.0,
+            "dyn_notch_count": 0.0,
+            "dyn_notch_min_hz": 0.0,
+            "dyn_notch_max_hz": 0.0,
+            "dyn_notch_width_percent": 0.0,
+            "rpm_filter_harmonics": 0.0,
+            "rpm_filter_min_hz": 0.0,
+            "rpm_filter_max_hz": 0.0,
+            "rpm_filter_fade_range_hz": 0.0,
+            "feedforward_boost": 0.0,
+            "feedforward_smooth_factor": 0.0,
+            "feedforward_jitter_factor": 0.0,
+            "feedforward_transition": 0.0,
+            "rc_smoothing": 0.0,
+            "rc_smoothing_feedforward": 0.0,
+            "dyn_idle_min_rpm": 0.0,
+            "anti_gravity_gain": 0.0,
+            "anti_gravity_cutoff": 0.0,
+            "anti_gravity_p_gain": 0.0,
+            "iterm_relax": 0.0,
+            "iterm_rotation": 0.0,
+            "tpa_rate": 0.0,
+            "tpa_breakpoint": 0.0,
+            "throttle_boost": 0.0,
+            "motor_output_limit": 0.0
+          },
+          "pid": {
+            "roll": {
+              "p": 0.0,
+              "i": 0.0,
+              "d": 0.0,
+              "ff": 0.0,
+              "d_max": 0.0
+            },
+            "pitch": {
+              "p": 0.0,
+              "i": 0.0,
+              "d": 0.0,
+              "ff": 0.0,
+              "d_max": 0.0
+            },
+            "yaw": {
+              "p": 0.0,
+              "i": 0.0,
+              "d": 0.0,
+              "ff": 0.0,
+              "d_max": 0.0
+            }
+          }
+        },
+        "current_config": {
+          "pid": {
+            "roll": {
+              "p": 45.0,
+              "i": 80.0,
+              "d": 30.0,
+              "ff": 120.0,
+              "d_max": 40.0
+            },
+            "pitch": {
+              "p": 47.0,
+              "i": 84.0,
+              "d": 34.0,
+              "ff": 125.0,
+              "d_max": 46.0
+            },
+            "yaw": {
+              "p": 45.0,
+              "i": 80.0,
+              "d": 0.0,
+              "ff": 120.0,
+              "d_max": 0.0
+            }
+          },
+          "filters": {
+            "dterm_lpf1_dyn_min_hz": 75.0,
+            "dterm_lpf1_dyn_max_hz": 150.0,
+            "dterm_lpf1_static_hz": 75.0,
+            "dterm_lpf2_static_hz": 150.0,
+            "gyro_lpf1_dyn_min_hz": 250.0,
+            "gyro_lpf1_dyn_max_hz": 500.0,
+            "gyro_lpf1_static_hz": 250.0,
+            "gyro_lpf2_static_hz": 500.0
+          }
+        },
+        "proposed_config": {
+          "pid": {
+            "roll": {
+              "p": 45.0,
+              "i": 80.0,
+              "d": 30.0,
+              "ff": 120.0,
+              "d_max": 40.0
+            },
+            "pitch": {
+              "p": 47.0,
+              "i": 84.0,
+              "d": 34.0,
+              "ff": 125.0,
+              "d_max": 46.0
+            },
+            "yaw": {
+              "p": 45.0,
+              "i": 80.0,
+              "d": 0.0,
+              "ff": 120.0,
+              "d_max": 0.0
+            }
+          },
+          "filters": {
+            "dterm_lpf1_dyn_min_hz": 75.0,
+            "dterm_lpf1_dyn_max_hz": 150.0,
+            "dterm_lpf1_static_hz": 75.0,
+            "dterm_lpf2_static_hz": 150.0,
+            "gyro_lpf1_dyn_min_hz": 250.0,
+            "gyro_lpf1_dyn_max_hz": 500.0,
+            "gyro_lpf1_static_hz": 250.0,
+            "gyro_lpf2_static_hz": 500.0
+          }
+        },
+        "clamped_config": null,
+        "clamped_tune": null,
+        "checks": [
+          {
+            "rule_id": "safe_tune.max_delta_scale",
+            "verdict": "block",
+            "message": "mechanical max_delta_scale",
+            "before": 1.0,
+            "after": 0.0,
+            "evidence": {}
+          }
+        ],
+        "mechanical": {
+          "stage": "mechanical_safety",
+          "status": "block",
+          "mechanical_block": true,
+          "mechanical_limited": false,
+          "mechanical_caution": false,
+          "mechanical_outcome": "mechanical_block",
+          "recommended_action": "guidance_only",
+          "reasons": [
+            "missing_required_analysis"
+          ],
+          "blocking_reasons": [
+            "missing_required_analysis"
+          ],
+          "limited_reasons": [],
+          "caution_reasons": [],
+          "max_delta_scale": 0.0,
+          "evidence": {
+            "max_delta_scale": 0.0
+          },
+          "checks": [
+            {
+              "rule_id": "mechanical.missing_required_analysis",
+              "verdict": "block",
+              "message": "no_usable_samples",
+              "before": null,
+              "after": null,
+              "evidence": {}
+            },
+            {
+              "rule_id": "mechanical.block.missing_required_analysis",
+              "verdict": "block",
+              "message": "missing_required_analysis",
+              "before": null,
+              "after": null,
+              "evidence": {
+                "max_delta_scale": 0.0
+              }
+            }
+          ],
+          "provenance": {
+            "function": "build_mechanical_safety_gate",
+            "donor": "backend.services.mechanical_safety_gate",
+            "analysis_ok": false
+          }
+        },
+        "provenance": {
+          "stage": "safe_tune_clamps",
+          "donor": [
+            "tuning_safe_v2.apply_to_baseline",
+            "tuning_safe_v2.apply_safety",
+            "tuning_safety_policy.clamp_targets_to_baseline_thermal"
+          ],
+          "gyrocore_bridges": [
+            "d_max_uses_d_step_cap",
+            "zero_hz_filter_off_preserved",
+            "zero_pid_yaw_d_preserved",
+            "firmware_pid_gain_ceilings"
+          ]
+        }
+      },
+      "provenance": {
+        "donor": "backend.routes.analyze._build_tuning_output_safety",
+        "not_migrated": [
+          "generated_cli_missing_or_invalid",
+          "hardware_source_default_*",
+          "motor_poles_pipeline",
+          "support_matrix_policy",
+          "HTTP attach_tuning_output_safety"
+        ],
+        "gyrocore_only": [
+          "unresolved_merge_requires_review",
+          "system_id_unusable",
+          "slider_inconsistency",
+          "missing_required_analysis",
+          "missing_required_pid_or_filter_baseline",
+          "cli_actionable_always_false_wu10"
+        ]
+      }
+    },
+    "final": {
+      "status": "BLOCK",
+      "actionable": false,
+      "warnings": [],
+      "blocked_reasons": [
+        "mechanical_hard_block",
+        "missing_required_analysis",
+        "safe_tune_candidate_blocked"
+      ]
+    }
+  },
+  "compare": {
+    "current": {
+      "axes": {
+        "roll": {
+          "p": 45,
+          "i": 80,
+          "d": 30,
+          "d_max": 40,
+          "ff": 120
+        },
+        "pitch": {
+          "p": 47,
+          "i": 84,
+          "d": 34,
+          "d_max": 46,
+          "ff": 125
+        },
+        "yaw": {
+          "p": 45,
+          "i": 80,
+          "d": 0,
+          "d_max": 0,
+          "ff": 120
+        }
+      },
+      "filters": {
+        "gyro_lpf1_dyn_min_hz": 250,
+        "gyro_lpf1_dyn_max_hz": 500,
+        "gyro_lpf1_static_hz": 250,
+        "gyro_lpf2_static_hz": 500,
+        "dterm_lpf1_dyn_min_hz": 75,
+        "dterm_lpf1_dyn_max_hz": 150,
+        "dterm_lpf1_static_hz": 75,
+        "dterm_lpf2_static_hz": 150
+      },
+      "flat": {
+        "p_roll": 45,
+        "i_roll": 80,
+        "d_roll": 30,
+        "f_roll": 120,
+        "d_min_roll": 40,
+        "p_pitch": 47,
+        "i_pitch": 84,
+        "d_pitch": 34,
+        "f_pitch": 125,
+        "d_min_pitch": 46,
+        "p_yaw": 45,
+        "i_yaw": 80,
+        "d_yaw": 0,
+        "f_yaw": 120,
+        "d_min_yaw": 0,
+        "gyro_lpf1_dyn_min_hz": 250,
+        "gyro_lpf1_dyn_max_hz": 500,
+        "gyro_lpf1_static_hz": 250,
+        "gyro_lpf2_static_hz": 500,
+        "dterm_lpf1_dyn_min_hz": 75,
+        "dterm_lpf1_dyn_max_hz": 150,
+        "dterm_lpf1_static_hz": 75,
+        "dterm_lpf2_static_hz": 150
+      }
+    },
+    "final_safe": {
+      "axes": null,
+      "filters": null,
+      "flat": {}
+    }
+  },
+  "cli": {
+    "state": "denied",
+    "authorized": false,
+    "actionable": false,
+    "label": "BLOCK \u2014 NO APPLY CLI",
+    "blocked_reasons": [
+      "mechanical_hard_block",
+      "missing_required_analysis",
+      "safe_tune_candidate_blocked"
+    ],
+    "diagnostic_values": {}
+  },
+  "blackbox": {
+    "viewer": "third_party/betaflight/blackbox-log-viewer",
+    "host": "apps/desktop/blackbox-host",
+    "filename": "demo_block.synthetic",
+    "size_bytes": 0,
+    "log_count": 1,
+    "selected_log_index": 0,
+    "fields_hint": [
+      "gyroADC[0]",
+      "gyroADC[1]",
+      "gyroADC[2]",
+      "axisP[0]",
+      "axisI[0]",
+      "axisD[0]",
+      "motor[0]",
+      "rcCommand[0]"
+    ]
+  },
+  "controls": {
+    "fc_apply_button": false,
+    "msp": false,
+    "serial": false,
+    "copy_apply_cli": false,
+    "copy_rollback_cli": false
+  }
+}
