@@ -19,7 +19,6 @@ from gyrocore.decode.embedded import (
 )
 
 REPO = Path(__file__).resolve().parents[2]
-GOLDEN_ROOT = Path("/home/sliksoft/aerotuner/backend/test/golden_logs")
 LEGACY_FIXTURES = REPO / "tests/fixtures/legacy"
 
 _MULTI_LOG_STDERR = (
@@ -50,6 +49,13 @@ def _donor_root() -> Path:
     if env:
         return Path(env)
     return REPO.parent / "aerotuner"
+
+
+def _golden_root() -> Path:
+    return _donor_root() / "backend" / "test" / "golden_logs"
+
+
+GOLDEN_ROOT = _golden_root()
 
 
 @pytest.fixture(scope="module")
