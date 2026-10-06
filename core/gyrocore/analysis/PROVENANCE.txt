@@ -1,0 +1,34 @@
+GyroCore WU4 — flight analysis / spectral foundation provenance
+==============================================================
+
+Donor: /home/sliksoft/aerotuner (READ-ONLY)
+
+Migrated from backend/analysis/:
+  flight_split, quality_engine_v2, quality_engine, metrics_engine,
+  resonance, resonance_v2, erpm_analysis, erpm_units,
+  precap_spectral_features, spectral_windows, spectral_replay,
+  step_response_analysis, d_effectiveness_analysis,
+  motor_saturation, motor_diagnostics, motor_fft_harmonics, motor_prop_physics,
+  segment_engine, signal, noise_model, multi_axis_fft,
+  problem_detection_engine, confidence_unified, context_validation,
+  frame_inference_debug, sample_rate_metadata, run_score_v1,
+  grade_hardware_limits, betaflight_filter_model
+
+Extracted from backend/routes/analyze.py into gyrocore/preprocess/:
+  detect_gyro_scale, normalize_samples, correct_gyro_scale_if_needed,
+  build_gyro_scale_metadata, _normalize_samples → normalize_raw_samples,
+  _select_best_flight_for_analysis → select_best_flight_for_analysis,
+  _compute_activity_score, flight duration helpers, quality fallback
+
+Support helpers from backend/services/ (analysis context only):
+  hardware_profile, hardware_class, hardware_compatibility,
+  hardware_plausibility, hardware_input_normalize, severity_coercion,
+  rpm_kv_confidence_policy, desync_risk_active (from tuning_safety_policy)
+
+NOT migrated (deferred):
+  decision_engine, user_modifiers, safe_pid_tuning, smart_filter_tuning,
+  dataset_snapshot_builder, feature_vector_builder, filter_strategy,
+  betaflight_rules, mechanical_safety_gate, tuning_output_safety,
+  tuning_engine_v2, tuning_safe_v2, _build_response wholesale
+
+API: gyrocore.analysis.build_analysis_evidence(...)
