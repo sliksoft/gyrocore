@@ -86,7 +86,15 @@ Enforced by `tests/golden/safety.py`:
 
 ## Connecting future GyroCore Core
 
-1. Implement `gyrocore.analyze(...)` in `core/gyrocore/`.
+1. Implement `gyrocore.analyze(...)` in `core/gyrocore/` (not in WU1).
 2. Replace `NewCoreNotImplemented` with a real adapter that returns the **same DOMAIN projection**.
 3. Keep frozen `expected/legacy_domain_result.json` as the OLD side.
 4. Add NEW-vs-OLD compare using the same `compare_projections` contract — do not call legacy on both sides.
+
+## WU1 foundations
+
+WU1 adds stdlib-only request/result/safety/config/error types under `core/gyrocore/`.
+It does **not** migrate analysis/tuning/decode and must not rewrite WU0 golden files.
+
+Real BBL+matching CLI live oracle remains: **BLOCKED_REAL_BBL_FIXTURE**
+(required before full-Core parity / WU9; not solved by WU1).

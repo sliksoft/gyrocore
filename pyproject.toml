@@ -1,0 +1,26 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "gyrocore"
+version = "0.1.0"
+description = "GyroCore analysis/tuning Core library (foundations)"
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "MIT" }
+authors = [{ name = "Sliksoft" }]
+# WU1 is intentionally standard-library-only.
+dependencies = []
+
+[project.optional-dependencies]
+dev = ["pytest>=8.0.0"]
+
+[tool.setuptools.packages.find]
+where = ["core"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = [".", "core"]
+addopts = "-q"
+filterwarnings = ["ignore::DeprecationWarning"]

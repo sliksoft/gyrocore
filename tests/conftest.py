@@ -1,4 +1,4 @@
-"""Pytest bootstrap for GyroCore WU0 parity tests."""
+"""Pytest bootstrap for GyroCore tests."""
 
 from __future__ import annotations
 
@@ -9,10 +9,13 @@ from pathlib import Path
 import pytest
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
-if str(REPO_ROOT) not in sys.path:
-    sys.path.insert(0, str(REPO_ROOT))
+CORE_SRC = REPO_ROOT / "core"
+for path in (REPO_ROOT, CORE_SRC):
+    path_s = str(path)
+    if path_s not in sys.path:
+        sys.path.insert(0, path_s)
 
-# Default donor location for local development.
+# Default donor location for local development (WU0 oracle).
 os.environ.setdefault("AEROTUNER_ROOT", str(REPO_ROOT.parent / "aerotuner"))
 
 
