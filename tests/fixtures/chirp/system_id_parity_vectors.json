@@ -1,0 +1,40 @@
+{
+  "_comment": "WU6 system-ID parity foundation vectors for hanning + Welch TF. Numeric locks are GyroCore ports of spectral_analysis.ts formulas; ComplexFFT absolute scale not compared.",
+  "upstream": {
+    "hanningWindow": "third_party/betaflight/configurator/src/js/blackbox/spectral_analysis.ts",
+    "welchTransferFunction": "third_party/betaflight/configurator/src/js/blackbox/spectral_analysis.ts"
+  },
+  "hanning": {
+    "size": 8,
+    "expected": [
+      0.0,
+      0.1882550990706332,
+      0.6112604669781572,
+      0.9504844339512095,
+      0.9504844339512095,
+      0.6112604669781573,
+      0.1882550990706333,
+      0.0
+    ]
+  },
+  "welch_gain2": {
+    "description": "output = 2 * input pure tone → |H| ≈ 6.02 dB, phase≈0, coherence≈1 near tone bin",
+    "sample_rate_hz": 1000.0,
+    "segment_size": 256,
+    "overlap": 0.5,
+    "tone_hz": 50.0,
+    "n_samples": 2048,
+    "expected_magnitude_db": 6.020599913279624,
+    "magnitude_tolerance_db": 0.05,
+    "phase_tolerance_deg": 1.0,
+    "min_coherence": 0.99
+  },
+  "deferred_to_wu7": [
+    "recommendGains",
+    "openLoopResponse",
+    "computeSensitivity",
+    "computeStepResponse",
+    "computeSpectrogram",
+    "chirp_bbl_parser excitation extraction end-to-end"
+  ]
+}

@@ -21,15 +21,14 @@ Thin GyroCore desktop integration entry for Betaflight Configurator Autotune/CHI
 | Store | `src/stores/autotune.ts` |
 | Bode / spectrogram / import UI | `src/components/tabs/autotune/*`, `AutotuneTab.vue` |
 
-## Sample-rate audit
+## Sample-rate handling
 
-Documented in `docs/upstream/CHIRP_SAMPLE_RATE.md`.
+- WU5 audit: `docs/upstream/CHIRP_SAMPLE_RATE.md`
+- WU6 policy: `docs/upstream/CHIRP_SAMPLE_RATE_POLICY.md`
+- Resolver: `core/gyrocore/chirp/sample_rate.py` (`resolve_chirp_sample_rate`)
+- Minimal system-ID: `core/gyrocore/chirp/system_id.py`
 
-Python mirror of upstream `computeSampleRate` (documentation / regression only):
-`core/gyrocore/chirp/sample_rate.py` (also re-exported from this package).
-
-Python regression: `tests/core/chirp/test_chirp_sample_rate.py`.
-**Do not silently fix in WU5.**
+Vendored Autotune TS is **not** patched; improvements live in Python Core.
 
 ## Safety
 

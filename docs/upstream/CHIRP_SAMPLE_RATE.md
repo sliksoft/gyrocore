@@ -1,6 +1,9 @@
-# CHIRP sample-rate path (WU5 audit — do not silently fix)
+# CHIRP sample-rate path (WU5 audit → WU6 hardening)
 
-**Status:** documented finding for a later improvement WU. Upstream behavior preserved.
+**Status:** WU5 documented Autotune weaknesses. WU6 implements GyroCore
+resolution **outside** `third_party/` — see `CHIRP_SAMPLE_RATE_POLICY.md`.
+
+Vendored `useAutotune.computeSampleRate` remains unchanged (immutable snapshot).
 
 ## Exact path
 
@@ -42,19 +45,18 @@ Firmware may log every 2nd (or Nth) loop (`H P interval:2` → denom=2). Upstrea
 
 That is intentional for system-ID on logged samples (input and output are both at blackbox rate). Nyquist is limited by the log rate.
 
-## Risks (deferred — do not fix in WU5)
+## Risks (WU5) → GyroCore handling (WU6)
 
-1. **Header-only rate** — no cross-check against median `time` deltas; a bad/missing header yields wrong Bode frequencies.
-2. **`frameIntervalPNum` ignored** — non-`1/N` P intervals would be mis-scaled.
-3. **Defaults** — missing fields fall back to `looptime=125`, `pid_process_denom=1`, `frameIntervalPDenom=1` (full-rate assumption).
-4. **Confusion with PID rate** — callers must not substitute PID frequency when log rate is lower; upstream already multiplies by `bbRate`, but future ports must preserve that.
+| Risk | WU6 |
+|------|-----|
+| Header-only / no timestamp check | `estimate_timestamp_rate_hz` + mismatch policy |
+| `frameIntervalPNum` ignored by Autotune | Viewer formula via `header_logged_rate_hz` |
+| Silent full-rate defaults | Effective resolution returns `unusable` without trustworthy evidence |
+| PID vs log rate confusion | Explicit `pid_loop_rate_hz` vs `header_rate_hz` fields |
 
 ## Regression coverage
 
-- Python mirror + cases: `tests/core/chirp/test_chirp_sample_rate.py`
-- Fixture notes: `tests/fixtures/chirp/README.md`
-- Upstream Vitest (vendor tree): `third_party/betaflight/configurator/test/js/blackbox_chirp_p_interval.test.js`
-
-## Next improvement WU
-
-Mark for follow-up: optionally validate/derive sample rate from logged timestamps; assert `frameIntervalPNum === 1` or honor num/denom; surface a warning when log rate ≪ PID rate.
+- WU5 Autotune mirror: `tests/core/chirp/test_chirp_sample_rate.py`
+- WU6 resolver: `tests/core/chirp/test_chirp_sample_rate_resolver.py`
+- Parity vectors: `tests/fixtures/chirp/sample_rate_parity_vectors.json`
+- Upstream Vitest (vendor tree): `third_party/.../blackbox_chirp_p_interval.test.js`

@@ -1,0 +1,116 @@
+{
+  "_comment": "WU6 CHIRP sample-rate parity vectors. kind=upstream_parity tracks Autotune denom-only formula; kind=gyrocore_improvement uses Viewer num/denom + resolution policy.",
+  "mismatch_tolerance_fraction": 0.05,
+  "viewer_header_formula": "1e6 * PNum / (looptime * pid_process_denom * PDenom)",
+  "autotune_upstream_formula": "1e6 / (looptime * pid_process_denom * PDenom)",
+  "cases": [
+    {
+      "id": "full_rate_1_1",
+      "kind": "upstream_parity",
+      "description": "Full-rate logging P interval 1/1",
+      "sysConfig": {"looptime": 125, "pid_process_denom": 1, "frameIntervalPNum": 1, "frameIntervalPDenom": 1},
+      "expected_header_rate_hz": 8000.0,
+      "expected_upstream_autotune_hz": 8000.0,
+      "expected_pid_loop_hz": 8000.0
+    },
+    {
+      "id": "half_rate_1_2",
+      "kind": "upstream_parity",
+      "description": "1/2 logging (bare P interval:2 → num=1 denom=2)",
+      "sysConfig": {"looptime": 125, "pid_process_denom": 1, "frameIntervalPNum": 1, "frameIntervalPDenom": 2},
+      "expected_header_rate_hz": 4000.0,
+      "expected_upstream_autotune_hz": 4000.0,
+      "expected_pid_loop_hz": 8000.0
+    },
+    {
+      "id": "quarter_rate_1_4",
+      "kind": "upstream_parity",
+      "description": "1/4 logging",
+      "sysConfig": {"looptime": 125, "pid_process_denom": 1, "frameIntervalPNum": 1, "frameIntervalPDenom": 4},
+      "expected_header_rate_hz": 2000.0,
+      "expected_upstream_autotune_hz": 2000.0,
+      "expected_pid_loop_hz": 8000.0
+    },
+    {
+      "id": "eighth_rate_1_8",
+      "kind": "upstream_parity",
+      "description": "1/8 logging",
+      "sysConfig": {"looptime": 125, "pid_process_denom": 1, "frameIntervalPNum": 1, "frameIntervalPDenom": 8},
+      "expected_header_rate_hz": 1000.0,
+      "expected_upstream_autotune_hz": 1000.0,
+      "expected_pid_loop_hz": 8000.0
+    },
+    {
+      "id": "non_unit_numerator_2_3",
+      "kind": "gyrocore_improvement",
+      "description": "P interval 2/3 — Autotune ignores num; GyroCore/Viewer use num/denom",
+      "sysConfig": {"looptime": 125, "pid_process_denom": 1, "frameIntervalPNum": 2, "frameIntervalPDenom": 3},
+      "expected_header_rate_hz": 5333.333333333333,
+      "expected_upstream_autotune_hz": 2666.6666666666665,
+      "expected_pid_loop_hz": 8000.0,
+      "notes": "Firmware rarely emits non-1 num today; tools/viewer semantics still define rate as gyro*num/denom."
+    },
+    {
+      "id": "missing_p_interval",
+      "kind": "gyrocore_improvement",
+      "description": "Missing P interval must not silently assume full rate for effective resolution",
+      "sysConfig": {"looptime": 125, "pid_process_denom": 1},
+      "omit_keys": ["frameIntervalPNum", "frameIntervalPDenom"],
+      "expect_header_rate_null": true,
+      "expect_status_without_timestamps": "unusable"
+    },
+    {
+      "id": "malformed_zero_denom",
+      "kind": "gyrocore_improvement",
+      "description": "Zero P denom is invalid",
+      "sysConfig": {"looptime": 125, "pid_process_denom": 1, "frameIntervalPNum": 1, "frameIntervalPDenom": 0},
+      "expect_header_rate_null": true
+    },
+    {
+      "id": "timestamp_header_agreement",
+      "kind": "gyrocore_improvement",
+      "description": "Header 4 kHz with matching 250 us median dt",
+      "sysConfig": {"looptime": 125, "pid_process_denom": 1, "frameIntervalPNum": 1, "frameIntervalPDenom": 2},
+      "timestamp_dt_us": 250.0,
+      "timestamp_count": 64,
+      "expected_status": "ok",
+      "expected_source": "header_confirmed",
+      "expected_effective_hz": 4000.0
+    },
+    {
+      "id": "timestamp_header_disagreement",
+      "kind": "gyrocore_improvement",
+      "description": "Header claims 8 kHz but timestamps are 4 kHz — prefer timestamps",
+      "sysConfig": {"looptime": 125, "pid_process_denom": 1, "frameIntervalPNum": 1, "frameIntervalPDenom": 1},
+      "timestamp_dt_us": 250.0,
+      "timestamp_count": 64,
+      "expected_status": "mismatch",
+      "expected_source": "timestamp",
+      "expected_effective_hz": 4000.0
+    },
+    {
+      "id": "timestamp_with_gaps",
+      "kind": "gyrocore_improvement",
+      "description": "Occasional large gaps; median still recovers nominal dt",
+      "sysConfig": {"looptime": 125, "pid_process_denom": 1, "frameIntervalPNum": 1, "frameIntervalPDenom": 2},
+      "timestamp_dt_us": 250.0,
+      "timestamp_count": 80,
+      "gap_every": 10,
+      "gap_extra_us": 5000.0,
+      "expected_status": "ok",
+      "expected_effective_hz": 4000.0
+    },
+    {
+      "id": "missing_header_valid_timestamps",
+      "kind": "gyrocore_improvement",
+      "description": "No P interval; derive from timestamps",
+      "sysConfig": {"looptime": 125, "pid_process_denom": 1},
+      "omit_keys": ["frameIntervalPNum", "frameIntervalPDenom"],
+      "timestamp_dt_us": 500.0,
+      "timestamp_count": 64,
+      "expected_status": "timestamp_only",
+      "expected_source": "timestamp",
+      "expected_effective_hz": 2000.0
+    }
+  ]
+}

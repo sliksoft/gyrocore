@@ -2,7 +2,9 @@
 
 ## CHIRP sample rate
 
-See `docs/upstream/CHIRP_SAMPLE_RATE.md`. Header-derived rate; `frameIntervalPNum` unused; no time-delta validation. **Do not silently fix in WU5.**
+WU5 finding documented in `docs/upstream/CHIRP_SAMPLE_RATE.md`.
+**Addressed in WU6** for GyroCore Core (`CHIRP_SAMPLE_RATE_POLICY.md`);
+vendored Autotune `computeSampleRate` snapshot remains unpatched.
 
 ## Autotune gain apply vs GyroCore safety chain
 
