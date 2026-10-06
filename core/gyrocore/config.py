@@ -16,22 +16,25 @@ from .errors import ConfigurationError
 # Defaults aligned with donor decoder/upload behavior (values only; no env reads).
 # Source reference: aerotuner/backend/services/decoder.py (_DECODE_TIMEOUT_S = 300)
 DEFAULT_DECODE_TIMEOUT_S = 300.0
-# Source reference: aerotuner upload_limits / decoded CSV guards — conservative default.
-DEFAULT_MAX_DECODED_CSV_BYTES = 80 * 1024 * 1024
+# Source reference: aerotuner upload_limits.DEFAULT_MAX_DECODED_CSV_BYTES
+DEFAULT_MAX_DECODED_CSV_BYTES = 96 * 1024 * 1024
+# Source reference: aerotuner parser.DEFAULT_MAX_DECODED_CSV_LINES
+DEFAULT_MAX_DECODED_CSV_LINES = 750_000
 
 
 @dataclass(frozen=True)
 class CoreConfig:
     """
-    Domain/runtime knobs for later decoder/analysis extraction.
+    Domain/runtime knobs for decoder/analysis extraction.
 
-    WU1 does not implement decode/analyze; this object only defines the boundary.
+    WU3 implements decode/parse against this config; analyze/tune remain future WUs.
     """
 
-    # Decoder (future WU — locator only; no subprocess here)
+    # Decoder
     blackbox_decode_path: str | None = None
     decode_timeout_s: float = DEFAULT_DECODE_TIMEOUT_S
     max_decoded_csv_bytes: int = DEFAULT_MAX_DECODED_CSV_BYTES
+    max_decoded_csv_lines: int = DEFAULT_MAX_DECODED_CSV_LINES
 
     # Path policy for trusted local analysis (desktop/Redline).
     # ``allow_arbitrary_local_paths=True`` is the intended Core default for
@@ -47,6 +50,8 @@ class CoreConfig:
             raise ConfigurationError("decode_timeout_s must be > 0")
         if self.max_decoded_csv_bytes <= 0:
             raise ConfigurationError("max_decoded_csv_bytes must be > 0")
+        if self.max_decoded_csv_lines <= 0:
+            raise ConfigurationError("max_decoded_csv_lines must be > 0")
         if self.blackbox_decode_path is not None:
             path = str(self.blackbox_decode_path).strip()
             if not path:

@@ -143,7 +143,7 @@ def primary_axis_pid_for_tuning_package(
     """
     Prefer PID values from an uploaded Betaflight CLI dump; otherwise blackbox header profile.
 
-    Returned dict is suitable for :func:`backend.services.tuning_engine_v2.ensure_pid_complete`.
+    Returned dict is suitable for later PID-complete helpers (tuning WU).
     """
     sess = session if isinstance(session, dict) else None
     if sess:

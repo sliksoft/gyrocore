@@ -3,13 +3,14 @@ GyroCore Python Core — foundational package.
 
 WU1: models, errors, and configuration.
 WU2: Betaflight / CLI / configuration foundation (``gyrocore.betaflight``).
-Analysis / tuning / decode engines are not migrated yet.
+WU3: Blackbox decode / CSV parse / log ingest (``gyrocore.decode``, ``gyrocore.parse``).
+Analysis / tuning engines are not migrated yet.
 ``GyroCore.analyze()`` is intentionally not provided.
 """
 
 from __future__ import annotations
 
-from . import betaflight
+from . import betaflight, decode, parse
 from .config import CoreConfig
 from .errors import (
     AnalysisError,
@@ -55,6 +56,8 @@ __all__ = [
     "UnsupportedFirmwareError",
     "actionable_cli_allowed",
     "betaflight",
+    "decode",
+    "parse",
 ]
 
 __version__ = "0.1.0"

@@ -56,6 +56,8 @@ def test_core_package_imports():
     assert hasattr(gyrocore, "AnalyzeRequest")
     assert hasattr(gyrocore, "CoreConfig")
     assert hasattr(gyrocore, "betaflight")
+    assert hasattr(gyrocore, "decode")
+    assert hasattr(gyrocore, "parse")
     assert not hasattr(gyrocore, "GyroCore")  # no placeholder analyze API yet
 
 

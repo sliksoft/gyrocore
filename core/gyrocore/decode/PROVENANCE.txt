@@ -1,0 +1,27 @@
+GyroCore WU3 — Blackbox decode / log-ingest foundation provenance
+=================================================================
+
+Donor repository (READ-ONLY): /home/sliksoft/aerotuner
+
+Exact donor sources adapted:
+
+  backend/services/decoder.py              -> gyrocore/decode/decoder.py (+ locator/paths/models)
+  backend/services/embedded_bbl_log.py     -> gyrocore/decode/embedded.py
+                                              (session/redecode/route helpers omitted)
+  backend/services/parser.py               -> gyrocore/parse/blackbox_csv.py
+                                              (env flags removed; precap spectral deferred)
+  backend/services/firmware_metadata.py    -> gyrocore/parse/firmware_metadata.py
+  backend/services/upload_limits.py        -> decode size defaults via CoreConfig only
+                                              (HTTP upload policy NOT migrated)
+
+NOT migrated:
+  upload route allowlists / AEROTUNER_UPLOAD_DIR jail
+  session_payload_guard redecode path
+  backend.analysis.precap_spectral_features
+  blackbox_decode binary (not vendored)
+
+Behavioral changes intentional for Core (documented):
+  - Trusted arbitrary local BBL paths by default (no uploads-root requirement)
+  - Decode CSV captured in a temp workspace (no sibling .csv beside user BBL)
+  - Failures raise DecodeError/InvalidInputError instead of {ok:false} dicts
+  - No os.environ reads in domain modules; CoreConfig supplies knobs
