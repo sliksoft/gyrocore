@@ -38,7 +38,24 @@ Exact upstream commits recorded at import time (also in each tree’s
 - Configurator locales, Capacitor/Android, Tauri shell, crowdin
 - blackbox-tools `lib/` platform binaries (~105MB)
 - AeroTuner (read-only donor; no runtime dependency)
-- Full Python port of CHIRP/system-ID mathematics (deferred until parity)
+- Full Python port of CHIRP/system-ID mathematics (deferred until parity — done in WU7, see below)
+
+## Python ports (WU7)
+
+Ported to GyroCore Python (GPL-3.0-or-later, derived from the files above;
+vendored copies unchanged). Parity record: `CHIRP_SYSTEM_ID_PARITY.md`.
+
+| Upstream | GyroCore |
+| --- | --- |
+| `chirp_bbl_parser.ts` `findLogBoundaries` / `parseHeader` / `validateDebugModeIsChirp` / `collectIfActive` / `collectSample` / `updateSegments` / `closeSegment` | `core/gyrocore/chirp/{sysconfig,debug_modes,extraction}.py` |
+| `utils/debugModes.ts` + `debug_modes_table.ts` (CHIRP slot only) | `core/gyrocore/chirp/debug_modes.py` |
+| `spectral_analysis.ts` (all except `recommendGains` and its private helpers) | `core/gyrocore/chirp/system_id.py` |
+| `useAutotune.ts` `chooseSegmentSize`, `analyzeLog` / `computeAxisResult` orchestration (minus gains) | `core/gyrocore/chirp/{system_id,pipeline}.py` |
+| blackbox-tools `blackbox_fielddefs.c` flight-mode names | `core/gyrocore/chirp/frames.py` `FLIGHT_MODE_FLAG_NAMES` |
+
+Reference tooling (not shipped in Core): `tools/chirp_reference/` — BBL writer,
+case generator, and a Node harness that runs temporary copies of the vendored
+TypeScript to produce `tests/fixtures/chirp/wu7/upstream_*.json`.
 
 ## Source map (concise)
 

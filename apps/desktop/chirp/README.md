@@ -26,7 +26,9 @@ Thin GyroCore desktop integration entry for Betaflight Configurator Autotune/CHI
 - WU5 audit: `docs/upstream/CHIRP_SAMPLE_RATE.md`
 - WU6 policy: `docs/upstream/CHIRP_SAMPLE_RATE_POLICY.md`
 - Resolver: `core/gyrocore/chirp/sample_rate.py` (`resolve_chirp_sample_rate`)
-- Minimal system-ID: `core/gyrocore/chirp/system_id.py`
+- System-ID (WU7): `core/gyrocore/chirp/` — entry point
+  `gyrocore.chirp.identify_chirp_system` / `identify_chirp_system_from_bbl`;
+  parity record `docs/upstream/CHIRP_SYSTEM_ID_PARITY.md`
 
 Vendored Autotune TS is **not** patched; improvements live in Python Core.
 
@@ -41,6 +43,7 @@ WU5 does not enable MSP apply from this adapter.
 
 ## Parity stance
 
-CHIRP/system-ID mathematics remain in upstream TypeScript until parity is proven.
-Do not force a Python Core port in this work unit. GyroCore Core already has
-separate spectral/FFT analysis from the AeroTuner extract — keep those distinct.
+WU7 ports CHIRP extraction and system identification to Python Core with
+numeric parity against the vendored TypeScript (up to, not including,
+`recommendGains`). GyroCore's separate spectral/FFT analysis from the AeroTuner
+extract stays distinct. The desktop adapter needs no code changes for WU7.

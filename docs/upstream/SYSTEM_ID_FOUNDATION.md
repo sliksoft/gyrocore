@@ -1,5 +1,9 @@
 # System-ID foundation (WU6)
 
+> Superseded for the full port by `CHIRP_SYSTEM_ID_PARITY.md` (WU7): the FFT
+> scale is now proven equal to `ComplexFFT` (not merely cancelling), and the
+> extraction / sensitivity / step / spectrogram / open-loop paths are ported.
+
 ## Upstream functions inspected
 
 | Concern | Path | Symbol |

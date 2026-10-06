@@ -246,6 +246,87 @@ def estimate_timestamp_rate_hz(
     return rate
 
 
+# GyroCore hardening (no upstream equivalent): FFT/Welch assume uniform spacing.
+SPACING_UNIFORM_TOLERANCE_FRACTION = 0.10
+SPACING_MIN_UNIFORM_FRACTION = 0.90
+SPACING_GAP_FACTOR = 1.5
+
+
+@dataclass(frozen=True)
+class TimestampSpacing:
+    """Uniformity / gap evidence for the timestamps of an analysed segment."""
+
+    delta_count: int
+    median_dt_us: float | None
+    min_dt_us: float | None
+    max_dt_us: float | None
+    uniform_fraction: float
+    gap_count: int
+    missing_samples_estimate: int
+    missing_fraction: float
+    max_gap_samples: int
+    non_positive_deltas: int
+    uniform: bool
+
+    def to_dict(self) -> dict[str, Any]:
+        return asdict(self)
+
+
+def analyze_timestamp_spacing(
+    timestamps_us: Sequence[float] | np.ndarray,
+    *,
+    uniform_tolerance_fraction: float = SPACING_UNIFORM_TOLERANCE_FRACTION,
+    min_uniform_fraction: float = SPACING_MIN_UNIFORM_FRACTION,
+    gap_factor: float = SPACING_GAP_FACTOR,
+) -> TimestampSpacing:
+    """
+    Describe sample spacing: share of deltas within ``±tolerance`` of the median,
+    gaps (``dt > gap_factor * median``) and the samples they imply are missing.
+
+    Legacy ``P interval`` ratios with ``PNum > 1`` (e.g. 2/3) log at alternating
+    intervals and fail ``uniform``; dropped frames show up as gaps.
+    """
+    arr = np.asarray(timestamps_us, dtype=float)
+    dts = np.diff(arr) if arr.size >= 2 else np.zeros(0)
+    finite = dts[np.isfinite(dts)]
+    positive = finite[finite > 0.0]
+    non_positive = int(finite.size - positive.size + (dts.size - finite.size))
+    if positive.size == 0:
+        return TimestampSpacing(
+            delta_count=int(dts.size),
+            median_dt_us=None,
+            min_dt_us=None,
+            max_dt_us=None,
+            uniform_fraction=0.0,
+            gap_count=0,
+            missing_samples_estimate=0,
+            missing_fraction=0.0,
+            max_gap_samples=0,
+            non_positive_deltas=non_positive,
+            uniform=False,
+        )
+    median = float(np.median(positive))
+    within = np.abs(positive - median) <= uniform_tolerance_fraction * median
+    uniform_fraction = float(within.sum()) / float(dts.size)
+    gaps = positive[positive > gap_factor * median]
+    missing_per_gap = np.maximum(np.rint(gaps / median).astype(np.int64) - 1, 0)
+    missing = int(missing_per_gap.sum())
+    expected = int(arr.size) + missing
+    return TimestampSpacing(
+        delta_count=int(dts.size),
+        median_dt_us=median,
+        min_dt_us=float(positive.min()),
+        max_dt_us=float(positive.max()),
+        uniform_fraction=uniform_fraction,
+        gap_count=int(gaps.size),
+        missing_samples_estimate=missing,
+        missing_fraction=missing / expected if expected > 0 else 0.0,
+        max_gap_samples=int(missing_per_gap.max()) if missing_per_gap.size else 0,
+        non_positive_deltas=non_positive,
+        uniform=uniform_fraction >= min_uniform_fraction and non_positive == 0,
+    )
+
+
 def _difference_percent(a: float, b: float) -> float:
     """Relative difference as percent of ``b`` (timestamp / reference)."""
     if b == 0.0:
@@ -483,6 +564,11 @@ __all__ = [
     "try_header_logged_rate_hz",
     "try_pid_loop_rate_hz",
     "estimate_timestamp_rate_hz",
+    "SPACING_GAP_FACTOR",
+    "SPACING_MIN_UNIFORM_FRACTION",
+    "SPACING_UNIFORM_TOLERANCE_FRACTION",
+    "TimestampSpacing",
+    "analyze_timestamp_spacing",
     "resolve_chirp_sample_rate",
     "resolve_from_sysconfig",
 ]
