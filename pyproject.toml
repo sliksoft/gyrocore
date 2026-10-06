@@ -5,12 +5,12 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "gyrocore"
 version = "0.1.0"
-description = "GyroCore analysis/tuning Core library (foundations)"
+description = "GyroCore analysis/tuning Core library (foundations + Betaflight/CLI)"
 readme = "README.md"
 requires-python = ">=3.11"
 license = { text = "MIT" }
 authors = [{ name = "Sliksoft" }]
-# WU1 is intentionally standard-library-only.
+# WU1–WU2 are intentionally standard-library-only.
 dependencies = []
 
 [project.optional-dependencies]

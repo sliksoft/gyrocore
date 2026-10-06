@@ -1,0 +1,2 @@
+# Copied from AeroTuner backend/tests/fixtures/real_validation_manifest.json for WU2 support_matrix parity.
+# Fixture paths inside may still point at AeroTuner; GyroCore resolves status from this registry only.

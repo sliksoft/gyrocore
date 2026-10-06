@@ -1,0 +1,39 @@
+GyroCore WU2 — Betaflight / CLI / configuration foundation provenance
+======================================================================
+
+Donor repository (READ-ONLY): /home/sliksoft/aerotuner
+
+Exact donor sources adapted into core/gyrocore/betaflight/:
+
+  backend/services/betaflight_version_support.py      -> version.py
+  backend/services/betaflight_config.py               -> config.py
+  backend/services/betaflight_defaults.py             -> defaults.py
+  backend/services/betaflight_target_defaults.py      -> target_defaults.py
+  backend/services/tuning_parser.py                   -> parser.py
+  backend/services/cli_status_vocabulary.py           -> vocabulary.py
+  backend/services/cli_profile_resolver.py            -> cli_profile.py
+  backend/services/effective_config_builder.py        -> effective_config.py
+  backend/services/current_tune_baseline.py           -> baseline.py
+  backend/services/config_log_consistency_validator.py -> validation.py
+  backend/services/support_matrix_policy.py           -> support.py
+  backend/services/real_log_validation_status.py      -> real_log_validation.py
+  backend/services/data/betaflight_firmware_defaults.py -> data/betaflight_firmware_defaults.py
+  backend/services/data/betaflight_target_overlays.py   -> data/betaflight_target_overlays.py
+
+CLI parse/validation extract (parse_cli_dump + cli_dump_baseline_strictly_valid
+and required key tables only) from:
+
+  backend/services/tuning_safe_v2.py  -> cli.py
+
+NOT migrated (deferred):
+  backend/services/effective_final_tune.py
+  tuning_safe_v2 tune generation (generate_cli, generate_v2_safe_tune, apply_safety, …)
+  decoder / FFT / mechanical safety / analyze routes
+
+Generated Betaflight data files retain their original provenance comments referring
+to official Betaflight source snapshots. Do not hand-edit numeric defaults/overlays
+in this work unit.
+
+Real-log validation manifest copied for support-matrix default path:
+  aerotuner/backend/tests/fixtures/real_validation_manifest.json
+  -> GyroCore/tests/fixtures/real_validation_manifest.json

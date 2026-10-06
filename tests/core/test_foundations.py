@@ -55,6 +55,7 @@ def test_core_package_imports():
     assert gyrocore.__version__ == "0.1.0"
     assert hasattr(gyrocore, "AnalyzeRequest")
     assert hasattr(gyrocore, "CoreConfig")
+    assert hasattr(gyrocore, "betaflight")
     assert not hasattr(gyrocore, "GyroCore")  # no placeholder analyze API yet
 
 

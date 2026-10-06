@@ -1,0 +1,128 @@
+{
+  "_comment": "Real log validation manifest for AeroTuner effective-config pipeline. Phase 4A status: blocked_no_fixtures because discovered local artifacts are candidates only and do not satisfy exact production proof gates.",
+  "_schema_version": "1.0",
+  "_phase": "4A",
+  "_status": "blocked_no_fixtures",
+  "_reason": "Blocked: three local real BBL uploads and saved pipeline outputs were found under ignored backend/uploads, but the saved support proof is diagnostic/ambiguous and cannot unlock support_claim_proven. No accepted tracked real/saved validation fixture exists yet.",
+  "validation_status": "blocked_no_fixtures",
+  "fixtures": [],
+  "candidate_artifacts": [
+    {
+      "id": "candidate_75mm_whoop_betafpvg473_20260606_172731",
+      "source_type": "real_bbl",
+      "bbl_file": "backend/uploads/926e8c20-2670-4491-9b46-f411418899dc_BTFL_BLACKBOX_LOG_75_WOOP_20260606_172731_BETAFPVG473.BBL",
+      "saved_pipeline_output_path": "backend/uploads/.runs/runs.jsonl:1847",
+      "firmware_version": "4.5.0",
+      "firmware_scope": "4.5",
+      "defaults_profile": null,
+      "board_name": "BETAFPVG473",
+      "manufacturer_id": "BEFH",
+      "target_match_expected": "not_proven_in_saved_output",
+      "can_count_as_real_validation": false,
+      "reason_not_accepted": [
+        "source artifacts are ignored local uploads, not tracked fixtures",
+        "saved support proof reports defaults_profile_used=null",
+        "saved support proof reports profile_isolation_status=ambiguous",
+        "saved support proof reports target_match_status=no_board_metadata",
+        "saved support proof reports backend_effective_support_level=diagnostic_only"
+      ]
+    },
+    {
+      "id": "candidate_75mm_whoop_betafpvg473_20260606_201126",
+      "source_type": "real_bbl",
+      "bbl_file": "backend/uploads/9fbbdaea-0ae0-4485-8aa3-3ad277e1c536_BTFL_BLACKBOX_LOG_75_WOOP_20260606_201126_BETAFPVG473.BBL",
+      "saved_pipeline_output_path": "backend/uploads/.runs/runs.jsonl:1846",
+      "firmware_version": "4.5.0",
+      "firmware_scope": "4.5",
+      "defaults_profile": null,
+      "board_name": "BETAFPVG473",
+      "manufacturer_id": "BEFH",
+      "target_match_expected": "not_proven_in_saved_output",
+      "can_count_as_real_validation": false,
+      "reason_not_accepted": [
+        "source artifacts are ignored local uploads, not tracked fixtures",
+        "saved support proof reports defaults_profile_used=null",
+        "saved support proof reports profile_isolation_status=ambiguous",
+        "saved support proof reports target_match_status=no_board_metadata",
+        "saved support proof reports backend_effective_support_level=diagnostic_only"
+      ]
+    },
+    {
+      "id": "candidate_racer3_2025_12_flywoof745aiov2_20260321_193925",
+      "source_type": "real_bbl",
+      "bbl_file": "backend/uploads/ed0cc1a8-361a-4fb3-9326-457141b12bbe_BTFL_BLACKBOX_LOG_RACER3_20260321_193925_FLYWOOF745AIOV2.BBL",
+      "saved_pipeline_output_path": "backend/uploads/.runs/runs.jsonl:1848",
+      "firmware_version": "2025.12.2",
+      "firmware_scope": "2025.12",
+      "defaults_profile": null,
+      "board_name": "FLYWOOF745AIOV2",
+      "manufacturer_id": "FLWO",
+      "target_match_expected": "not_proven_in_saved_output",
+      "can_count_as_real_validation": false,
+      "reason_not_accepted": [
+        "source artifacts are ignored local uploads, not tracked fixtures",
+        "saved support proof reports defaults_profile_used=null",
+        "saved support proof reports profile_isolation_status=ambiguous",
+        "saved support proof reports target_match_status=no_board_metadata",
+        "saved support proof reports backend_effective_support_level=diagnostic_only",
+        "saved support proof reports mechanical_hard_block"
+      ]
+    }
+  ],
+  "allowed_real_validation_sources": ["real_bbl", "analyzed_csv", "run_jsonl", "saved_pipeline_output"],
+  "non_unlocking_sources": ["synthetic"],
+  "expected_fixture_schema": {
+    "fixture_id": "string — unique ID for this fixture",
+    "description": "string — human-readable description",
+    "source_type": "real_bbl | analyzed_csv | run_jsonl | saved_pipeline_output | synthetic",
+    "firmware_scope": "string — exact defaults profile/scope, e.g. '4.5' or '2025.12'",
+    "accepted_partial": "boolean — true only for explicitly accepted partial scope",
+    "accepted_scope": "object | null — exact firmware/target scope for accepted partial fixtures",
+    "bbl_file": "string | null — path to BBL fixture file",
+    "cli_dump_file": "string | null — path to diff-all CLI dump fixture (relative to backend/tests/fixtures/)",
+    "analyzed_metrics_path": "string | null — path to analyzed CSV/JSON artifact",
+    "run_jsonl_path": "string | null — path to saved pipeline run artifact",
+    "saved_pipeline_output_path": "string | null — path to compact saved pipeline output artifact",
+    "expected_support": {
+      "backend_effective_support_level": "full | limited | diagnostic_only",
+      "paste_ready_eligible": "boolean",
+      "support_claim_proven": "boolean",
+      "support_claim_scope": "firmware_only | firmware_plus_target | compatibility_mode | limited | diagnostic | blocked",
+      "real_log_validation_status": "pass | partial | fail | blocked_no_fixtures | not_run",
+      "profile_isolation_expected": "resolved | single_profile | ambiguous | metadata_only"
+    },
+    "expected": {
+      "firmware_version": "string — e.g. '4.5.1'",
+      "defaults_profile_used": "string — e.g. '4.5'",
+      "defaults_verified": "boolean",
+      "effective_config_available": "boolean",
+      "profile_isolation_status": "string — 'resolved' | 'single_profile' | 'ambiguous' | 'metadata_only'",
+      "board_name": "string | null",
+      "target_overlay_status": "string — 'hardware_config_only' | 'no_verified_overlay'",
+      "real_log_validation_status": "pass | partial | fail | blocked_no_fixtures | not_run",
+      "p_direction": "up | down | hold",
+      "d_direction": "up | down | hold",
+      "ff_direction": "up | down | hold",
+      "filter_direction": "open | tighten | hold",
+      "rpm_opening": "allowed | blocked",
+      "cli_availability": "paste_ready | limited_cli | diagnostic_only",
+      "support_status": "full | limited | diagnostic_only"
+    },
+    "verified_values": {
+      "_comment": "Key tuning values confirmed from BBL header / real CLI dump",
+      "pid.roll.p": "number | null",
+      "pid.roll.i": "number | null",
+      "pid.roll.d": "number | null",
+      "d_min.roll": "number | null"
+    }
+  },
+  "phase_4a_required_fixtures_for_production_full_support": [
+    "At least one sanitized real_bbl or analyzed_csv/run_jsonl fixture for Betaflight 4.5.x",
+    "At least one representative clean/race or non-whoop saved validation artifact before broad production full support",
+    "Corresponding diff-all CLI dump from the same flight/session",
+    "Board name and manufacturer_id identifiable when firmware_plus_target proof is claimed",
+    "Known PID profile with resolved or single_profile isolation",
+    "Expected P/D/FF/filter/RPM/CLI/support directions",
+    "Fixture file must be sanitized (no personally identifying callsigns or GPS coords)"
+  ]
+}
