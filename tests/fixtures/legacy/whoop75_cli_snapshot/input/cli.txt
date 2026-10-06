@@ -1,0 +1,35 @@
+board_name BETAFPVG473
+manufacturer_id BEFH
+# Betaflight / STM32G47X 4.5.0 — session 36219f09 fixture
+profile 0
+profile 1
+profile 2
+profile 3
+profile 0
+rateprofile 0
+rateprofile 1
+rateprofile 2
+rateprofile 3
+rateprofile 2
+set motor_poles = 12
+set rpm_filter_harmonics = 2
+set dyn_notch_count = 2
+set dyn_notch_max_hz = 700
+set gyro_lpf1_static_hz = 150
+set gyro_lpf1_dyn_min_hz = 150
+set gyro_lpf1_dyn_max_hz = 300
+set gyro_lpf2_static_hz = 300
+set dterm_lpf1_dyn_min_hz = 90
+set dterm_lpf1_dyn_max_hz = 180
+set dterm_lpf1_static_hz = 90
+set dterm_lpf2_static_hz = 180
+set feedforward_boost = 18
+set dshot_bidir = ON
+set p_roll = 71
+set i_roll = 127
+set d_roll = 67
+set f_roll = 191
+set p_pitch = 75
+set i_pitch = 134
+set d_pitch = 76
+set f_pitch = 199

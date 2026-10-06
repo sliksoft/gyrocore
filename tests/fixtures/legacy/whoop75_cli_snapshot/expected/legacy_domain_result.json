@@ -1,0 +1,631 @@
+{
+  "ai_disabled": true,
+  "analysis_noise_level": "LOW",
+  "analysis_status": "snapshot",
+  "authoritative_cli": "set dterm_lpf1_dyn_min_hz = 83\nset dterm_lpf2_static_hz = 172\nset feedforward_boost = 17\nset gyro_lpf1_dyn_max_hz = 279\nset gyro_lpf1_dyn_min_hz = 129\nset gyro_lpf1_static_hz = 132\nset gyro_lpf2_static_hz = 289\nset d_pitch = 68\nset d_min_pitch = 68\nset d_roll = 60\nset d_min_roll = 60\nset f_pitch = 195\nset f_roll = 187\nset p_pitch = 73\nset p_roll = 69\nsave",
+  "erpm": {},
+  "filter_summary": {
+    "anti_gravity_gain": 90,
+    "dshot_bidir": true,
+    "dterm_lpf1_dyn_max_hz": 180,
+    "dterm_lpf1_dyn_min_hz": 90,
+    "dterm_lpf1_static_hz": 90,
+    "dterm_lpf2_static_hz": 180,
+    "dyn_idle_min_rpm": 40,
+    "dyn_notch_count": 2,
+    "dyn_notch_max_hz": 700,
+    "feedforward_averaging": "2_POINT",
+    "feedforward_boost": 18,
+    "feedforward_jitter_factor": 3,
+    "feedforward_smooth_factor": 65,
+    "gyro_lpf1_dyn_max_hz": 300,
+    "gyro_lpf1_dyn_min_hz": 150,
+    "gyro_lpf1_static_hz": 150,
+    "gyro_lpf2_static_hz": 300,
+    "iterm_relax_cutoff": 5.0,
+    "motor_poles": 12,
+    "motor_pwm_protocol": "DSHOT300",
+    "pid_process_denom": 2,
+    "pidsum_limit": 1000,
+    "pidsum_limit_yaw": 1000,
+    "rc_smoothing_auto_factor": 25,
+    "rpm_filter_harmonics": 2,
+    "simplified_d_gain": 140.0,
+    "simplified_dmax_gain": 0.0,
+    "simplified_dterm_filter_multiplier": 120.0,
+    "simplified_gyro_filter_multiplier": 60.0,
+    "simplified_master_multiplier": 160.0,
+    "simplified_pids_mode": "RP",
+    "throttle_boost": 10,
+    "yaw_lowpass_hz": 125
+  },
+  "flight_count": null,
+  "flight_selection_mode": "",
+  "mechanical_safety": {
+    "blocking_reasons": [],
+    "limited_reasons": [],
+    "mechanical_block": false,
+    "mechanical_caution": false,
+    "mechanical_limited": false,
+    "mechanical_outcome": "",
+    "reasons": [],
+    "status": ""
+  },
+  "metrics": {
+    "d_effectiveness": {
+      "applied": true,
+      "axes": {
+        "pitch": {
+          "applied": true,
+          "d_effectiveness_confidence": 0.7522371831652042,
+          "d_effectiveness_score": 48.703572642145296,
+          "d_heat_risk_bias": 0.39823820770636914,
+          "d_noise_penalty": 0.14254353515254933,
+          "d_response_correlation": 0.403297949328652,
+          "d_utility_estimate": 0.36666707731378634,
+          "event_count": 10,
+          "notes": [
+            "d_overshoot_support_weak",
+            "d_response_correlation_weak"
+          ],
+          "sample_count": 20000,
+          "signal_source": "axis_d",
+          "summary": {
+            "d_effective": false,
+            "d_limited_by_motor_risk": false,
+            "d_limited_by_noise": false,
+            "d_low_value": true,
+            "d_risky": false,
+            "event_count": 10,
+            "label": "d_low_value",
+            "likely_more_d_useful": false,
+            "notes": [
+              "d_overshoot_support_weak",
+              "d_response_correlation_weak"
+            ],
+            "text": "D contribution looks weak relative to the observed response",
+            "usable_window_count": 10
+          },
+          "usable_window_count": 10
+        },
+        "roll": {
+          "applied": true,
+          "d_effectiveness_confidence": 0.7791454287473804,
+          "d_effectiveness_score": 44.957231033973564,
+          "d_heat_risk_bias": 0.3932891208946615,
+          "d_noise_penalty": 0.14600476216946387,
+          "d_response_correlation": 0.30992526893799777,
+          "d_utility_estimate": 0.3217574633635319,
+          "event_count": 25,
+          "notes": [
+            "d_overshoot_support_weak",
+            "d_response_correlation_weak"
+          ],
+          "sample_count": 20000,
+          "signal_source": "axis_d",
+          "summary": {
+            "d_effective": false,
+            "d_limited_by_motor_risk": false,
+            "d_limited_by_noise": false,
+            "d_low_value": true,
+            "d_risky": false,
+            "event_count": 25,
+            "label": "d_low_value",
+            "likely_more_d_useful": false,
+            "notes": [
+              "d_overshoot_support_weak",
+              "d_response_correlation_weak"
+            ],
+            "text": "D contribution looks weak relative to the observed response",
+            "usable_window_count": 25
+          },
+          "usable_window_count": 25
+        },
+        "yaw": {
+          "applied": true,
+          "d_effectiveness_confidence": 0.6365790569804269,
+          "d_effectiveness_score": 44.65042728186345,
+          "d_heat_risk_bias": 0.36989465943633826,
+          "d_noise_penalty": 0.2328975872887705,
+          "d_response_correlation": 0.27261583390432625,
+          "d_utility_estimate": 0.3401724130129948,
+          "event_count": 31,
+          "notes": [
+            "d_overshoot_support_weak",
+            "d_response_correlation_weak",
+            "proxy_d_signal_used"
+          ],
+          "sample_count": 20000,
+          "signal_source": "proxy_error_derivative",
+          "summary": {
+            "d_effective": false,
+            "d_limited_by_motor_risk": false,
+            "d_limited_by_noise": false,
+            "d_low_value": true,
+            "d_risky": false,
+            "event_count": 31,
+            "label": "d_low_value",
+            "likely_more_d_useful": false,
+            "notes": [
+              "d_overshoot_support_weak",
+              "d_response_correlation_weak",
+              "proxy_d_signal_used"
+            ],
+            "text": "D contribution looks weak relative to the observed response",
+            "usable_window_count": 31
+          },
+          "usable_window_count": 31
+        }
+      },
+      "axis_summary": {
+        "pitch": {
+          "confidence": 0.7522371831652042,
+          "event_count": 10,
+          "label": "d_low_value",
+          "score": 48.703572642145296,
+          "usable_window_count": 10
+        },
+        "roll": {
+          "confidence": 0.7791454287473804,
+          "event_count": 25,
+          "label": "d_low_value",
+          "score": 44.957231033973564,
+          "usable_window_count": 25
+        },
+        "yaw": {
+          "confidence": 0.6365790569804269,
+          "event_count": 31,
+          "label": "d_low_value",
+          "score": 44.65042728186345,
+          "usable_window_count": 31
+        }
+      },
+      "d_effectiveness_confidence": 0.7494988733507789,
+      "d_effectiveness_score": 46.524785380614766,
+      "d_heat_risk_bias": 0.39244003079698264,
+      "d_noise_penalty": 0.15555694000797543,
+      "d_response_correlation": 0.3452269904736883,
+      "d_utility_estimate": 0.3433547152819076,
+      "event_count": 66,
+      "notes": [
+        "d_overshoot_support_weak",
+        "d_response_correlation_weak",
+        "proxy_d_signal_used"
+      ],
+      "signal_source": "mixed",
+      "summary": {
+        "d_effective": false,
+        "d_limited_by_motor_risk": false,
+        "d_limited_by_noise": false,
+        "d_low_value": true,
+        "d_risky": false,
+        "event_count": 66,
+        "label": "d_low_value",
+        "likely_more_d_useful": false,
+        "notes": [
+          "d_overshoot_support_weak",
+          "d_response_correlation_weak",
+          "proxy_d_signal_used"
+        ],
+        "text": "D contribution looks weak relative to the observed response",
+        "usable_window_count": 66
+      },
+      "usable_window_count": 66
+    },
+    "motor": {
+      "has_desync_risk": false,
+      "health": 71.525,
+      "imbalance": 7.242021471937237
+    },
+    "noise": {
+      "grade": "A",
+      "hf_ratio": 0.0,
+      "source": "noise_model",
+      "value": 99.9
+    },
+    "pitch_error": 95.21772437430216,
+    "pitch_noise": 99.9,
+    "propwash": {
+      "confidence": 0.0,
+      "level": "none"
+    },
+    "resonance": {
+      "dominant_hz": 38.92743567513693,
+      "peaks": [
+        {
+          "amplitude": 2746.1031872478134,
+          "bandwidth_hz": 1.0,
+          "freq": 30.81815553635051
+        },
+        {
+          "amplitude": 2965.8197835385654,
+          "bandwidth_hz": 1.0,
+          "freq": 30.861520670782525
+        },
+        {
+          "amplitude": 2764.216017216945,
+          "bandwidth_hz": 1.0,
+          "freq": 30.919340850025208
+        },
+        {
+          "amplitude": 2903.82343193721,
+          "bandwidth_hz": 1.0,
+          "freq": 30.96270598445722
+        },
+        {
+          "amplitude": 2695.1040739426767,
+          "bandwidth_hz": 1.0,
+          "freq": 31.063891298131917
+        },
+        {
+          "amplitude": 3010.8374492866496,
+          "bandwidth_hz": 1.0,
+          "freq": 31.09280138775326
+        },
+        {
+          "amplitude": 2887.3977803002435,
+          "bandwidth_hz": 1.0,
+          "freq": 31.39635732877735
+        },
+        {
+          "amplitude": 2883.446264453667,
+          "bandwidth_hz": 1.0,
+          "freq": 31.526452732073388
+        },
+        {
+          "amplitude": 2760.7253647624675,
+          "bandwidth_hz": 1.0,
+          "freq": 31.757733449044125
+        },
+        {
+          "amplitude": 2813.0598604573875,
+          "bandwidth_hz": 1.0,
+          "freq": 31.801098583476136
+        },
+        {
+          "amplitude": 2875.385385926804,
+          "bandwidth_hz": 1.0,
+          "freq": 31.873373807529493
+        },
+        {
+          "amplitude": 2775.8252682297493,
+          "bandwidth_hz": 1.0,
+          "freq": 31.98901416601486
+        },
+        {
+          "amplitude": 2924.0747050286027,
+          "bandwidth_hz": 1.0,
+          "freq": 32.03237930044687
+        },
+        {
+          "amplitude": 2871.849346222959,
+          "bandwidth_hz": 1.0,
+          "freq": 32.14801965893224
+        },
+        {
+          "amplitude": 2858.772062464838,
+          "bandwidth_hz": 1.0,
+          "freq": 32.58167100325237
+        },
+        {
+          "amplitude": 2918.574138705481,
+          "bandwidth_hz": 1.0,
+          "freq": 32.85631685465512
+        },
+        {
+          "amplitude": 2828.1970640365353,
+          "bandwidth_hz": 1.0,
+          "freq": 33.04423243719384
+        },
+        {
+          "amplitude": 2736.395908300265,
+          "bandwidth_hz": 1.0,
+          "freq": 33.72361954329538
+        },
+        {
+          "amplitude": 2756.044303064568,
+          "bandwidth_hz": 1.0,
+          "freq": 34.244001156479534
+        },
+        {
+          "amplitude": 2730.85149959318,
+          "bandwidth_hz": 1.0,
+          "freq": 34.272911246100875
+        },
+        {
+          "amplitude": 2709.8936613360447,
+          "bandwidth_hz": 1.0,
+          "freq": 36.48453310213353
+        },
+        {
+          "amplitude": 3145.0818638344344,
+          "bandwidth_hz": 1.0,
+          "freq": 38.92743567513693
+        },
+        {
+          "amplitude": 2692.2874554381315,
+          "bandwidth_hz": 1.0,
+          "freq": 91.25469788976584
+        },
+        {
+          "amplitude": 2688.4588976022783,
+          "bandwidth_hz": 1.0,
+          "freq": 103.6282162477002
+        }
+      ],
+      "severity": "low"
+    },
+    "response": {
+      "applied": true,
+      "axes": {
+        "pitch": {
+          "confidence": 0.897452157466186,
+          "event_count": 12,
+          "notes": [],
+          "overshoot_percent": 174.6755014201441,
+          "response_quality_score": 43.478558841249125,
+          "rise_time_ms": 17.601712269177604,
+          "sample_count": 20000,
+          "settling_time_ms": 51.885,
+          "steady_state_tracking_error": 155.56266985627553,
+          "step_response_delay_ms": 1.1629952358949291
+        },
+        "roll": {
+          "confidence": 0.8982066324453734,
+          "event_count": 24,
+          "notes": [],
+          "overshoot_percent": 153.8784064797581,
+          "response_quality_score": 35.742709890244626,
+          "rise_time_ms": 21.503286643459106,
+          "sample_count": 20000,
+          "settling_time_ms": 90.94849914367096,
+          "steady_state_tracking_error": 144.29016883968464,
+          "step_response_delay_ms": 11.644586661041972
+        },
+        "yaw": {
+          "confidence": 0.9010055971044195,
+          "event_count": 33,
+          "notes": [],
+          "overshoot_percent": 104.40583244261437,
+          "response_quality_score": 34.14254637837023,
+          "rise_time_ms": 25.67174987043043,
+          "sample_count": 20000,
+          "settling_time_ms": null,
+          "steady_state_tracking_error": 144.89366813569802,
+          "step_response_delay_ms": 3.8852762936045107
+        }
+      },
+      "confidence": 0.8994140546772323,
+      "event_count": 69,
+      "notes": [
+        "multi_axis_response_summary"
+      ],
+      "overshoot_percent": 133.78473819397828,
+      "overshoot_summary": {
+        "axes": {
+          "pitch": 174.6755014201441,
+          "roll": 153.8784064797581,
+          "yaw": 104.40583244261437
+        },
+        "percent": 133.78473819397828,
+        "severity": "high"
+      },
+      "response_quality_score": 36.3184904643917,
+      "response_summary": {
+        "confidence": 0.8994140546772323,
+        "event_count": 69,
+        "overshoot_percent": 133.78473819397828,
+        "response_quality_score": 36.3184904643917,
+        "rise_time_ms": 22.82337267184572,
+        "settling_time_ms": 77.9346264781266,
+        "steady_state_tracking_error": 146.53546832913023,
+        "step_response_delay_ms": 6.108136252981756
+      },
+      "rise_time_ms": 22.82337267184572,
+      "sample_count": 20000,
+      "settling_time_ms": 77.9346264781266,
+      "steady_state_tracking_error": 146.53546832913023,
+      "step_response_delay_ms": 6.108136252981756
+    },
+    "roll_error": 96.56557554574536,
+    "roll_noise": 99.9,
+    "tracking": {
+      "computed": true,
+      "confidence": 1.0,
+      "latency_ms": 24.212999999946305,
+      "mean_error": 18.146966666666668,
+      "overshoot": 111.42,
+      "score": 96.73615708021075,
+      "source": "computed"
+    },
+    "yaw_error": 96.14626415821459,
+    "yaw_noise": 99.9
+  },
+  "oracle_entrypoint": "run_snapshot.json",
+  "pid_summary": {
+    "pitch": {
+      "d": 76,
+      "ff": 199,
+      "i": 134,
+      "p": 75
+    },
+    "roll": {
+      "d": 67,
+      "ff": 191,
+      "i": 127,
+      "p": 71
+    },
+    "yaw": {}
+  },
+  "problem_severities": {
+    "oscillation": "medium"
+  },
+  "problem_types": [
+    "oscillation"
+  ],
+  "quality_grade": "",
+  "quality_score": null,
+  "quality_status": "",
+  "real_bbl_status": "BLOCKED_REAL_BBL_FIXTURE",
+  "recommended_flight_index": null,
+  "resonance": {
+    "dominant_hz": 38.92743567513693,
+    "peaks": [
+      {
+        "amplitude": 2746.1031872478134,
+        "bandwidth_hz": 1.0,
+        "freq": 30.81815553635051
+      },
+      {
+        "amplitude": 2965.8197835385654,
+        "bandwidth_hz": 1.0,
+        "freq": 30.861520670782525
+      },
+      {
+        "amplitude": 2764.216017216945,
+        "bandwidth_hz": 1.0,
+        "freq": 30.919340850025208
+      },
+      {
+        "amplitude": 2903.82343193721,
+        "bandwidth_hz": 1.0,
+        "freq": 30.96270598445722
+      },
+      {
+        "amplitude": 2695.1040739426767,
+        "bandwidth_hz": 1.0,
+        "freq": 31.063891298131917
+      },
+      {
+        "amplitude": 3010.8374492866496,
+        "bandwidth_hz": 1.0,
+        "freq": 31.09280138775326
+      },
+      {
+        "amplitude": 2887.3977803002435,
+        "bandwidth_hz": 1.0,
+        "freq": 31.39635732877735
+      },
+      {
+        "amplitude": 2883.446264453667,
+        "bandwidth_hz": 1.0,
+        "freq": 31.526452732073388
+      },
+      {
+        "amplitude": 2760.7253647624675,
+        "bandwidth_hz": 1.0,
+        "freq": 31.757733449044125
+      },
+      {
+        "amplitude": 2813.0598604573875,
+        "bandwidth_hz": 1.0,
+        "freq": 31.801098583476136
+      },
+      {
+        "amplitude": 2875.385385926804,
+        "bandwidth_hz": 1.0,
+        "freq": 31.873373807529493
+      },
+      {
+        "amplitude": 2775.8252682297493,
+        "bandwidth_hz": 1.0,
+        "freq": 31.98901416601486
+      },
+      {
+        "amplitude": 2924.0747050286027,
+        "bandwidth_hz": 1.0,
+        "freq": 32.03237930044687
+      },
+      {
+        "amplitude": 2871.849346222959,
+        "bandwidth_hz": 1.0,
+        "freq": 32.14801965893224
+      },
+      {
+        "amplitude": 2858.772062464838,
+        "bandwidth_hz": 1.0,
+        "freq": 32.58167100325237
+      },
+      {
+        "amplitude": 2918.574138705481,
+        "bandwidth_hz": 1.0,
+        "freq": 32.85631685465512
+      },
+      {
+        "amplitude": 2828.1970640365353,
+        "bandwidth_hz": 1.0,
+        "freq": 33.04423243719384
+      },
+      {
+        "amplitude": 2736.395908300265,
+        "bandwidth_hz": 1.0,
+        "freq": 33.72361954329538
+      },
+      {
+        "amplitude": 2756.044303064568,
+        "bandwidth_hz": 1.0,
+        "freq": 34.244001156479534
+      },
+      {
+        "amplitude": 2730.85149959318,
+        "bandwidth_hz": 1.0,
+        "freq": 34.272911246100875
+      },
+      {
+        "amplitude": 2709.8936613360447,
+        "bandwidth_hz": 1.0,
+        "freq": 36.48453310213353
+      },
+      {
+        "amplitude": 3145.0818638344344,
+        "bandwidth_hz": 1.0,
+        "freq": 38.92743567513693
+      },
+      {
+        "amplitude": 2692.2874554381315,
+        "bandwidth_hz": 1.0,
+        "freq": 91.25469788976584
+      },
+      {
+        "amplitude": 2688.4588976022783,
+        "bandwidth_hz": 1.0,
+        "freq": 103.6282162477002
+      }
+    ],
+    "severity": "low"
+  },
+  "result_view": {
+    "card_statuses": {},
+    "hero": {
+      "title": "",
+      "tone": ""
+    }
+  },
+  "schema_version": 1,
+  "selected_embedded_log_index": null,
+  "selected_flight_index": null,
+  "tuning_decision": {
+    "mode": "",
+    "status": ""
+  },
+  "tuning_mode": "",
+  "tuning_output_safety": {
+    "blocking_reasons": [
+      "active_profile_ambiguous"
+    ],
+    "cli_actionable": true,
+    "cli_availability": "limited",
+    "diagnostic_reasons": [],
+    "hard_block_reasons": [],
+    "present": true,
+    "reasons": [
+      "active_profile_ambiguous_last_block_used",
+      "active_rateprofile_ambiguous_last_block_used",
+      "board_defaults_unavailable_noop",
+      "profile_isolation_ambiguous"
+    ],
+    "snapshot_partial": true,
+    "status": "snapshot_partial"
+  },
+  "valid_log": null
+}

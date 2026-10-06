@@ -1,0 +1,20 @@
+{
+  "id": "GL-002-noisy",
+  "description": "Noisy gyro excerpt + overlay for resonance+noise coupling.",
+  "analysis_overlay": {
+    "noise_model": {
+      "score": 88,
+      "hf_ratio": 0.72
+    },
+    "fft_peaks": [
+      {
+        "freq": 200.0,
+        "amplitude": 50.0
+      },
+      {
+        "freq": 202.0,
+        "amplitude": 0.1
+      }
+    ]
+  }
+}

@@ -1,0 +1,443 @@
+{
+  "ai_disabled": true,
+  "analysis_status": "low_quality",
+  "authoritative_cli": "",
+  "erpm": {
+    "dominant_frequency": null,
+    "erpm_sample_coverage": 0.0,
+    "erpm_scale_assumption": "unknown",
+    "motor_poles": 12,
+    "pole_pairs": 6.0
+  },
+  "filter_summary": {
+    "dterm_lpf1_dyn_max_hz": 180.0,
+    "dterm_lpf1_dyn_min_hz": 90.0,
+    "dterm_lpf1_static_hz": 90.0,
+    "dterm_lpf2_static_hz": 180.0,
+    "dyn_notch_count": 2.0,
+    "dyn_notch_max_hz": 700.0,
+    "gyro_lpf1_dyn_max_hz": 300.0,
+    "gyro_lpf1_dyn_min_hz": 150.0,
+    "gyro_lpf1_static_hz": 150.0,
+    "gyro_lpf2_static_hz": 300.0,
+    "motor_poles": 12.0,
+    "rpm_filter_harmonics": 2.0
+  },
+  "flight_count": 1,
+  "flight_selection_mode": "auto",
+  "mechanical_safety": {
+    "blocking_reasons": [],
+    "limited_reasons": [
+      "mechanical_problem_indicator",
+      "motor_correction_demand_uncertain",
+      "motor_issue_high_severity",
+      "warning_motor_diagnostic"
+    ],
+    "mechanical_block": false,
+    "mechanical_caution": true,
+    "mechanical_limited": false,
+    "mechanical_outcome": "motor_correction_demand_caution",
+    "reasons": [
+      "mechanical_problem_indicator",
+      "motor_correction_demand_caution",
+      "motor_correction_demand_uncertain",
+      "motor_issue_high_severity",
+      "warning_motor_diagnostic"
+    ],
+    "status": "caution"
+  },
+  "metrics": {
+    "d_effectiveness": {
+      "applied": false,
+      "axes": {
+        "pitch": {
+          "applied": false,
+          "d_effectiveness_confidence": 0.0,
+          "d_effectiveness_score": 50.0,
+          "d_heat_risk_bias": 0.0,
+          "d_noise_penalty": 0.0,
+          "d_response_correlation": 0.0,
+          "d_utility_estimate": 0.0,
+          "event_count": 0,
+          "notes": [
+            "no_usable_d_windows"
+          ],
+          "sample_count": 1200,
+          "signal_source": "proxy_error_derivative",
+          "summary": {
+            "d_effective": false,
+            "d_limited_by_motor_risk": false,
+            "d_limited_by_noise": false,
+            "d_low_value": false,
+            "d_risky": false,
+            "event_count": 0,
+            "label": "insufficient_signal",
+            "likely_more_d_useful": false,
+            "notes": [
+              "no_usable_d_windows"
+            ],
+            "text": "D-effectiveness signal is too weak for a strong conclusion",
+            "usable_window_count": 0
+          },
+          "usable_window_count": 0
+        },
+        "roll": {
+          "applied": false,
+          "d_effectiveness_confidence": 0.0,
+          "d_effectiveness_score": 50.0,
+          "d_heat_risk_bias": 0.0,
+          "d_noise_penalty": 0.0,
+          "d_response_correlation": 0.0,
+          "d_utility_estimate": 0.0,
+          "event_count": 0,
+          "notes": [
+            "no_usable_d_windows"
+          ],
+          "sample_count": 1200,
+          "signal_source": "proxy_error_derivative",
+          "summary": {
+            "d_effective": false,
+            "d_limited_by_motor_risk": false,
+            "d_limited_by_noise": false,
+            "d_low_value": false,
+            "d_risky": false,
+            "event_count": 0,
+            "label": "insufficient_signal",
+            "likely_more_d_useful": false,
+            "notes": [
+              "no_usable_d_windows"
+            ],
+            "text": "D-effectiveness signal is too weak for a strong conclusion",
+            "usable_window_count": 0
+          },
+          "usable_window_count": 0
+        },
+        "yaw": {
+          "applied": false,
+          "d_effectiveness_confidence": 0.0,
+          "d_effectiveness_score": 50.0,
+          "d_heat_risk_bias": 0.0,
+          "d_noise_penalty": 0.0,
+          "d_response_correlation": 0.0,
+          "d_utility_estimate": 0.0,
+          "event_count": 0,
+          "notes": [
+            "no_usable_d_windows"
+          ],
+          "sample_count": 1200,
+          "signal_source": "proxy_error_derivative",
+          "summary": {
+            "d_effective": false,
+            "d_limited_by_motor_risk": false,
+            "d_limited_by_noise": false,
+            "d_low_value": false,
+            "d_risky": false,
+            "event_count": 0,
+            "label": "insufficient_signal",
+            "likely_more_d_useful": false,
+            "notes": [
+              "no_usable_d_windows"
+            ],
+            "text": "D-effectiveness signal is too weak for a strong conclusion",
+            "usable_window_count": 0
+          },
+          "usable_window_count": 0
+        }
+      },
+      "axis_summary": {
+        "pitch": {
+          "confidence": 0.0,
+          "event_count": 0,
+          "label": "insufficient_signal",
+          "score": 50.0,
+          "usable_window_count": 0
+        },
+        "roll": {
+          "confidence": 0.0,
+          "event_count": 0,
+          "label": "insufficient_signal",
+          "score": 50.0,
+          "usable_window_count": 0
+        },
+        "yaw": {
+          "confidence": 0.0,
+          "event_count": 0,
+          "label": "insufficient_signal",
+          "score": 50.0,
+          "usable_window_count": 0
+        }
+      },
+      "d_effectiveness_confidence": 0.0,
+      "d_effectiveness_score": 50.0,
+      "d_heat_risk_bias": 0.0,
+      "d_noise_penalty": 0.0,
+      "d_response_correlation": 0.0,
+      "d_utility_estimate": 0.0,
+      "event_count": 0,
+      "notes": [
+        "no_usable_d_windows"
+      ],
+      "signal_source": "proxy_error_derivative",
+      "summary": {
+        "d_effective": false,
+        "d_limited_by_motor_risk": false,
+        "d_limited_by_noise": false,
+        "d_low_value": false,
+        "d_risky": false,
+        "event_count": 0,
+        "label": "insufficient_signal",
+        "likely_more_d_useful": false,
+        "notes": [
+          "no_usable_d_windows"
+        ],
+        "text": "D-effectiveness signal is too weak for a strong conclusion",
+        "usable_window_count": 0
+      },
+      "usable_window_count": 0
+    },
+    "motor": {
+      "has_desync_risk": true,
+      "health": 23.25,
+      "imbalance": 16.436620698914968
+    },
+    "noise": {
+      "grade": "A",
+      "hf_ratio": 0.0,
+      "source": "noise_model",
+      "value": 99.9
+    },
+    "propwash": {
+      "confidence": 0.2,
+      "level": "mild"
+    },
+    "resonance": {
+      "dominant_hz": 31.64027777777803,
+      "peaks": [
+        {
+          "amplitude": 99.44831543441464,
+          "bandwidth_hz": 3.780779933143048,
+          "freq": 31.64027777777803
+        }
+      ],
+      "severity": "low"
+    },
+    "response": {
+      "applied": false,
+      "axes": {
+        "pitch": {
+          "confidence": 0.0,
+          "event_count": 0,
+          "notes": [
+            "insufficient_response_events"
+          ],
+          "overshoot_percent": null,
+          "response_quality_score": 0.0,
+          "rise_time_ms": null,
+          "sample_count": 1200,
+          "settling_time_ms": null,
+          "steady_state_tracking_error": null,
+          "step_response_delay_ms": null
+        },
+        "roll": {
+          "confidence": 0.0,
+          "event_count": 0,
+          "notes": [
+            "insufficient_response_events"
+          ],
+          "overshoot_percent": null,
+          "response_quality_score": 0.0,
+          "rise_time_ms": null,
+          "sample_count": 1200,
+          "settling_time_ms": null,
+          "steady_state_tracking_error": null,
+          "step_response_delay_ms": null
+        },
+        "yaw": {
+          "confidence": 0.0,
+          "event_count": 0,
+          "notes": [
+            "insufficient_response_events"
+          ],
+          "overshoot_percent": null,
+          "response_quality_score": 0.0,
+          "rise_time_ms": null,
+          "sample_count": 1200,
+          "settling_time_ms": null,
+          "steady_state_tracking_error": null,
+          "step_response_delay_ms": null
+        }
+      },
+      "confidence": 0.0,
+      "confidence_limited_by_sample_rate": true,
+      "event_count": 0,
+      "notes": [
+        "response_windows_low_quality",
+        "limited_response_event_count"
+      ],
+      "overshoot_percent": null,
+      "overshoot_summary": {
+        "axes": {},
+        "classification": "unknown",
+        "percent": null,
+        "severity": "unknown"
+      },
+      "response_quality_score": 0.0,
+      "response_summary": {
+        "confidence": 0.0,
+        "event_count": 0,
+        "overshoot_percent": null,
+        "response_quality_score": 0.0,
+        "rise_time_ms": null,
+        "settling_time_ms": null,
+        "steady_state_tracking_error": null,
+        "step_response_delay_ms": null
+      },
+      "response_windows": [],
+      "rise_time_ms": null,
+      "sample_count": 1200,
+      "sample_rate_limit_reasons": [
+        "response_effective_sample_rate_low"
+      ],
+      "sample_rate_metadata": {
+        "analyzed_sample_count": 1200,
+        "decimation_factor": null,
+        "display_sample_count": 1200,
+        "duration_s": 6.0,
+        "effective_sample_rate_hz": 199.833,
+        "nyquist_hz": 99.917,
+        "raw_sample_count": null,
+        "source_kind": "raw_full_rate",
+        "spectral_assessable": true,
+        "spectral_limit_reasons": [],
+        "spectral_sample_count": 1200
+      },
+      "saturation_evidence": {
+        "available": false,
+        "classification": "unavailable",
+        "reason": "response_windows_unavailable",
+        "saturation_affected_count": 0,
+        "saturation_affected_ratio": 0.0,
+        "window_count": 0
+      },
+      "settling_time_ms": null,
+      "steady_state_tracking_error": null,
+      "step_response_delay_ms": null
+    },
+    "tracking": {
+      "computed": true,
+      "confidence": 1.0,
+      "latency_ms": 0.0,
+      "mean_error": 43.97755342415324,
+      "overshoot": 0.0,
+      "score": 80.01020158844076,
+      "source": "computed"
+    }
+  },
+  "oracle_entrypoint": "backend.routes.analyze._build_response",
+  "pid_summary": {
+    "pitch": {
+      "d": 68,
+      "ff": 199,
+      "i": 134,
+      "p": 75
+    },
+    "roll": {
+      "d": 60,
+      "ff": 191,
+      "i": 127,
+      "p": 71
+    },
+    "yaw": {}
+  },
+  "problem_severities": {
+    "motor_issue": "high",
+    "oscillation": "medium"
+  },
+  "problem_types": [
+    "motor_issue",
+    "oscillation"
+  ],
+  "quality_grade": "C",
+  "quality_score": 70,
+  "quality_status": "low_quality",
+  "recommended_flight_index": 0,
+  "resonance": {
+    "dominant_hz": 31.64027777777803,
+    "resonance_v2_hz": null,
+    "severity": "low"
+  },
+  "result_view": {
+    "card_statuses": {
+      "filter": "N/A",
+      "motor": "N/A",
+      "pid": "N/A",
+      "propwash": "N/A",
+      "readiness": "N/A",
+      "stick": "N/A"
+    },
+    "hero": {
+      "title": "Analysis Only \u2014 Paste-Ready CLI Not Available",
+      "tone": "blocked"
+    }
+  },
+  "schema_version": 1,
+  "selected_embedded_log_index": null,
+  "selected_flight_index": 0,
+  "tuning_decision": {
+    "mode": "{'name': None, 'summary': 'Focus on improving flight quality by calming oscillation and addressing motor health before aggressive gain pushes, keeping responsiveness in check with incremental steps.', 'focus_areas': []}",
+    "status": ""
+  },
+  "tuning_mode": "SAFE",
+  "tuning_output_safety": {
+    "blocking_reasons": [
+      "betaflight_firmware_unknown",
+      "config_log_consistency_diagnostic",
+      "defaults_profile_unavailable",
+      "effective_config_unavailable",
+      "firmware_unknown",
+      "quality_status_low_quality",
+      "rpm_kv_invalid",
+      "support_policy_diagnostic_only",
+      "support_policy_not_paste_ready",
+      "valid_log_false"
+    ],
+    "cli_actionable": false,
+    "cli_availability": "diagnostic_only",
+    "diagnostic_reasons": [
+      "betaflight_firmware_unknown",
+      "config_log_consistency_diagnostic",
+      "defaults_profile_unavailable",
+      "effective_config_unavailable",
+      "firmware_unknown",
+      "quality_status_low_quality",
+      "rpm_kv_invalid",
+      "support_policy_diagnostic_only",
+      "support_policy_not_paste_ready",
+      "valid_log_false"
+    ],
+    "hard_block_reasons": [],
+    "present": true,
+    "reasons": [
+      "analysis_confidence_low",
+      "betaflight_firmware_unknown",
+      "config_log_consistency_diagnostic",
+      "defaults_profile_unavailable",
+      "effective_config_unavailable",
+      "erpm_scale_ambiguous",
+      "firmware_unknown",
+      "mechanical_problem_indicator",
+      "motor_correction_demand_uncertain",
+      "motor_issue_high_severity",
+      "phase2_signal_path_incomplete",
+      "quality_status_low_quality",
+      "required_defaults_unknown",
+      "rpm_kv_invalid",
+      "support_policy_diagnostic_only",
+      "support_policy_not_paste_ready",
+      "valid_log_false",
+      "warning_motor_diagnostic"
+    ],
+    "status": "blocked"
+  },
+  "valid_log": null
+}

@@ -1,0 +1,21 @@
+{
+  "fixture_id": "gl002_noisy",
+  "role": "FIXTURE_B_noisy_problem",
+  "oracle_mode": "live_legacy",
+  "input_kind": "csv",
+  "description": "AeroTuner golden CSV GL-002-noisy — noisier synthetic blackbox-style log.",
+  "source": {
+    "donor_repo": "/home/sliksoft/aerotuner",
+    "donor_paths": [
+      "backend/test/golden_logs/GL-002-noisy/log.csv",
+      "backend/test/golden_logs/GL-002-noisy/manifest.json"
+    ],
+    "provenance": "Tracked AeroTuner golden_logs fixture (synthetic CSV, not a user BBL upload).",
+    "pairing_confidence": "high_for_partial_pipeline"
+  },
+  "real_bbl_status": "not_applicable",
+  "notes": [
+    "No matching CLI dump ships with GL-002.",
+    "Contrasts with gl001_clean for problem/noise DOMAIN differences."
+  ]
+}

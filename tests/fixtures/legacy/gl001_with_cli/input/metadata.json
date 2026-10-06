@@ -1,0 +1,21 @@
+{
+  "fixture_id": "gl001_with_cli",
+  "role": "FIXTURE_A_plus_cli_path",
+  "oracle_mode": "live_legacy",
+  "input_kind": "csv_plus_cli",
+  "description": "GL-001-clean CSV paired with the tracked 75mm whoop CLI dump to exercise CLI baseline / V2 safety path.",
+  "source": {
+    "donor_repo": "/home/sliksoft/aerotuner",
+    "donor_paths": [
+      "backend/test/golden_logs/GL-001-clean/log.csv",
+      "backend/tests/fixtures/75mm_whoop_36219f09/BTFL_cli_75_WOOP_20260606_172910_BETAFPVG473.txt"
+    ],
+    "provenance": "CSV from tracked golden_logs; CLI from tracked 75mm_whoop fixture. Intentionally cross-paired for oracle path coverage (not claimed as a real matched flight).",
+    "pairing_confidence": "medium_synthetic_cross_pair"
+  },
+  "real_bbl_status": "not_applicable",
+  "notes": [
+    "Not a proven real BBL+CLI matched pair.",
+    "Used to freeze CLI baseline + safety/tuning DOMAIN behavior against live legacy."
+  ]
+}

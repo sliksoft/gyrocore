@@ -1,0 +1,21 @@
+{
+  "fixture_id": "gl001_clean",
+  "role": "FIXTURE_A_clean_healthy",
+  "oracle_mode": "live_legacy",
+  "input_kind": "csv",
+  "description": "AeroTuner golden CSV GL-001-clean — clean/healthy synthetic blackbox-style log.",
+  "source": {
+    "donor_repo": "/home/sliksoft/aerotuner",
+    "donor_paths": [
+      "backend/test/golden_logs/GL-001-clean/log.csv",
+      "backend/test/golden_logs/GL-001-clean/manifest.json"
+    ],
+    "provenance": "Tracked AeroTuner golden_logs fixture (synthetic CSV, not a user BBL upload).",
+    "pairing_confidence": "high_for_partial_pipeline"
+  },
+  "real_bbl_status": "not_applicable",
+  "notes": [
+    "No matching CLI dump ships with GL-001.",
+    "Exercises live legacy _build_response DOMAIN projection without uploaded CLI baseline."
+  ]
+}

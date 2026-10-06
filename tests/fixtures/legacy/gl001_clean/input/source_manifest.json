@@ -1,0 +1,20 @@
+{
+  "id": "GL-001-clean",
+  "description": "Blackbox-style CSV excerpt; analysis_overlay nudges metrics for stable golden expectations.",
+  "analysis_overlay": {
+    "noise_model": {
+      "score": 10,
+      "hf_ratio": 0.12
+    },
+    "fft_peaks": [
+      {
+        "freq": 100.0,
+        "amplitude": 1.0
+      },
+      {
+        "freq": 105.0,
+        "amplitude": 1.05
+      }
+    ]
+  }
+}

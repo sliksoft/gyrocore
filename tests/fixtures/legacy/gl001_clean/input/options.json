@@ -1,0 +1,14 @@
+{
+  "style": "Freestyle",
+  "goals": ["smooth"],
+  "firmware_meta": {
+    "firmware": "Betaflight 4.5.0"
+  },
+  "hardware": {
+    "motor_kv_value": 1950,
+    "cells": 6,
+    "motor_poles": 14,
+    "frame": "5",
+    "prop": "5x4.5x3"
+  }
+}

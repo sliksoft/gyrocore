@@ -1,0 +1,23 @@
+{
+  "style": "Racing",
+  "goals": ["racing_aggressive"],
+  "firmware_meta": {
+    "firmware": "Betaflight 4.5.0",
+    "board_name": "BETAFPVG473"
+  },
+  "hardware": {
+    "motor_kv_value": 25000,
+    "cells": 1,
+    "motor_poles": 12,
+    "frame": "micro (2-3\")",
+    "prop": "40mmx3x3",
+    "motor_stator": "0802",
+    "weight": "40"
+  },
+  "user_inputs": {
+    "style": "Racing",
+    "goal_profile": "racing_aggressive",
+    "goals": ["racing_aggressive"],
+    "problems": ["Oscillations / Bounce Back"]
+  }
+}

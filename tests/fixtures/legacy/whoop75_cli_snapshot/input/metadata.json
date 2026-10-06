@@ -1,0 +1,26 @@
+{
+  "fixture_id": "whoop75_cli_snapshot",
+  "role": "FIXTURE_C_real_bbl_cli_intended",
+  "oracle_mode": "snapshot_partial",
+  "input_kind": "cli_plus_run_snapshot",
+  "description": "Tracked 75mm whoop CLI + saved run_snapshot. Live real BBL is BLOCKED because donor uploads candidates are missing.",
+  "source": {
+    "donor_repo": "/home/sliksoft/aerotuner",
+    "donor_paths": [
+      "backend/tests/fixtures/75mm_whoop_36219f09/BTFL_cli_75_WOOP_20260606_172910_BETAFPVG473.txt",
+      "backend/tests/fixtures/75mm_whoop_36219f09/run_snapshot.json"
+    ],
+    "provenance": "Tracked AeroTuner test fixture materials. Manifest candidate BBLs under backend/uploads/ were absent at WU0 time.",
+    "pairing_confidence": "high_for_cli_and_snapshot_fields",
+    "missing_bbl_candidates": [
+      "backend/uploads/926e8c20-2670-4491-9b46-f411418899dc_BTFL_BLACKBOX_LOG_75_WOOP_20260606_172731_BETAFPVG473.BBL",
+      "backend/uploads/9fbbdaea-0ae0-4485-8aa3-3ad277e1c536_BTFL_BLACKBOX_LOG_75_WOOP_20260606_201126_BETAFPVG473.BBL"
+    ]
+  },
+  "real_bbl_status": "BLOCKED_REAL_BBL_FIXTURE",
+  "notes": [
+    "Do not invent a BBL pairing.",
+    "Golden expected file freezes snapshot-derived DOMAIN projection only.",
+    "Live BBL+CLI oracle remains blocked until a tracked BBL is added."
+  ]
+}

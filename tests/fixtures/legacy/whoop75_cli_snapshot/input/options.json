@@ -1,0 +1,8 @@
+{
+  "style": "Racing",
+  "goals": ["racing_aggressive"],
+  "firmware_meta": {
+    "firmware": "Betaflight 4.5.0",
+    "board_name": "BETAFPVG473"
+  }
+}
