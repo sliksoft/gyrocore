@@ -78,3 +78,50 @@ def assert_safety_invariants(
     if not snapshot_partial:
         if not str(tos.get("status") or "").strip():
             raise SafetyInvariantError("tuning_output_safety.status must be non-empty")
+
+
+def assert_wu11_cli_invariants(auth_payload: Mapping[str, Any]) -> None:
+    """WU11 extensions: PASS-only actionable CLI, rollback required, no WARN/BLOCK apply."""
+    if not isinstance(auth_payload, Mapping):
+        raise SafetyInvariantError("cli authorization payload must be a mapping")
+    status = str(auth_payload.get("status") or "")
+    authorized = auth_payload.get("authorized") is True
+    bundle = auth_payload.get("bundle")
+    preview = auth_payload.get("preview")
+    denial = auth_payload.get("denial")
+
+    if authorized:
+        if status != "authorized" or not isinstance(bundle, Mapping):
+            raise SafetyInvariantError("authorized CLI requires an ActionableTuneBundle")
+        if bundle.get("authorized") is not True or bundle.get("actionable") is not True:
+            raise SafetyInvariantError("bundle must be authorized and actionable")
+        if not str(bundle.get("apply_cli") or "").strip():
+            raise SafetyInvariantError("authorized bundle missing apply_cli")
+        if not str(bundle.get("rollback_cli") or "").strip():
+            raise SafetyInvariantError("rollback required for actionable bundle")
+        if preview or denial:
+            raise SafetyInvariantError("authorized result cannot also be preview/denial")
+        prov = bundle.get("safety_provenance")
+        if not isinstance(prov, Mapping):
+            raise SafetyInvariantError("actionable bundle missing safety provenance")
+        for key in ("mechanical", "clamps", "tuning_output_safety", "cli_authorization"):
+            if key not in prov:
+                raise SafetyInvariantError(f"missing provenance {key}")
+        return
+
+    if isinstance(bundle, Mapping) and bundle.get("authorized") is True:
+        raise SafetyInvariantError("non-authorized status cannot carry an authorized bundle")
+    if isinstance(preview, Mapping):
+        if preview.get("authorized") is True or preview.get("actionable") is True:
+            raise SafetyInvariantError("WARN preview cannot be actionable")
+        if "apply_cli" in preview or "actionable_cli" in preview or "paste_ready_cli" in preview:
+            raise SafetyInvariantError("preview must not expose apply/paste-ready fields")
+        text = str(preview.get("preview_cli") or "")
+        if "\nsave\n" in f"\n{text}\n" or text.strip().endswith("save"):
+            raise SafetyInvariantError("WARN preview must not include save")
+    if isinstance(denial, Mapping):
+        if denial.get("authorized") is True or denial.get("actionable") is True:
+            raise SafetyInvariantError("BLOCK denial cannot be actionable")
+        for forbidden in ("apply_cli", "actionable_cli", "paste_ready_cli", "preview_cli"):
+            if forbidden in denial:
+                raise SafetyInvariantError(f"BLOCK denial must not contain {forbidden}")

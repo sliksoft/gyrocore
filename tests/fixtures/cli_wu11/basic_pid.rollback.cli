@@ -1,0 +1,8 @@
+profile 0
+set p_roll = 45
+set i_roll = 80
+set p_pitch = 47
+set i_pitch = 84
+set p_yaw = 45
+set i_yaw = 80
+save
