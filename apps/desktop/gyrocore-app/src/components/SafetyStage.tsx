@@ -1,10 +1,28 @@
-import { StatusBadge } from "./StatusBadge";
+import { SurfaceCard } from "@/components/ui/SurfaceCard";
+import { MicroLabel } from "@/components/ui/MicroLabel";
+import { ReasonList } from "@/components/KeyValue";
+import { StatusBadge } from "@/components/StatusBadge";
+import { cardTitle, dataTable, dataTableCell, dataTableHead, dataTableNum, dataTableRow } from "@/lib/gyrocore-theme";
+import { mutedText } from "@/lib/premium-theme";
+import { statusTone } from "@/lib/status";
+import { cn } from "@/lib/utils";
+
+const ACCENT: Record<string, string> = {
+  success: "bg-[var(--gc-status-good)]",
+  warning: "bg-[var(--gc-status-warn)]",
+  danger: "bg-[var(--gc-status-error)]",
+  muted: "bg-[var(--gc-border-default)]",
+  info: "bg-[var(--gc-accent)]",
+  neutral: "bg-[var(--gc-border-default)]",
+};
 
 export function SafetyStage({
+  step,
   title,
   status,
   body,
 }: {
+  step?: number;
   title: string;
   status?: string | null;
   body: Record<string, unknown> | null | undefined;
@@ -18,49 +36,59 @@ export function SafetyStage({
     ...((body?.reasons as string[]) || []),
   ];
   const clampIds = (body?.clamp_ids as string[]) || [];
+  const shown = status || (body?.status as string);
+  const tone = statusTone(shown);
 
   return (
-    <div className="panel">
-      <h3>
-        {title} <StatusBadge value={status || (body?.status as string)} />
-      </h3>
-      {reasons.length > 0 && (
-        <ul className="checks">
-          {reasons.map((r) => (
-            <li key={r}>{r}</li>
-          ))}
-        </ul>
-      )}
+    <SurfaceCard className="pl-6" data-tone={tone}>
+      <span aria-hidden className={cn("absolute inset-y-0 left-0 w-[3px]", ACCENT[tone])} />
+      <div className="mb-3 flex items-center justify-between gap-3">
+        <div className="flex items-center gap-3">
+          {step != null && (
+            <span className="grid h-7 w-7 place-items-center rounded-lg border border-[var(--gc-border-default)] bg-[var(--gc-bg-inset)] font-mono text-xs text-[var(--gc-text-secondary)]">
+              {step}
+            </span>
+          )}
+          <h3 className={cn(cardTitle, "m-0 text-base")}>{title}</h3>
+        </div>
+        <StatusBadge value={shown} />
+      </div>
+      {reasons.length > 0 && <ReasonList items={reasons} className="mb-3" />}
       {clampIds.length > 0 && (
-        <p className="mono muted">clamp_ids: {clampIds.join(", ")}</p>
+        <div className="mb-3 flex flex-col gap-1.5">
+          <MicroLabel>clamp_ids</MicroLabel>
+          <ReasonList items={clampIds} />
+        </div>
       )}
       {checks.length > 0 && (
-        <table className="data">
-          <thead>
-            <tr>
-              <th>Rule</th>
-              <th>Verdict</th>
-              <th>Message</th>
-              <th>Before</th>
-              <th>After</th>
-            </tr>
-          </thead>
-          <tbody>
-            {checks.map((c, i) => (
-              <tr key={`${c.rule_id}-${i}`}>
-                <td className="mono">{String(c.rule_id || "")}</td>
-                <td>
-                  <StatusBadge value={String(c.verdict || "")} />
-                </td>
-                <td>{String(c.message || "")}</td>
-                <td className="num">{c.before == null ? "—" : String(c.before)}</td>
-                <td className="num">{c.after == null ? "—" : String(c.after)}</td>
+        <div className="overflow-x-auto rounded-lg border border-[var(--gc-border-subtle)] bg-[var(--gc-bg-inset)]/60">
+          <table className={dataTable}>
+            <thead>
+              <tr>
+                <th className={dataTableHead}>Rule</th>
+                <th className={dataTableHead}>Verdict</th>
+                <th className={dataTableHead}>Message</th>
+                <th className={cn(dataTableHead, "text-right")}>Before</th>
+                <th className={cn(dataTableHead, "text-right")}>After</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {checks.map((c, i) => (
+                <tr key={`${c.rule_id}-${i}`} className={dataTableRow}>
+                  <td className={cn(dataTableCell, "font-mono text-xs")}>{String(c.rule_id || "")}</td>
+                  <td className={dataTableCell}>
+                    <StatusBadge value={String(c.verdict || "")} />
+                  </td>
+                  <td className={cn(dataTableCell, "text-[var(--gc-text-secondary)]")}>{String(c.message || "")}</td>
+                  <td className={dataTableNum}>{c.before == null ? "—" : String(c.before)}</td>
+                  <td className={dataTableNum}>{c.after == null ? "—" : String(c.after)}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       )}
-      {!reasons.length && !checks.length && <p className="muted">No detailed reasons for this stage.</p>}
-    </div>
+      {!reasons.length && !checks.length && <p className={cn(mutedText, "m-0")}>No detailed reasons for this stage.</p>}
+    </SurfaceCard>
   );
 }

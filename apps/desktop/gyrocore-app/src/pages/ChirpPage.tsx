@@ -1,70 +1,70 @@
-import type { WorkspacePayload } from "../bridge/types";
-import { SeriesChart } from "../components/SeriesChart";
-import { StatusBadge } from "../components/StatusBadge";
+import { TriangleAlert, Waves } from "lucide-react";
+import type { WorkspacePayload } from "@/bridge/types";
+import { CodeBlock, KeyValue, ReasonList } from "@/components/KeyValue";
+import { SeriesChart } from "@/components/SeriesChart";
+import { StatusBadge } from "@/components/StatusBadge";
+import { EmptyState } from "@/components/ui/EmptyState";
+import { MetricTile } from "@/components/ui/MetricTile";
+import { SectionHeader } from "@/components/ui/SectionHeader";
+import { StatusAlert } from "@/components/ui/StatusAlert";
+import { SurfaceCard } from "@/components/ui/SurfaceCard";
+import { pageStack } from "@/lib/gyrocore-theme";
 
 export function ChirpPage({ ws }: { ws: WorkspacePayload }) {
   const c = ws.chirp;
   if (!c) {
     return (
-      <div className="panel">
-        <h2>CHIRP / System ID</h2>
-        <p className="muted">No CHIRP payload.</p>
-      </div>
+      <SurfaceCard>
+        <SectionHeader title="CHIRP / System ID" />
+        <EmptyState icon={<Waves className="h-5 w-5" aria-hidden />} title="No CHIRP payload." />
+      </SurfaceCard>
     );
   }
   if (!c.available) {
     return (
-      <div className="stack">
-        <div className="panel" data-testid="chirp-unavailable">
-          <h2>
-            CHIRP / System ID <StatusBadge value="NOT AVAILABLE" />
-          </h2>
-          <p className="muted">No valid CHIRP segment for Bode charts.</p>
-          <div className="kv">
-            <div>Reason</div>
-            <div className="mono">{c.reason || "unavailable"}</div>
-          </div>
-          {(c.warnings || []).length > 0 && (
-            <ul className="checks">
-              {c.warnings!.map((w) => (
-                <li key={w}>{w}</li>
-              ))}
-            </ul>
-          )}
-        </div>
+      <div className={pageStack}>
+        <SurfaceCard data-testid="chirp-unavailable">
+          <SectionHeader
+            title="CHIRP / System ID"
+            subtitle="No valid CHIRP segment for Bode charts."
+            actions={<StatusBadge value="NOT AVAILABLE" />}
+          />
+          <KeyValue rows={[{ label: "Reason", value: c.reason || "unavailable", mono: true }]} />
+          {(c.warnings || []).length > 0 && <ReasonList items={c.warnings || []} className="mt-4" />}
+        </SurfaceCard>
       </div>
     );
   }
 
   return (
-    <div className="stack" data-testid="chirp-available">
-      <div className="panel">
-        <h2>
-          CHIRP / System ID <StatusBadge value="PASS" />
-        </h2>
-        <div className="kv">
-          <div>Axis</div>
-          <div>{c.axis || "—"}</div>
-          <div>Sample rate</div>
-          <div className="mono">{c.sample_rate_hz ?? "—"} Hz</div>
-          <div>Rate source</div>
-          <div className="mono">{c.sample_rate_source || "—"}</div>
-          <div>Header vs timestamp</div>
-          <div className="mono">{JSON.stringify(c.header_vs_timestamp || {})}</div>
-          <div>Usable range</div>
-          <div className="mono">{JSON.stringify(c.usable_frequency_hz || {})}</div>
-          <div>Quality</div>
-          <div>{c.quality || "—"}</div>
-          <div>Segment</div>
-          <div className="mono">{JSON.stringify(c.segment || {})}</div>
+    <div className={pageStack} data-testid="chirp-available">
+      <SurfaceCard>
+        <SectionHeader title="CHIRP / System ID" subtitle="Closed-loop system identification from the CHIRP segment." actions={<StatusBadge value="PASS" />} />
+        <div className="mb-4 grid grid-cols-3 gap-3">
+          <MetricTile label="Axis" value={c.axis || "—"} />
+          <MetricTile label="Sample rate" value={c.sample_rate_hz ?? "—"} unit={c.sample_rate_hz != null ? "Hz" : undefined} />
+          <MetricTile label="Quality" value={c.quality || "—"} />
         </div>
+        <KeyValue
+          rows={[
+            { label: "Rate source", value: c.sample_rate_source || "—", mono: true },
+            { label: "Header vs timestamp", value: <CodeBlock value={c.header_vs_timestamp || {}} maxHeight={160} /> },
+            { label: "Usable range", value: <CodeBlock value={c.usable_frequency_hz || {}} maxHeight={120} /> },
+            { label: "Segment", value: <CodeBlock value={c.segment || {}} maxHeight={160} /> },
+          ]}
+        />
         {(c.warnings || []).length > 0 && (
-          <div className="banner" style={{ marginTop: "0.6rem" }}>
-            Sample-rate / quality warnings: {(c.warnings || []).join("; ")}
-          </div>
+          <StatusAlert
+            tone="warning"
+            className="mt-4"
+            icon={<TriangleAlert className="h-4 w-4 text-[var(--gc-status-warn)]" />}
+            title="Sample-rate / quality warnings"
+          >
+            {(c.warnings || []).join("; ")}
+          </StatusAlert>
         )}
-      </div>
-      <div className="grid3">
+      </SurfaceCard>
+      <div className="grid grid-cols-3 gap-4">
         <SeriesChart title="Magnitude" points={c.magnitude} yKey="db" yLabel="dB" />
         <SeriesChart title="Phase" points={c.phase} yKey="deg" yLabel="deg" />
         <SeriesChart title="Coherence" points={c.coherence} yKey="value" yLabel="0–1" />

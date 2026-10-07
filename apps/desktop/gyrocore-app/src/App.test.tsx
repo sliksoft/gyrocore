@@ -41,6 +41,21 @@ describe("GyroCore desktop shell", () => {
     };
   });
 
+  it("keeps every tab navigable without a workspace and shows empty states", async () => {
+    const user = userEvent.setup();
+    render(<App />);
+    const pages = ["overview", "blackbox", "analysis", "chirp", "tune", "safety", "compare", "cli", "diagnostics"];
+    for (const page of pages) {
+      const nav = screen.getByTestId(`nav-${page}`);
+      expect(nav).toBeEnabled();
+      await user.click(nav);
+      expect(await screen.findByTestId(`empty-${page}`)).toHaveTextContent(/No flight loaded yet/i);
+      expect(screen.queryByText(/DEMO/)).toBeNull();
+    }
+    await user.click(screen.getByTestId("empty-diagnostics-open"));
+    expect(screen.getByRole("heading", { name: /Open Blackbox Log/i })).toBeInTheDocument();
+  });
+
   it("starts and shows open screen", () => {
     render(<App />);
     expect(screen.getByTestId("app-shell")).toBeInTheDocument();

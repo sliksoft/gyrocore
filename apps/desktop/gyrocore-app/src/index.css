@@ -1,0 +1,153 @@
+/* GyroCore Premium Design System — ported from AeroTuner frontend/app/globals.css.
+ * Single visual system for the desktop app. Fonts are bundled locally (offline). */
+@import "@fontsource-variable/geist";
+@import "@fontsource-variable/geist-mono";
+@import "@fontsource/chakra-petch/600.css";
+@import "tailwindcss";
+
+/* Fonts / extra colours live in the shared JS config (Tailwind v4 @config). */
+@config "../tailwind.config.js";
+
+/* Desktop readability: text-xs is 13px (Tailwind default 12px). */
+@theme {
+  --text-xs: 0.8125rem;
+  --text-xs--line-height: 1.25rem;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--gc-app-bg-base);
+}
+
+::-webkit-scrollbar-thumb {
+  background: #162034;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #1e2d48;
+}
+
+::selection {
+  background: #22d3ee;
+  color: #020617;
+}
+
+@utility hero-dot-grid {
+  background-image: radial-gradient(circle, rgba(148, 210, 230, 0.045) 1px, transparent 1px);
+  background-size: 28px 28px;
+}
+
+@layer base {
+  :root {
+    color-scheme: dark;
+
+    /* GyroCore Premium Design System tokens */
+    --gc-bg-base: #080c15;
+    --gc-bg-surface-1: #0d1424;
+    --gc-bg-surface-2: #0f1729;
+    --gc-bg-surface-3: #121d33;
+    --gc-bg-inset: #0a1020;
+    --gc-app-bg-base: var(--gc-bg-base);
+    --gc-app-bg-gradient-mid: #0a0f1a;
+    --gc-app-bg-glow-top: rgba(14, 116, 144, 0.1);
+    --gc-app-bg-texture: url("/hero-bg.png");
+
+    --gc-border-subtle: rgba(148, 163, 184, 0.08);
+    --gc-border-default: rgba(148, 163, 184, 0.14);
+    --gc-border-strong: rgba(148, 163, 184, 0.22);
+
+    --gc-text-primary: #e8edf5;
+    --gc-text-secondary: #94a3b8;
+    --gc-text-tertiary: #64748b;
+    --gc-text-heading: #f1f5f9;
+
+    --gc-accent: #22d3ee;
+    --gc-accent-muted: rgba(34, 211, 238, 0.12);
+    --gc-accent-border: rgba(34, 211, 238, 0.25);
+    --gc-accent-hover: #67e8f9;
+
+    --gc-teal: #14b8a6;
+    --gc-teal-muted: rgba(20, 184, 166, 0.1);
+
+    --gc-status-good: #10b981;
+    --gc-status-good-bg: rgba(16, 185, 129, 0.08);
+    --gc-status-good-border: rgba(16, 185, 129, 0.2);
+
+    --gc-status-warn: #f59e0b;
+    --gc-status-warn-bg: rgba(245, 158, 11, 0.08);
+    --gc-status-warn-border: rgba(245, 158, 11, 0.2);
+
+    --gc-status-error: #ef4444;
+    --gc-status-error-bg: rgba(239, 68, 68, 0.06);
+    --gc-status-error-border: rgba(239, 68, 68, 0.2);
+
+    --gc-status-info: #3b82f6;
+    --gc-status-info-bg: rgba(59, 130, 246, 0.08);
+    --gc-status-info-border: rgba(59, 130, 246, 0.18);
+
+    /* shadcn tokens aligned to GyroCore */
+    --background: var(--gc-bg-base);
+    --foreground: var(--gc-text-primary);
+    --card: var(--gc-bg-surface-1);
+    --card-foreground: var(--gc-text-heading);
+    --primary: var(--gc-accent);
+    --primary-foreground: #031018;
+    --secondary: var(--gc-bg-surface-2);
+    --secondary-foreground: var(--gc-text-primary);
+    --muted: var(--gc-bg-inset);
+    --muted-foreground: var(--gc-text-tertiary);
+    --destructive: var(--gc-status-error);
+    --border: var(--gc-border-subtle);
+    --input: var(--gc-border-default);
+    --ring: var(--gc-accent);
+    --radius: 0.625rem;
+  }
+
+  * {
+    @apply border-[var(--gc-border-subtle)];
+  }
+
+  html {
+    @apply font-sans antialiased;
+    min-height: 100%;
+  }
+
+  body {
+    min-height: 100vh;
+    background-color: var(--gc-app-bg-base);
+    background-image:
+      radial-gradient(ellipse 60% 38% at 50% 0%, var(--gc-app-bg-glow-top) 0%, transparent 100%),
+      radial-gradient(ellipse 50% 28% at 50% 100%, rgba(8, 12, 21, 0.85) 0%, transparent 100%),
+      linear-gradient(180deg, var(--gc-app-bg-base) 0%, var(--gc-app-bg-gradient-mid) 40%, var(--gc-app-bg-base) 100%),
+      linear-gradient(180deg, rgba(8, 12, 21, 0.97) 0%, rgba(8, 12, 21, 0.93) 40%, rgba(8, 12, 21, 0.98) 100%),
+      var(--gc-app-bg-texture);
+    background-size: cover, cover, cover, cover, cover;
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    color: var(--gc-text-primary);
+  }
+
+  button,
+  input,
+  select,
+  textarea {
+    font: inherit;
+  }
+
+  /* Tailwind v4 preflight uses the default cursor on buttons; keep pointer affordance. */
+  button:not(:disabled),
+  [role="button"]:not([aria-disabled="true"]) {
+    cursor: pointer;
+  }
+}

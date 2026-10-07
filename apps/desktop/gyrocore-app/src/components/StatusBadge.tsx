@@ -1,8 +1,27 @@
-export function StatusBadge({ value }: { value?: string | null }) {
-  const v = String(value || "NOT AVAILABLE").toUpperCase();
-  let cls = "na";
-  if (v === "PASS" || v === "AUTHORIZED" || v === "OK") cls = "pass";
-  else if (v === "WARN" || v === "PREVIEW" || v.includes("WARN")) cls = "warn";
-  else if (v === "BLOCK" || v === "DENIED" || v.includes("BLOCK")) cls = "block";
-  return <span className={`badge ${cls}`}>{v}</span>;
+import { StatusBadge as Badge } from "@/components/ui/StatusBadge";
+import { statusLabel, statusTone } from "@/lib/status";
+
+/** Core status value rendered verbatim with the design-system tone for its semantics. */
+export function StatusBadge({ value, className }: { value?: string | null; className?: string }) {
+  const label = statusLabel(value);
+  const tone = statusTone(label);
+  return (
+    <Badge tone={tone} className={className} data-tone={tone}>
+      <span
+        aria-hidden
+        className={
+          tone === "success"
+            ? "h-1.5 w-1.5 rounded-full bg-[var(--gc-status-good)]"
+            : tone === "warning"
+              ? "h-1.5 w-1.5 rounded-full bg-[var(--gc-status-warn)]"
+              : tone === "danger"
+                ? "h-1.5 w-1.5 rounded-full bg-[var(--gc-status-error)]"
+                : tone === "info"
+                  ? "h-1.5 w-1.5 rounded-full bg-[var(--gc-accent)]"
+                  : "h-1.5 w-1.5 rounded-full bg-[var(--gc-text-tertiary)]"
+        }
+      />
+      {label}
+    </Badge>
+  );
 }
