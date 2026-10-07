@@ -75,6 +75,16 @@ jobs:
       - name: Vite production build
         run: npm run build
 
+      # Tauri bridge unit tests (worker/repo-root path resolution); the crate links WebKitGTK.
+      - name: Install Tauri system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libwebkit2gtk-4.1-dev libsoup-3.0-dev libgtk-3-dev
+
+      - name: Tauri Rust tests
+        working-directory: apps/desktop/gyrocore-app/src-tauri
+        run: cargo test --locked --lib
+
   integrity:
     name: integrity
     runs-on: ubuntu-latest
