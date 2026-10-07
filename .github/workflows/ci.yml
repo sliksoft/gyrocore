@@ -30,6 +30,17 @@ jobs:
           python -m pip install -e ".[dev]"
           python -m pip install -r requirements-dev.txt
 
+      # WU7/WU8 BBL end-to-end tests skip without blackbox_decode; build it from
+      # the vendored source out of tree so third_party/ stays untouched.
+      - name: Build blackbox_decode (vendored, out of tree)
+        run: |
+          cp -r third_party/betaflight/blackbox-tools "$RUNNER_TEMP/blackbox-tools"
+          make -C "$RUNNER_TEMP/blackbox-tools" obj/blackbox_decode
+          echo "$RUNNER_TEMP/blackbox-tools/obj" >> "$GITHUB_PATH"
+
+      - name: Require blackbox_decode
+        run: command -v blackbox_decode
+
       - name: Complete Python test suite
         run: python -m pytest
         env:
@@ -81,6 +92,17 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install -e ".[dev]"
           python -m pip install -r requirements-dev.txt
+
+      # WU7/WU8 BBL end-to-end tests skip without blackbox_decode; build it from
+      # the vendored source out of tree so third_party/ stays untouched.
+      - name: Build blackbox_decode (vendored, out of tree)
+        run: |
+          cp -r third_party/betaflight/blackbox-tools "$RUNNER_TEMP/blackbox-tools"
+          make -C "$RUNNER_TEMP/blackbox-tools" obj/blackbox_decode
+          echo "$RUNNER_TEMP/blackbox-tools/obj" >> "$GITHUB_PATH"
+
+      - name: Require blackbox_decode
+        run: command -v blackbox_decode
 
       - name: Frozen contract integrity
         run: bash tools/ci/integrity.sh

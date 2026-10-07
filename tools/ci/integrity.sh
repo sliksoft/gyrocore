@@ -8,6 +8,14 @@ cd "$ROOT"
 
 export PYTHONPATH="${ROOT}:${ROOT}/core${PYTHONPATH:+:$PYTHONPATH}"
 
+# WU7/WU8 BBL end-to-end parity skips without the decoder; fail instead of
+# reporting "integrity OK" with those tests silently skipped.
+if ! command -v blackbox_decode >/dev/null 2>&1; then
+    echo "ERROR: blackbox_decode not on PATH (required for WU7/WU8 BBL parity)." >&2
+    echo "Build it from third_party/betaflight/blackbox-tools out of tree." >&2
+    exit 1
+fi
+
 echo "== WU0 goldens / parity harness =="
 python3 -m pytest tests/test_parity_golden.py tests/test_parity_harness.py
 
@@ -31,6 +39,7 @@ python3 -m pytest tests/filter_evidence/test_no_actionable_path.py
 
 echo "== Vendored Betaflight trees must remain untouched by tests =="
 git diff --exit-code -- third_party/betaflight
+test -z "$(git status --porcelain --untracked-files=all -- third_party/betaflight)"
 
 echo "== Provenance manifest present =="
 test -f docs/upstream/PROVENANCE_MANIFEST.md
