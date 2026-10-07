@@ -69,7 +69,9 @@ def test_gyrocore_matches_frozen_golden(fixture):
 @pytest.mark.parametrize("fixture", REGRESSION_FIXTURES)
 def test_resonance_peak_count_matches_golden(fixture):
     golden_peaks = load_frozen_golden(fixture)["metrics"]["resonance"]["peaks"]
-    assert len(evidence_for(fixture)["resonance"]["peaks"]) == len(golden_peaks) > 0
+    evidence = evidence_for(fixture)
+    assert len(evidence["metrics"]["resonance"]["peaks"]) == len(golden_peaks) > 0
+    assert len(evidence["resonance"]["peaks"]) == len(golden_peaks)
 
 
 @pytest.mark.parametrize("fixture", REGRESSION_FIXTURES)
@@ -77,7 +79,7 @@ def test_divergent_fields_carry_a_recorded_cause(fixture):
     classes = classify_golden_leaves(fixture, load_frozen_golden(fixture))
     for path, (kind, reason) in classes.items():
         if kind == DIVERGENT:
-            assert reason.startswith(("time base:", "composition:")), path
+            assert reason.startswith("time base:"), path
 
 
 def test_regression_helper_is_donor_free():

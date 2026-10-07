@@ -11,7 +11,7 @@ from gyrocore.chirp import identify_chirp_system_from_bbl
 from gyrocore.config import CoreConfig
 from gyrocore.decode.decoder import decode_bbl, decode_runtime_status
 from gyrocore.errors import DecodeError, InvalidInputError
-from gyrocore.parse.blackbox_csv import parse_csv
+from gyrocore.parse.blackbox_csv import parse_csv_with_meta
 
 from apps.desktop.worker.demo_scenarios import build_workspace_payload
 
@@ -288,8 +288,10 @@ def analyze_log(
 
     if suffix == ".csv":
         csv_text = p.read_text(encoding="utf-8", errors="replace")
-        samples = parse_csv(csv_text)
-        analysis = build_analysis_evidence(samples)
+        samples, parse_meta = parse_csv_with_meta(csv_text)
+        analysis = build_analysis_evidence(
+            samples, raw_sample_count=parse_meta.get("original_sample_count")
+        )
         blackbox_meta["log_count"] = 1
         blackbox_meta["source"] = "csv"
         chirp = {
@@ -307,8 +309,10 @@ def analyze_log(
             if "multiple" in msg.lower():
                 raise InvalidInputError(f"multi_log_selection_required:{msg}") from exc
             raise
-        samples = parse_csv(decoded.csv_text)
-        analysis = build_analysis_evidence(samples)
+        samples, parse_meta = parse_csv_with_meta(decoded.csv_text)
+        analysis = build_analysis_evidence(
+            samples, raw_sample_count=parse_meta.get("original_sample_count")
+        )
         blackbox_meta["log_count"] = 1
         if isinstance(decoded.embedded_log, dict) and isinstance(decoded.embedded_log.get("entries"), list):
             blackbox_meta["log_count"] = len(decoded.embedded_log["entries"])

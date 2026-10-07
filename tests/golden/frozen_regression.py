@@ -92,11 +92,6 @@ _TIME_BASE = (
     "(199.8401 Hz). Reproduced bit-exactly with GyroCore functions on raw 't'. "
     "Real blackbox_decode output is integer us, so only synthetic CSVs differ."
 )
-_COMPOSITION = (
-    "composition: donor route _build_analysis feeds noise_model / fft peaks / "
-    "propwash into build_metrics; GyroCore build_analysis_evidence does not, so "
-    "metrics_engine returns its fallback block."
-)
 
 # (golden path glob, classification, GyroCore path template or reason).
 # First match wins; ``{i}`` / ``{rest}`` are filled from the golden path.
@@ -108,18 +103,10 @@ _RULES: tuple[tuple[str, str, str], ...] = (
      "donor analyze.py:4125-4133 derives it from route sample-rate gating"),
     ("erpm.motor_poles", ROUTE_ONLY, "route merges hardware motor_poles into erpm"),
     ("erpm.pole_pairs", ROUTE_ONLY, "route merges hardware motor_poles into erpm"),
-    ("resonance.resonance_v2_hz", ROUTE_ONLY, "route _build_analysis resonance_v2 only"),
     # --- divergent (reported, not compared) ---
-    ("metrics.noise.*", DIVERGENT, _COMPOSITION),
-    ("metrics.propwash.*", DIVERGENT, _COMPOSITION),
-    ("metrics.resonance.dominant_hz", DIVERGENT, _COMPOSITION),
-    ("metrics.resonance.severity", DIVERGENT, _COMPOSITION),
-    ("resonance.dominant_hz", DIVERGENT, _COMPOSITION),
-    ("resonance.severity", DIVERGENT, _COMPOSITION),
-    ("metrics.response.sample_rate_metadata.source_kind", DIVERGENT,
-     "composition: donor route passes source_kind=raw_full_rate to "
-     "build_sample_rate_metadata (analyze.py:3839-3846); GyroCore evidence passes "
-     "none, yielding 'unknown'."),
+    # dominant_hz is the strongest peak's frequency, so it shares the time base.
+    ("metrics.resonance.dominant_hz", DIVERGENT, _TIME_BASE),
+    ("resonance.dominant_hz", DIVERGENT, _TIME_BASE),
     ("metrics.resonance.peaks[*].freq", DIVERGENT, _TIME_BASE),
     ("metrics.resonance.peaks[*].bandwidth_hz", DIVERGENT, _TIME_BASE),
     # --- compared ---
@@ -130,10 +117,16 @@ _RULES: tuple[tuple[str, str, str], ...] = (
     ("metrics.tracking.*", COMPARED, "metrics.tracking.{rest}"),
     ("metrics.motor.*", COMPARED, "metrics.motor.{rest}"),
     ("metrics.d_effectiveness.*", COMPARED, "metrics.d_effectiveness.{rest}"),
-    # Golden metrics.resonance.peaks are analyze_resonance peaks (freq/bandwidth
-    # reproduce bit-exactly from analyze_resonance on raw 't'); amplitude does
-    # not depend on the sample rate.
-    ("metrics.resonance.peaks[*].amplitude", COMPARED, "resonance.peaks[{i}].amplitude"),
+    # Signal composition (WU16): noise_model / propwash / fft_peaks feed metrics.
+    ("metrics.noise.*", COMPARED, "metrics.noise.{rest}"),
+    ("metrics.propwash.*", COMPARED, "metrics.propwash.{rest}"),
+    ("metrics.resonance.severity", COMPARED, "metrics.resonance.severity"),
+    # Peak amplitude does not depend on the sample rate.
+    ("metrics.resonance.peaks[*].amplitude", COMPARED, "metrics.resonance.peaks[{i}].amplitude"),
+    # Golden top-level resonance is the projection of metrics.resonance and the
+    # route's signal resonance_v2_hz (tests/golden/projection.py _resonance_projection).
+    ("resonance.severity", COMPARED, "metrics.resonance.severity"),
+    ("resonance.resonance_v2_hz", COMPARED, "signal.resonance_v2_hz"),
     ("erpm.dominant_frequency", COMPARED, "erpm.dominant_frequency"),
     ("erpm.erpm_sample_coverage", COMPARED, "erpm.erpm_sample_coverage"),
     ("erpm.erpm_scale_assumption", COMPARED, "erpm.erpm_scale_assumption"),

@@ -5,8 +5,6 @@ from __future__ import annotations
 import logging
 from typing import Any, Mapping
 
-import numpy as np
-
 from gyrocore.analysis.confidence_unified import compute_unified_confidence
 from gyrocore.analysis.d_effectiveness_analysis import analyze_d_effectiveness
 from gyrocore.analysis.erpm_analysis import analyze_erpm
@@ -20,12 +18,18 @@ from gyrocore.analysis.motor_saturation import (
     attach_saturation_evidence_to_response,
     compute_motor_saturation,
 )
-from gyrocore.analysis.multi_axis_fft import merge_axes_fft
 from gyrocore.analysis.problem_detection_engine import detect_problems
 from gyrocore.analysis.quality_engine_v2 import evaluate_quality_v2
 from gyrocore.analysis.resonance import analyze_resonance
 from gyrocore.analysis.resonance_v2 import detect_resonance_peaks
 from gyrocore.analysis.sample_rate_metadata import build_sample_rate_metadata
+from gyrocore.analysis.signal_composition import (
+    build_signal_analysis,
+    compute_spectral_bundle,
+    compute_unified_propwash,
+    detect_propwash,
+    spectral_source_kind,
+)
 from gyrocore.analysis.segment_engine import detect_segments
 from gyrocore.analysis.signal import compute_sample_rate, time_us_to_seconds
 from gyrocore.analysis.spectral_windows import build_spectral_evidence_from_samples
@@ -59,9 +63,13 @@ def build_analysis_evidence(
     requested_flight_index: int | None = None,
     hardware: Mapping[str, Any] | None = None,
     user_inputs: Mapping[str, Any] | None = None,
+    raw_sample_count: int | None = None,
 ) -> dict[str, Any]:
     """
     Deterministic analysis evidence from decoded samples.
+
+    ``raw_sample_count`` is the original log row count when the caller capped the
+    samples before analysis; it marks the spectral source as capped.
 
     Does **not** produce PID/filter targets, tune CLI, or safety verdicts.
     """
@@ -86,6 +94,7 @@ def build_analysis_evidence(
         "metrics": None,
         "confidence": None,
         "sample_rate_metadata": None,
+        "signal": None,
     }
     if not normalized:
         return empty
@@ -98,9 +107,11 @@ def build_analysis_evidence(
     sample_rate_hz = float(compute_sample_rate(time_seconds)) if len(time_seconds) >= 2 else 0.0
     sample_rate_meta = build_sample_rate_metadata(
         selected,
+        raw_sample_count=raw_sample_count,
         analyzed_sample_count=len(selected),
         display_sample_count=len(selected),
         spectral_sample_count=len(selected),
+        source_kind=spectral_source_kind(len(raw_samples or []), raw_sample_count),
     )
 
     matrices = samples_dict_from_normalized_rows(selected)
@@ -118,12 +129,12 @@ def build_analysis_evidence(
 
     spectral = build_spectral_evidence_from_samples(selected, sample_rate_hz)
 
-    gx = np.asarray([float(s["gx"]) for s in selected], dtype=float)
-    gy = np.asarray([float(s["gy"]) for s in selected], dtype=float)
-    gz = np.asarray([float(s["gz"]) for s in selected], dtype=float)
-    freqs, spectrum = merge_axes_fft(gx, gy, gz, fs=sample_rate_hz or 1000.0)
+    # One spectral bundle feeds the resonance module, per-axis noise and peaks.
+    bundle = compute_spectral_bundle(selected)
+    gx = bundle["gx"]
+    freqs, spectrum = bundle["merged_freqs"], bundle["merged_spectrum"]
     try:
-        resonance = analyze_resonance(freqs, spectrum, gx, sample_rate_hz or 1000.0)
+        resonance = analyze_resonance(freqs, spectrum, gx, bundle["fs"])
     except Exception as exc:
         logger.warning("analyze_resonance failed: %s", exc)
         resonance = {"ok": False, "message": str(exc)}
@@ -134,6 +145,15 @@ def build_analysis_evidence(
         resonance_peaks = []
 
     erpm = analyze_erpm(selected)
+    signal = build_signal_analysis(
+        bundle,
+        resonance if isinstance(resonance, dict) else None,
+        erpm,
+        sample_rate_meta,
+    )
+    signal["propwash"] = compute_unified_propwash(
+        detect_propwash(selected), signal.get("propwash_level", 0.5)
+    )
     motor_data = _extract_motor_data(selected)
     motor_stats = compute_motor_saturation(motor_data)
     hw: Mapping[str, Any] = hardware if isinstance(hardware, Mapping) else {}
@@ -159,6 +179,10 @@ def build_analysis_evidence(
             0.0, min(100.0, 100.0 - float(motor_stats.get("saturation_pct") or 0.0))
         ),
         "sample_rate_hz": sample_rate_hz,
+        "noise_model": signal["noise_model"],
+        "fft_peaks": signal["fft_peaks"],
+        "resonance_v2_hz": signal["resonance_v2_hz"],
+        "propwash": signal["propwash"],
     }
     fft_data = {
         "freqs": freqs.tolist() if hasattr(freqs, "tolist") else list(freqs),
@@ -244,6 +268,7 @@ def build_analysis_evidence(
         "confidence": confidence,
         "sample_rate_hz": sample_rate_hz,
         "sample_rate_metadata": sample_rate_meta,
+        "signal": signal,
         "segments": segments,
         "fft": fft_data,
     }

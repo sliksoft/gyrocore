@@ -629,20 +629,33 @@ def parse_csv(csv_text: str, flags: ParserFeatureFlags | None = None, *, max_tex
     Optional columns (erpm, debug, loop_iteration, flight_mode_flags) are included when
     `flags` allow and the CSV provides matching headers.
     """
+    samples, _meta = parse_csv_with_meta(
+        csv_text, flags, max_text_bytes=max_text_bytes, max_lines=max_lines
+    )
+    return samples
+
+
+def parse_csv_with_meta(
+    csv_text: str,
+    flags: ParserFeatureFlags | None = None,
+    *,
+    max_text_bytes: int | None = None,
+    max_lines: int | None = None,
+) -> tuple[list[dict], dict[str, float | int]]:
+    """Like :func:`parse_csv`, plus parse metadata (``original_sample_count`` when capped)."""
     text_limit = max_decoded_csv_text_bytes() if max_text_bytes is None else max_text_bytes
     line_limit = max_decoded_csv_lines() if max_lines is None else max_lines
     if text_limit > 0 and len(csv_text.encode("utf-8", errors="ignore")) > text_limit:
         logger.warning("parse_csv rejected oversized decoded CSV text")
-        return []
+        return [], {}
     if line_limit > 0 and csv_text.count("\n") + 1 > line_limit:
         logger.warning("parse_csv rejected decoded CSV with too many lines")
-        return []
+        return [], {}
     lines = [line for line in csv_text.splitlines() if line.strip()]
     header_index, headers = _find_gyro_header(lines)
     if header_index is None or not headers:
-        return []
-    samples, _meta = parse_csv_rows(lines, header_index, headers, flags=flags)
-    return samples
+        return [], {}
+    return parse_csv_rows(lines, header_index, headers, flags=flags)
 
 
 def parse_blackbox_csv(
@@ -780,5 +793,6 @@ __all__ = [
     "max_abs_gyro_triplet",
     "parse_blackbox_csv",
     "parse_csv",
+    "parse_csv_with_meta",
     "parse_csv_rows",
 ]

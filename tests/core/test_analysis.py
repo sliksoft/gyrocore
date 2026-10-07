@@ -143,3 +143,29 @@ def test_dependency_boundary_runtime():
             file = getattr(mod, "__file__", "") or ""
             assert "/aerotuner/" not in file.replace("\\", "/")
             assert "fastapi" not in file
+
+
+def _decoded_style_csv(n: int) -> str:
+    head = "loopIteration,time (us),gyroADC[0],gyroADC[1],gyroADC[2]\n"
+    return head + "".join(
+        f"{i},{1_000_000 + i * 250},{20 * math.sin(i / 7):.2f},{10 * math.sin(i / 5):.2f},1.0\n"
+        for i in range(n)
+    )
+
+
+@pytest.mark.parametrize(
+    ("rows", "expected_kind"),
+    [(5000, "raw_full_rate"), (20000 + 15000, "capped_20k")],
+)
+def test_spectral_source_kind_follows_parser_cap(rows, expected_kind):
+    from gyrocore.parse import parse_csv, parse_csv_with_meta
+
+    text = _decoded_style_csv(rows)
+    samples, meta = parse_csv_with_meta(text)
+    assert samples == parse_csv(text)
+    evidence = build_analysis_evidence(samples, raw_sample_count=meta.get("original_sample_count"))
+    srm = evidence["sample_rate_metadata"]
+    assert srm["source_kind"] == expected_kind
+    assert srm["raw_sample_count"] == meta.get("original_sample_count")
+    assert bool(evidence["resonance"].get("sample_rate_limited")) is (expected_kind == "capped_20k")
+    assert evidence["metrics"]["noise"]["source"] == "noise_model"

@@ -12,6 +12,7 @@ from .blackbox_csv import (
     gyro_headers_are_raw_adc,
     parse_blackbox_csv,
     parse_csv,
+    parse_csv_with_meta,
     parse_csv_rows,
     parser_feature_flags_metadata,
 )
@@ -36,6 +37,7 @@ __all__ = [
     "gyro_headers_are_raw_adc",
     "parse_blackbox_csv",
     "parse_csv",
+    "parse_csv_with_meta",
     "parse_csv_rows",
     "parser_feature_flags_metadata",
 ]
