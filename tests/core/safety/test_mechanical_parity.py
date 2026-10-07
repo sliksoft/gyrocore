@@ -1,4 +1,12 @@
-"""Donor vs GyroCore mechanical-safety decision parity (WU10)."""
+"""Donor vs GyroCore mechanical-safety **gate-function** parity (WU10).
+
+Every test here feeds the same supplied kwargs to the GyroCore gate and the donor
+gate. That proves gate parity only: the gl001/gl002 tests derive the kwargs from
+GyroCore evidence, so a GyroCore analysis/adapter defect reaches both gates and
+still "matches". Full CSV -> analysis -> adapter -> gate end-to-end parity against
+the frozen donor golden lives in ``tests/core/test_legacy_frozen_regression.py``
+(donor-free, normal CI).
+"""
 
 from __future__ import annotations
 
@@ -234,7 +242,7 @@ def _load_gl_csv(path: Path) -> list[dict]:
 
 
 def test_gl001_analysis_matches_donor_gate():
-    """GL001 is a WU0 'clean CLI' fixture; WU4 motor diagnostics may still flag it."""
+    """Gate parity on GyroCore-derived kwargs (not end-to-end; see module docstring)."""
     evidence = build_analysis_evidence(_load_gl_csv(GL001), gyro_source_is_raw_adc=False)
     result = evaluate_mechanical_safety(evidence, require_analysis=True)
     donor = _donor_gate()
@@ -245,6 +253,7 @@ def test_gl001_analysis_matches_donor_gate():
 
 
 def test_gl002_noisy_analysis_is_warn_or_block_not_silent_pass_if_noisy():
+    """Gate parity on GyroCore-derived kwargs (not end-to-end; see module docstring)."""
     evidence = build_analysis_evidence(_load_gl_csv(GL002), gyro_source_is_raw_adc=False)
     result = evaluate_mechanical_safety(evidence, require_analysis=True)
     assert result.raw["mechanical_block"] is result.mechanical_block

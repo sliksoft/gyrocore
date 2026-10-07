@@ -66,7 +66,6 @@ OUT_OF_SCOPE_TOP_LEVEL = frozenset(
         "tuning_mode",
         "pid_summary",
         "filter_summary",
-        "mechanical_safety",
         "tuning_output_safety",
         "authoritative_cli",
         "tuning_decision",
@@ -83,6 +82,8 @@ ANALYSIS_TOP_LEVEL = frozenset(
         "flight_count",
         "problem_types",
         "problem_severities",
+        # End-to-end: CSV -> analysis -> safety adapter -> mechanical gate (WU17).
+        "mechanical_safety",
     }
 )
 
@@ -134,6 +135,7 @@ _RULES: tuple[tuple[str, str, str], ...] = (
     ("flight_count", COMPARED, "selected_flight.count"),
     ("problem_types", COMPARED, "projected.problem_types"),
     ("problem_severities.*", COMPARED, "projected.problem_severities.{rest}"),
+    ("mechanical_safety.*", COMPARED, "projected.mechanical_safety.{rest}"),
 )
 
 # Fixture-specific divergences (same proven time-base cause).
@@ -193,8 +195,10 @@ def load_fixture_samples(fixture: str) -> list[dict[str, Any]]:
 
 
 def run_gyrocore_analysis(fixture: str) -> dict[str, Any]:
-    """GyroCore execution: public analysis entry point plus the golden's problem projection."""
-    from tests.golden.projection import _problem_projection
+    """GyroCore execution: analysis entry point, mechanical gate, and the golden's projections."""
+    from gyrocore.safety import evaluate_mechanical_safety
+
+    from tests.golden.projection import _mechanical_projection, _problem_projection
 
     options = load_fixture_options(fixture)
     evidence = build_analysis_evidence(
@@ -204,7 +208,13 @@ def run_gyrocore_analysis(fixture: str) -> dict[str, Any]:
     )
     # Same projection code that produced golden problem_types / problem_severities.
     types, severities = _problem_projection({"problems": evidence.get("problems")})
-    evidence["projected"] = {"problem_types": types, "problem_severities": severities}
+    # Full GyroCore path: evidence -> safety adapter -> mechanical gate.
+    gate = evaluate_mechanical_safety(evidence, require_analysis=True).raw
+    evidence["projected"] = {
+        "problem_types": types,
+        "problem_severities": severities,
+        "mechanical_safety": _mechanical_projection({"mechanical_safety": gate}),
+    }
     return evidence
 
 

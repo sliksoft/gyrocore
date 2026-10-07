@@ -26,16 +26,19 @@ def mechanical_inputs_from_analysis(
         if raw is not None:
             noise_level = str(raw)
         else:
+            # metrics.noise.value is cleanliness (0–100, higher = cleaner); same
+            # bands as the donor route before build_mechanical_safety_gate.
             try:
-                hf = float(noise.get("hf_ratio") or noise.get("value") or 0.0)
+                clean = float(noise.get("value"))
             except (TypeError, ValueError):
-                hf = 0.0
-            if hf >= 0.65:
-                noise_level = "HIGH"
-            elif hf >= 0.40:
+                clean = 0.0
+            clean = max(0.0, min(100.0, clean)) if clean == clean else 0.0
+            if clean >= 75.0:
+                noise_level = "LOW"
+            elif clean >= 50.0:
                 noise_level = "MEDIUM"
             else:
-                noise_level = "LOW"
+                noise_level = "HIGH"
     quality_status = quality.get("status") if isinstance(quality, Mapping) else None
     # Donor gate kwargs only. Extra WU4 surfaces (FFT, step, D-term, eRPM,
     # saturation) already feed problems/metrics/motors — they are not re-run here.
