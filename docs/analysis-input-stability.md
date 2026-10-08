@@ -356,3 +356,59 @@ but current production sampling is unstable and no candidate is qualified agains
 all fidelity, gap, transient, false-positive and downstream safety requirements.
 The next unit should qualify the proposed shared window/event contract in Python
 and produce browser conformance vectors before either analysis browser port.
+
+## WU2 spectral qualification
+
+The WU2 offline candidate freezes its nominal period from the first 4096
+positive timestamp intervals, splitting resets into independent epochs. It
+anchors 2048-sample windows to each epoch origin with a 1024-sample hop,
+rejects a window with a step greater than 1.5 nominal periods, and never
+interpolates across that interval. Each accepted window uses arithmetic-mean
+detrending, a periodic Hann taper and one-sided density PSD:
+c[k] * |rfft(w * (x - mean(x)))|^2 / (fs * sum(w^2)), where c is two at
+interior bins and one at DC/Nyquist. It preserves per-axis PSD until a
+max-axis detection summary. Stationary evidence is the mean PSD; event
+evidence retains merged per-window local peaks. A local candidate compares
+its bin with flanks 3--20 bins away and requires 6 dB contrast. It is an
+offline qualification candidate only, not Core behavior.
+
+The contract avoids row-count-dependent sample selection. It does not yet
+qualify a production policy: the candidate emits raw event candidates rather
+than calibrated event significance, has no separately normalized partial-edge
+spectrum, and must keep its new temporal fields separate from the legacy
+persistent_resonance safety boolean. Legacy persistence remains
+severity/spread-derived in safety/mechanical.py; changing that mapping could
+change mechanical faults and tune limits.
+
+Synthetic qualification used 2 kHz, 16-second records. A continuous 180 Hz
+tone in sigma=2 white noise was found in 16/16 seeds at -20 dB and above, and
+0/16 at -25/-30 dB. The noiseless amplitude-2 180 Hz tone remains found beside
+the amplitude-10 73.8 Hz tone at center and half-bin phase. Three- and
+five-Hz tone separations resolve. A 250 ms 481 Hz burst is visible at record
+start, a 1024-sample hop boundary and the record tail. Isolated, short and
+medium missing intervals reject only overlapping windows and retain the
+continuous tone. The five synthetic noise-only controls had zero stationary
+clusters, but 354--399 raw event candidates each. Those candidates are not
+accepted clusters and demonstrate that event significance is unqualified.
+
+On the real three-log BBL, the candidate's stationary output is respectively
+137.82/206.73 Hz, 66.94/88.60/177.20 Hz and none; it does not reproduce the
+known log2 47.9/73.8 Hz evidence and emits 166/129/199 raw event candidates.
+Log1's 481 Hz neighbourhood appears only as multiple raw event bins, so it is
+UNRESOLVED rather than a validated real signal. The 16-case perturbation
+matrix is stable for stationary identities under unchanged tails and gaps, but
+the detector fails real-log fidelity and event false-positive qualification.
+It is therefore not eligible for Core integration.
+
+The real-log candidate measured 2.47/1.63/11.01 seconds including decode,
+normalization, flight selection and qualification for logs 1--3. Peak RSS was
+305.7/392.5/1107.9 MiB; log3 remains above the 1 GiB browser-suitability
+boundary. The stability matrix is a limited PASS for stationary identity only:
+tail changes did not alter stationary peaks, while gaps changed only explicit
+accepted/rejected coverage. It cannot be an overall PASS because the real-log
+and event-significance gates fail.
+
+CHIRP remains an independent full-frame pipeline and was not modified. The
+spectral findings do not block an independent browser CHIRP port, provided its
+existing full-frame timestamp/rate contract is preserved. PID migration was
+not started.
