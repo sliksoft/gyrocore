@@ -157,6 +157,7 @@ def _chirp_demo(*, available: bool = True) -> dict[str, Any]:
     freqs = [float(x) for x in range(20, 201, 10)]
     return {
         "available": True,
+        "status": "ok",
         "axis": "roll",
         "sample_rate_hz": 2000.0,
         "sample_rate_source": "header_logged_rate",

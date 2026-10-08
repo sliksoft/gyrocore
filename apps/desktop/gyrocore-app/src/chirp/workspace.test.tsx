@@ -1,10 +1,12 @@
 import { cleanup, render, screen } from "@testing-library/react";
-import { readFileSync } from "node:fs";
+import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { gunzipSync } from "node:zlib";
 import { afterEach, describe, expect, it } from "vitest";
 import type { WorkspacePayload } from "@/bridge/types";
+import { chirpDisplay } from "@/lib/chirpStatus";
 import { ChirpPage } from "@/pages/ChirpPage";
+import { OverviewPage } from "@/pages/OverviewPage";
 import { runChirpOnBytes } from "./runChirp";
 import { browserChirpWorkspace, chirpPayloadFromAnalysis } from "./workspace";
 
@@ -87,5 +89,42 @@ describe("ChirpPage with browser results", () => {
     expect(screen.getByTestId("chirp-unavailable")).toBeInTheDocument();
     expect(screen.getByText("chirp_series_empty")).toBeInTheDocument();
     expect(screen.queryByText("PASS")).toBeNull();
+  });
+});
+
+describe("one CHIRP status everywhere (Overview == CHIRP page)", () => {
+  const overviewChirpBadge = (ws: WorkspacePayload) => {
+    const { container } = render(<OverviewPage ws={ws} />);
+    const dt = [...container.querySelectorAll("dt")].find((el) => el.textContent === "CHIRP");
+    const text = dt?.nextElementSibling?.textContent?.trim();
+    cleanup();
+    return text;
+  };
+  const chirpPageBadge = (ws: WorkspacePayload) => {
+    render(<ChirpPage ws={ws} />);
+    const badge = ["PASS", "WARN", "NOT AVAILABLE"].find((b) => screen.queryByText(b));
+    cleanup();
+    return badge;
+  };
+  const fixtures = readdirSync(WU7)
+    .filter((f) => f.endsWith(".bbl.gz"))
+    .map((f) => f.replace(".bbl.gz", ""));
+
+  it.each(fixtures)("%s", (name) => {
+    const ws = workspace(name);
+    const expected = { ok: "PASS", usable_with_warnings: "WARN" }[ws.chirp?.available ? ws.chirp.status! : ""] ?? "NOT AVAILABLE";
+    expect(chirpDisplay(ws.chirp).badge).toBe(expected);
+    expect(chirpPageBadge(ws)).toBe(expected);
+    expect(overviewChirpBadge(ws)).toBe(expected);
+  });
+
+  it("usable_with_warnings is WARN on the Overview too (was PASS)", () => {
+    expect(overviewChirpBadge(workspace("repeated_axis"))).toBe("WARN");
+  });
+
+  it("available=true with empty arrays is NOT AVAILABLE on the Overview too", () => {
+    const ws = workspace("clean_single_axis");
+    ws.chirp = { ...ws.chirp!, magnitude: [], phase: [], coherence: [] };
+    expect(overviewChirpBadge(ws)).toBe("NOT AVAILABLE");
   });
 });

@@ -8,6 +8,7 @@ import { SectionHeader } from "@/components/ui/SectionHeader";
 import { StatusAlert } from "@/components/ui/StatusAlert";
 import { SurfaceCard } from "@/components/ui/SurfaceCard";
 import { TopInfoCard } from "@/components/ui/TopInfoCard";
+import { chirpDisplay } from "@/lib/chirpStatus";
 import { pageStack } from "@/lib/gyrocore-theme";
 
 export function OverviewPage({ ws }: { ws: WorkspacePayload }) {
@@ -48,7 +49,7 @@ export function OverviewPage({ ws }: { ws: WorkspacePayload }) {
           </div>
           <KeyValue
             rows={[
-              { label: "CHIRP", value: <StatusBadge value={o.chirp_detected ? "PASS" : "NOT AVAILABLE"} /> },
+              { label: "CHIRP", value: <StatusBadge value={chirpDisplay(ws.chirp).badge} /> },
               { label: "Tune rec.", value: String(o.tune_recommendation || "—"), mono: true },
             ]}
           />

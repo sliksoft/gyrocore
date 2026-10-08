@@ -12,21 +12,75 @@ import { normalizeFromFlightLog, type FlightLogLike } from "@/decode/normalizeFr
 import { ChirpFramesError, chirpFramesFromFlightLog } from "./frames";
 import { identifyChirpSystem, UPSTREAM_PROVENANCE } from "./pipeline";
 import { parseChirpSysConfig, readHeaderPairs, sysConfigToDict, validateChirpDebugMode } from "./sysconfig";
-import { AXIS_NAMES, type ChirpBrowserAnalysis, type ChirpRejection, type ChirpSystemIdResult } from "./types";
+import {
+  AXIS_NAMES,
+  type ChirpAxisResult,
+  type ChirpBrowserAnalysis,
+  type ChirpRejection,
+  type ChirpSystemIdResult,
+} from "./types";
 
-/** First usable axis with non-empty, equal-length magnitude/phase/coherence series. */
+const USABLE_STATUSES: ReadonlySet<string> = new Set(["ok", "usable_with_warnings"]);
+
+/**
+ * CHIRP contract invariants for a usable axis: the violated invariant's code, or
+ * null when the axis may be reported as available.
+ *
+ * - frequency / magnitude / phase / coherence all non-empty and equal length
+ * - a valid usable frequency range (finite, 0 <= lo <= hi, inside the analysis band)
+ * - a usable mask over the same bins with at least one usable bin
+ * - finite frequency / magnitude / phase and coherence in [0, 1] on every usable bin
+ *   (floored bins outside the usable band are legitimately -Infinity dB)
+ */
+export function chirpAxisViolation(ax: ChirpAxisResult): string | null {
+  const tf = ax.transfer_function;
+  if (!tf) return "chirp_series_empty";
+  const n = tf.frequencies_hz.length;
+  if (!n || !tf.magnitude_db.length || !tf.phase_deg.length || !tf.coherence.length) return "chirp_series_empty";
+  if (tf.magnitude_db.length !== n || tf.phase_deg.length !== n || tf.coherence.length !== n) {
+    return "chirp_series_length_mismatch";
+  }
+  const range = ax.quality.usable_range_hz;
+  const [bandLo, bandHi] = ax.quality.analysis_band_hz;
+  if (
+    !range ||
+    !Number.isFinite(range[0]) ||
+    !Number.isFinite(range[1]) ||
+    !(range[0] >= 0 && range[0] <= range[1]) ||
+    range[0] < bandLo ||
+    range[1] > bandHi
+  ) {
+    return "chirp_invalid_frequency_range";
+  }
+  const mask = ax.usable_mask;
+  if (!mask || mask.length !== n) return "chirp_invalid_usable_band";
+  let bins = 0;
+  for (let k = 0; k < n; k++) {
+    if (!mask[k]) continue;
+    bins++;
+    const coh = tf.coherence[k]!;
+    if (
+      !Number.isFinite(tf.frequencies_hz[k]!) ||
+      !Number.isFinite(tf.magnitude_db[k]!) ||
+      !Number.isFinite(tf.phase_deg[k]!) ||
+      !(coh >= 0 && coh <= 1)
+    ) {
+      return "chirp_nonfinite_usable_band";
+    }
+  }
+  return bins ? null : "chirp_invalid_usable_band";
+}
+
+/** First usable axis that satisfies every CHIRP contract invariant. */
 export function primaryUsableAxis(result: ChirpSystemIdResult) {
   for (const name of AXIS_NAMES) {
     const ax = result.axes[name];
-    const tf = ax?.transfer_function;
-    if (!ax?.usable || !tf) continue;
-    const n = tf.frequencies_hz.length;
-    if (n > 0 && tf.magnitude_db.length === n && tf.phase_deg.length === n && tf.coherence.length === n) return ax;
+    if (ax?.usable && chirpAxisViolation(ax) === null) return ax;
   }
   return null;
 }
 
-/** Structured rejection; null only for a usable result that has real series. */
+/** Structured rejection; null only for a usable result whose status and series satisfy the contract. */
 export function chirpRejection(result: ChirpSystemIdResult): ChirpRejection | null {
   if (result.status === "error") {
     return { code: (result.errors[0] ?? "chirp_error").split(":")[0]!, detail: result.errors.join("; ") };
@@ -35,8 +89,13 @@ export function chirpRejection(result: ChirpSystemIdResult): ChirpRejection | nu
   if (!result.usable) {
     return { code: "chirp_unusable", detail: result.errors.join("; ") || "No axis passed the CHIRP validity gates." };
   }
+  if (!USABLE_STATUSES.has(result.status)) {
+    return { code: "chirp_status_inconsistent", detail: `Usable result with status "${result.status}".` };
+  }
   if (!primaryUsableAxis(result)) {
-    return { code: "chirp_series_empty", detail: "Usable status without magnitude/phase/coherence series." };
+    const usable = AXIS_NAMES.map((name) => result.axes[name]).filter((ax) => ax?.usable);
+    const code = (usable.length ? chirpAxisViolation(usable[0]!) : null) ?? "chirp_series_empty";
+    return { code, detail: "Usable status without valid magnitude/phase/coherence series." };
   }
   return null;
 }

@@ -8,8 +8,9 @@ import { complexFftInPlace, realFft } from "./fft";
 import { ChirpFramesError, chirpFramesFromFlightLog, type FrameSource } from "./frames";
 import { jsRound, npMedian, npRint, npSum } from "./numeric";
 import { compareChirpResults, toPlain } from "./parityCompare";
-import { chirpRejection, primaryUsableAxis, runChirpOnBytes, transferablesOf } from "./runChirp";
+import { chirpAxisViolation, chirpRejection, primaryUsableAxis, runChirpOnBytes, transferablesOf } from "./runChirp";
 import type { ChirpResponse, ChirpSystemIdResult } from "./types";
+import { chirpPayloadFromAnalysis } from "./workspace";
 
 const WU7 = fileURLToPath(new URL("../../../../../tests/fixtures/chirp/wu7/bbl/", import.meta.url));
 const fixture = (name: string) => new Uint8Array(gunzipSync(readFileSync(WU7 + name + ".bbl.gz")));
@@ -216,5 +217,63 @@ describe("worker client", () => {
     } finally {
       globalThis.fetch = prev;
     }
+  });
+});
+
+describe("CHIRP contract invariants (usable => valid series)", () => {
+  const valid = () => structuredClone(runChirpOnBytes(fixture("clean_single_axis"), { filename: "x.bbl" }).result);
+  const firstUsableBin = (r: ChirpSystemIdResult) => r.axes.roll!.usable_mask!.indexOf(1);
+
+  it("valid fixture satisfies every invariant", () => {
+    const r = valid();
+    expect(chirpAxisViolation(r.axes.roll!)).toBeNull();
+    expect(chirpRejection(r)).toBeNull();
+  });
+
+  it("-Infinity dB outside the usable band is legitimate (floored bins)", () => {
+    const r = valid();
+    const k = r.axes.roll!.usable_mask!.indexOf(0);
+    r.axes.roll!.transfer_function!.magnitude_db[k] = -Infinity;
+    expect(chirpRejection(r)).toBeNull();
+  });
+
+  const mutations: Array<[string, (r: ChirpSystemIdResult) => void, string]> = [
+    ["empty frequency", (r) => void (r.axes.roll!.transfer_function!.frequencies_hz = new Float64Array(0)), "chirp_series_empty"],
+    ["empty phase", (r) => void (r.axes.roll!.transfer_function!.phase_deg = new Float64Array(0)), "chirp_series_empty"],
+    ["empty coherence", (r) => void (r.axes.roll!.transfer_function!.coherence = new Float64Array(0)), "chirp_series_empty"],
+    ["no transfer function", (r) => void delete r.axes.roll!.transfer_function, "chirp_series_empty"],
+    [
+      "unequal lengths",
+      (r) => void (r.axes.roll!.transfer_function!.phase_deg = r.axes.roll!.transfer_function!.phase_deg.subarray(1)),
+      "chirp_series_length_mismatch",
+    ],
+    ["NaN magnitude in usable band", (r) => void (r.axes.roll!.transfer_function!.magnitude_db[firstUsableBin(r)] = NaN), "chirp_nonfinite_usable_band"],
+    ["-Infinity magnitude in usable band", (r) => void (r.axes.roll!.transfer_function!.magnitude_db[firstUsableBin(r)] = -Infinity), "chirp_nonfinite_usable_band"],
+    ["Infinity phase in usable band", (r) => void (r.axes.roll!.transfer_function!.phase_deg[firstUsableBin(r)] = Infinity), "chirp_nonfinite_usable_band"],
+    ["coherence > 1 in usable band", (r) => void (r.axes.roll!.transfer_function!.coherence[firstUsableBin(r)] = 1.5), "chirp_nonfinite_usable_band"],
+    ["no usable range", (r) => void (r.axes.roll!.quality.usable_range_hz = null), "chirp_invalid_frequency_range"],
+    ["inverted usable range", (r) => void (r.axes.roll!.quality.usable_range_hz = [100, 10]), "chirp_invalid_frequency_range"],
+    ["range outside analysis band", (r) => void (r.axes.roll!.quality.usable_range_hz = [1, 1e6]), "chirp_invalid_frequency_range"],
+    ["NaN range", (r) => void (r.axes.roll!.quality.usable_range_hz = [NaN, 50]), "chirp_invalid_frequency_range"],
+    ["no usable mask", (r) => void delete r.axes.roll!.usable_mask, "chirp_invalid_usable_band"],
+    ["empty usable mask", (r) => void r.axes.roll!.usable_mask!.fill(0), "chirp_invalid_usable_band"],
+    ["usable but status unusable", (r) => void (r.status = "unusable"), "chirp_status_inconsistent"],
+    ["usable but status error-free unknown", (r) => void (r.status = "pass" as ChirpSystemIdResult["status"]), "chirp_status_inconsistent"],
+  ];
+
+  it.each(mutations)("%s -> explicit rejection", (_label, mutate, code) => {
+    const r = valid();
+    mutate(r);
+    expect(chirpRejection(r)?.code).toBe(code);
+    expect(primaryUsableAxis(r) === null || code === "chirp_status_inconsistent").toBe(true);
+  });
+
+  it.each(mutations)("%s -> workspace payload is not available", (_label, mutate) => {
+    const a = runChirpOnBytes(fixture("clean_single_axis"), { filename: "x.bbl" });
+    const r = structuredClone(a.result);
+    mutate(r);
+    const c = chirpPayloadFromAnalysis({ ...a, result: r, rejection: chirpRejection(r) });
+    expect(c.available).toBe(false);
+    expect(c.magnitude).toEqual([]);
   });
 });

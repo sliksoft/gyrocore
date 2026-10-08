@@ -91,6 +91,7 @@
   },
   "chirp": {
     "available": true,
+    "status": "ok",
     "axis": "roll",
     "sample_rate_hz": 2000.0,
     "sample_rate_source": "header_logged_rate",

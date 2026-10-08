@@ -172,7 +172,7 @@ def inspect_log(path: str) -> dict[str, Any]:
 def _series_from_tf(tf: dict[str, Any] | None) -> tuple[list[dict], list[dict], list[dict]]:
     if not isinstance(tf, dict):
         return [], [], []
-    freqs = tf.get("frequency_hz") or tf.get("freq_hz") or []
+    freqs = tf.get("frequencies_hz") or []
     mag = tf.get("magnitude_db") or []
     phase = tf.get("phase_deg") or []
     coh = tf.get("coherence") or []
@@ -189,6 +189,7 @@ def _chirp_from_core(path: Path, log_index: int | None) -> dict[str, Any]:
         return {
             "available": False,
             "reason": f"chirp_error:{type(exc).__name__}",
+            "status": "error",
             "message": str(exc)[:240],
             "magnitude": [],
             "phase": [],
@@ -224,9 +225,22 @@ def _chirp_from_core(path: Path, log_index: int | None) -> dict[str, Any]:
             "core": data,
         }
     mag, phase, coh = _series_from_tf(axis_payload.get("transfer_function"))
+    if not mag or not (len(mag) == len(phase) == len(coh)):
+        # available=true requires real, aligned series: never a PASS with empty arrays.
+        return {
+            "available": False,
+            "reason": "chirp_series_empty",
+            "status": result.status,
+            "warnings": list(result.warnings),
+            "magnitude": [],
+            "phase": [],
+            "coherence": [],
+            "core": data,
+        }
     sr = axis_payload.get("sample_rate") if isinstance(axis_payload.get("sample_rate"), dict) else {}
     return {
         "available": True,
+        "status": result.status,
         "axis": axis_name,
         "sample_rate_hz": axis_payload.get("effective_rate_hz") or sr.get("effective_rate_hz"),
         "sample_rate_source": sr.get("source") or sr.get("status"),
@@ -238,9 +252,8 @@ def _chirp_from_core(path: Path, log_index: int | None) -> dict[str, Any]:
         "usable_frequency_hz": (axis_payload.get("quality") or {}).get("usable_range_hz")
         if isinstance(axis_payload.get("quality"), dict)
         else {},
-        "quality": (axis_payload.get("quality") or {}).get("status")
-        if isinstance(axis_payload.get("quality"), dict)
-        else result.status,
+        # The reference axis quality has no "status"; the result status is the verdict.
+        "quality": result.status,
         "segment": axis_payload.get("segment"),
         "magnitude": mag,
         "phase": phase,
