@@ -1,4 +1,15 @@
-import type { DecodedFlightSummary, NormalizedDecodedLog } from "./types";
+import {
+  FIRMWARE_TYPE_BASEFLIGHT,
+  FIRMWARE_TYPE_BETAFLIGHT,
+  FIRMWARE_TYPE_CLEANFLIGHT,
+  FIRMWARE_TYPE_INAV,
+} from "@bf-blackbox/flightlog_fielddefs.js";
+import type {
+  DecodedFlightSummary,
+  MetadataKey,
+  MetadataPresence,
+  NormalizedDecodedLog,
+} from "./types";
 
 /** Minimal FlightLog surface used by the adapter (constructor lives in BF tree). */
 export type FlightLogLike = {
@@ -13,34 +24,21 @@ export type FlightLogLike = {
   getChunksInTimeRange: (start: number, end: number) => Array<{ frames: number[][] }>;
 };
 
-const SERIES_CANDIDATES = [
-  "gyroADC[0]",
-  "gyroADC[1]",
-  "gyroADC[2]",
-  "setpoint[0]",
-  "setpoint[1]",
-  "setpoint[2]",
-  "motor[0]",
-  "motor[1]",
-  "motor[2]",
-  "motor[3]",
-  "rcCommand[0]",
-  "rcCommand[1]",
-  "rcCommand[2]",
-  "rcCommand[3]",
-  "axisP[0]",
-  "axisP[1]",
-  "axisP[2]",
-  "axisI[0]",
-  "axisI[1]",
-  "axisI[2]",
-  "axisD[0]",
-  "axisD[1]",
-  "debug[0]",
-  "debug[1]",
-  "debug[2]",
-  "debug[3]",
-] as const;
+/**
+ * Main-frame channels carried in the normalized contract: every logged axis/motor/debug
+ * slot for gyro, setpoint, motors, RC, PID P/I/D/F and debug.
+ */
+const SERIES_FIELD_PATTERN = /^(gyroADC|setpoint|motor|rcCommand|axisP|axisI|axisD|axisF|debug)\[\d+\]$/;
+
+const FIRMWARE_TYPE_NAMES: Record<number, string> = {
+  [FIRMWARE_TYPE_BASEFLIGHT]: "Baseflight",
+  [FIRMWARE_TYPE_CLEANFLIGHT]: "Cleanflight",
+  [FIRMWARE_TYPE_BETAFLIGHT]: "Betaflight",
+  [FIRMWARE_TYPE_INAV]: "INAV",
+};
+
+/** Betaflight writes this when the RTC was never set; it is not a real start time. */
+const UNSET_LOG_START_DATETIME = /^0000-01-01T/;
 
 function recommendIndex(flights: DecodedFlightSummary[]): number {
   if (!flights.length) return 0;
@@ -65,10 +63,14 @@ function countFrames(log: FlightLogLike): number {
   return n;
 }
 
+export function selectSeriesFields(fieldNames: string[]): string[] {
+  return fieldNames.filter((name) => SERIES_FIELD_PATTERN.test(name));
+}
+
 function extractSeries(
   log: FlightLogLike,
   fieldNames: string[],
-): { timeUs: Float64Array; series: Record<string, Float64Array> } {
+): { timeUs: Float64Array; loopIteration: Float64Array; series: Record<string, Float64Array> } {
   const min = log.getMinTime();
   const max = log.getMaxTime();
   const chunks = log.getChunksInTimeRange(min, max);
@@ -78,21 +80,122 @@ function extractSeries(
   }
   const n = frames.length;
   const timeIdx = log.getMainFieldIndexByName("time");
+  const iterIdx = log.getMainFieldIndexByName("loopIteration");
   const timeUs = new Float64Array(n);
+  const loopIteration = new Float64Array(n);
   for (let i = 0; i < n; i++) {
     timeUs[i] = timeIdx !== undefined ? Number(frames[i]![timeIdx]) : i;
+    loopIteration[i] = iterIdx !== undefined ? Number(frames[i]![iterIdx]) : i;
   }
 
   const series: Record<string, Float64Array> = {};
-  for (const name of SERIES_CANDIDATES) {
-    if (!fieldNames.includes(name)) continue;
+  for (const name of selectSeriesFields(fieldNames)) {
     const idx = log.getMainFieldIndexByName(name);
     if (idx === undefined) continue;
     const arr = new Float64Array(n);
     for (let i = 0; i < n; i++) arr[i] = Number(frames[i]![idx]);
     series[name] = arr;
   }
-  return { timeUs, series };
+  return { timeUs, loopIteration, series };
+}
+
+const str = (v: unknown): string | undefined =>
+  typeof v === "string" && v.trim().length > 0 ? v : undefined;
+const num = (v: unknown): number | undefined => {
+  if (typeof v === "number" && Number.isFinite(v)) return v;
+  if (typeof v === "string" && v.trim() !== "" && Number.isFinite(Number(v))) return Number(v);
+  return undefined;
+};
+
+/**
+ * Raw header names that carry each metadata key. FlightLog renames some headers
+ * (e.g. `motor_pwm_protocol` → `fast_pwm_protocol`), so both spellings are listed.
+ */
+const METADATA_HEADERS: Record<MetadataKey, string[]> = {
+  firmwareType: ["Firmware type", "Firmware revision"],
+  firmwareVersion: ["Firmware revision"],
+  firmwareRevision: ["Firmware revision"],
+  firmwareDate: ["Firmware date"],
+  boardInformation: ["Board information"],
+  craftName: ["Craft name"],
+  looptimeUs: ["looptime"],
+  pidProcessDenom: ["pid_process_denom"],
+  frameIntervalI: ["I interval"],
+  frameIntervalPNum: ["P interval"],
+  frameIntervalPDenom: ["P interval"],
+  gyroScaleRaw: ["gyro_scale", "gyro.scale"],
+  motorProtocol: ["motor_pwm_protocol", "fast_pwm_protocol"],
+  debugMode: ["debug_mode"],
+  dataVersion: ["Data version"],
+  logStartDatetime: ["Log start datetime"],
+};
+
+function firstHeader(raw: Record<string, string>, names: string[]): string | undefined {
+  for (const n of names) {
+    const v = raw[n];
+    if (v !== undefined && v.trim().length > 0) return v.trim();
+  }
+  return undefined;
+}
+
+function buildMetadata(
+  sys: Record<string, unknown>,
+  rawHeaders: Record<string, string> | undefined,
+): Omit<NormalizedDecodedLog["metadata"], "fieldNames" | "sampleRateHzEstimate"> {
+  const raw = rawHeaders ?? {};
+  const fwTypeNum = num(sys.firmwareType);
+  const rawLogStart = str(sys["Log start datetime"]);
+  const values: Record<MetadataKey, string | number | undefined> = {
+    firmwareType: fwTypeNum !== undefined ? FIRMWARE_TYPE_NAMES[fwTypeNum] : str(sys.firmwareType),
+    firmwareVersion: str(sys.firmwareVersion),
+    firmwareRevision: str(sys["Firmware revision"]),
+    firmwareDate: str(sys["Firmware date"]),
+    boardInformation: str(sys["Board information"]),
+    craftName: str(sys["Craft name"]) ?? str(sys.craftName),
+    looptimeUs: num(sys.looptime),
+    pidProcessDenom: num(sys.pid_process_denom),
+    frameIntervalI: num(sys.frameIntervalI),
+    frameIntervalPNum: num(sys.frameIntervalPNum),
+    frameIntervalPDenom: num(sys.frameIntervalPDenom),
+    // FlightLog converts gyro_scale to rad/µs and does not keep Data version; take both from raw headers.
+    gyroScaleRaw: firstHeader(raw, METADATA_HEADERS.gyroScaleRaw),
+    motorProtocol: num(sys.fast_pwm_protocol) ?? num(sys.motor_pwm_protocol),
+    debugMode: num(sys.debug_mode),
+    dataVersion: num(firstHeader(raw, METADATA_HEADERS.dataVersion)),
+    logStartDatetime:
+      rawLogStart && !UNSET_LOG_START_DATETIME.test(rawLogStart) ? rawLogStart : undefined,
+  };
+
+  const presence: Partial<Record<MetadataKey, MetadataPresence>> = {};
+  if (rawHeaders) {
+    for (const key of Object.keys(METADATA_HEADERS) as MetadataKey[]) {
+      const logged = firstHeader(rawHeaders, METADATA_HEADERS[key]);
+      if (logged === undefined) presence[key] = "ABSENT_IN_LOG";
+      else if (key === "logStartDatetime" && UNSET_LOG_START_DATETIME.test(logged))
+        presence[key] = "UNSET_SENTINEL";
+      else presence[key] = values[key] !== undefined ? "PRESENT" : "PARSER_MISSING";
+    }
+  }
+
+  return {
+    firmwareType: values.firmwareType as string | undefined,
+    firmwareVersion: values.firmwareVersion as string | undefined,
+    firmwareRevision: values.firmwareRevision as string | undefined,
+    firmwareDate: values.firmwareDate as string | undefined,
+    boardInformation: values.boardInformation as string | undefined,
+    craftName: values.craftName as string | undefined,
+    looptimeUs: values.looptimeUs as number | undefined,
+    pidProcessDenom: values.pidProcessDenom as number | undefined,
+    frameIntervalI: values.frameIntervalI as number | undefined,
+    frameIntervalPNum: values.frameIntervalPNum as number | undefined,
+    frameIntervalPDenom: values.frameIntervalPDenom as number | undefined,
+    gyroScaleRaw: values.gyroScaleRaw as string | undefined,
+    motorProtocol: values.motorProtocol as number | undefined,
+    debugMode: values.debugMode as number | undefined,
+    dataVersion: values.dataVersion as number | undefined,
+    logStartDatetime: values.logStartDatetime as string | undefined,
+    presence,
+  };
 }
 
 export function normalizeFromFlightLog(
@@ -102,6 +205,11 @@ export function normalizeFromFlightLog(
     sizeBytes: number;
     selectedIndex?: number | null;
     includeSeries?: boolean;
+    /**
+     * Resolves raw `H` headers for an embedded log (see `readLogHeaders`); enables
+     * ABSENT_IN_LOG vs PARSER_MISSING metadata provenance.
+     */
+    rawHeadersForLog?: (logIndex: number) => Record<string, string>;
   },
 ): NormalizedDecodedLog {
   const logCount = log.getLogCount();
@@ -163,9 +271,9 @@ export function normalizeFromFlightLog(
 
   const fieldNames = log.getMainFieldNames().slice();
   const sys = log.getSysConfig() || {};
-  const { timeUs, series } = opts.includeSeries
+  const { timeUs, loopIteration, series } = opts.includeSeries
     ? extractSeries(log, fieldNames)
-    : { timeUs: new Float64Array(0), series: {} };
+    : { timeUs: new Float64Array(0), loopIteration: new Float64Array(0), series: {} };
 
   let sampleRateHzEstimate: number | null = null;
   if (timeUs.length >= 2) {
@@ -193,13 +301,12 @@ export function normalizeFromFlightLog(
       flights,
     },
     metadata: {
-      firmwareType: typeof sys.firmwareType === "string" ? sys.firmwareType : undefined,
-      firmwareVersion: typeof sys.firmwareVersion === "string" ? sys.firmwareVersion : undefined,
-      craftName: typeof sys.craftName === "string" ? sys.craftName : undefined,
+      ...buildMetadata(sys, opts.rawHeadersForLog?.(selectedIndex)),
       sampleRateHzEstimate,
       fieldNames,
     },
     timeUs,
+    loopIteration,
     series,
   };
 }

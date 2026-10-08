@@ -2,6 +2,7 @@
   "name": "gyrocore-blackbox-host",
   "private": true,
   "version": "0.1.0",
+  "license": "GPL-3.0-only",
   "type": "module",
   "description": "Vite host for vendored Betaflight Blackbox Log Viewer (third_party unmodified)",
   "scripts": {

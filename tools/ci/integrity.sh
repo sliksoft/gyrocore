@@ -47,4 +47,7 @@ test -f docs/upstream/FPVPIDLAB_SELECTIVE_AUDIT.md
 test -f third_party/fpvpidlab/UPSTREAM_COMMIT
 test -f third_party/fpvpidlab/LICENSE
 
+echo "== Package license metadata matches root LICENSE =="
+python3 -m pytest tests/test_license_metadata.py
+
 echo "integrity OK"

@@ -1,6 +1,7 @@
 /// <reference lib="webworker" />
 
 import { FlightLog } from "@bf-blackbox/flightlog.js";
+import { readLogHeaders } from "./headers";
 import { normalizeFromFlightLog } from "./normalizeFromFlightLog";
 import type { DecodeRequest, DecodeResponse } from "./types";
 
@@ -30,6 +31,7 @@ ctx.onmessage = (ev: MessageEvent<DecodeRequest>) => {
       sizeBytes: bytes.byteLength,
       selectedIndex: logIndex ?? null,
       includeSeries: includeSeries !== false,
+      rawHeadersForLog: (i) => readLogHeaders(bytes, i),
     });
     timingsMs.normalize = performance.now() - tNorm;
     timingsMs.total = performance.now() - started;

@@ -21,6 +21,32 @@ export type DecodedSeries = {
   values: Float64Array;
 };
 
+export type MetadataKey =
+  | "firmwareType"
+  | "firmwareVersion"
+  | "firmwareRevision"
+  | "firmwareDate"
+  | "boardInformation"
+  | "craftName"
+  | "looptimeUs"
+  | "pidProcessDenom"
+  | "frameIntervalI"
+  | "frameIntervalPNum"
+  | "frameIntervalPDenom"
+  | "gyroScaleRaw"
+  | "motorProtocol"
+  | "debugMode"
+  | "dataVersion"
+  | "logStartDatetime";
+
+/**
+ * PRESENT — header logged and surfaced.
+ * ABSENT_IN_LOG — header not logged (or logged empty); not a decoder defect.
+ * UNSET_SENTINEL — header logged with a placeholder value (e.g. RTC unset date).
+ * PARSER_MISSING — header logged but the adapter did not surface it (defect).
+ */
+export type MetadataPresence = "PRESENT" | "ABSENT_IN_LOG" | "UNSET_SENTINEL" | "PARSER_MISSING";
+
 export type NormalizedDecodedLog = {
   schemaVersion: 1;
   source: {
@@ -38,12 +64,34 @@ export type NormalizedDecodedLog = {
   metadata: {
     firmwareType?: string;
     firmwareVersion?: string;
+    firmwareRevision?: string;
+    firmwareDate?: string;
+    boardInformation?: string;
     craftName?: string;
+    looptimeUs?: number;
+    pidProcessDenom?: number;
+    frameIntervalI?: number;
+    frameIntervalPNum?: number;
+    frameIntervalPDenom?: number;
+    /** Raw `gyro_scale` header value (FlightLog converts it internally). */
+    gyroScaleRaw?: string;
+    motorProtocol?: number;
+    debugMode?: number;
+    dataVersion?: number;
+    /** `Log start datetime` header; undefined when absent or the unset-RTC sentinel. */
+    logStartDatetime?: string;
     sampleRateHzEstimate?: number | null;
     fieldNames: string[];
+    /**
+     * Provenance per metadata key, checked against the raw `H` header lines of the
+     * selected log. Empty when raw headers were not supplied to the adapter.
+     */
+    presence: Partial<Record<MetadataKey, MetadataPresence>>;
   };
   /** Aligned timebase for selected flight (µs). */
   timeUs: Float64Array;
+  /** Logged loopIteration aligned with `timeUs` (join key for parity / segmenting). */
+  loopIteration: Float64Array;
   /** Selected primary series for parity / future analysis (not all fields). */
   series: Record<string, Float64Array>;
 };
