@@ -14,6 +14,12 @@ describe("runtime capabilities", () => {
     expect(caps.analysis).toBe("unavailable");
     expect(caps.nativePaths).toBe(false);
     expect(caps.browserFiles).toBe(true);
+    expect(caps.features).toEqual({
+      blackboxDecode: "browser-worker",
+      cliSelection: "browser-file",
+      chirpAnalysis: "browser-worker",
+      tuneSafety: "unavailable",
+    });
   });
 
   it("detects tauri mode when internals exist", () => {

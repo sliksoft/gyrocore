@@ -1,6 +1,7 @@
 import { cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { analyzeChirpFile } from "@/chirp/client";
 import { decodeBlackboxFile } from "@/decode/client";
 import { OpenPage } from "./OpenPage";
 
@@ -51,6 +52,37 @@ vi.mock("@/decode/client", () => ({
   })),
 }));
 
+vi.mock("@/chirp/client", () => ({
+  analyzeChirpFile: vi.fn(async (file: File) => ({
+    schemaVersion: 1,
+    engine: "gyrocore-browser-chirp",
+    result: {
+      status: "unusable",
+      usable: false,
+      detected: false,
+      analysis_only: true,
+      tuning_recommendations: null,
+      sysconfig: null,
+      extraction: null,
+      axes: {},
+      warnings: ["no_chirp_segments_detected"],
+      errors: ["no_chirp_segments"],
+      provenance: {},
+    },
+    rejection: { code: "no_chirp_segments", detail: "No CHIRP-active segment in the selected log." },
+    source: {
+      filename: file.name,
+      sizeBytes: file.size,
+      logIndex: 1,
+      logCount: 2,
+      decoder: "betaflight-flightlog-js",
+      framesDecoded: 10,
+      inputPolicy: "full_frame",
+    },
+    timingsMs: { total: 1 },
+  })),
+}));
+
 describe("OpenPage browser file selection", () => {
   afterEach(() => {
     cleanup();
@@ -96,7 +128,30 @@ describe("OpenPage browser file selection", () => {
     await user.upload(screen.getByTestId("cli-file-input"), cli);
     expect(screen.getByTestId("cli-selected")).toHaveTextContent("tune.TXT");
     expect(screen.getByTestId("files-ready")).toBeInTheDocument();
-    expect(screen.getByTestId("analyze-btn")).toBeDisabled(); // analysis unavailable
+    expect(screen.getByTestId("analyze-btn")).toBeEnabled(); // browser CHIRP analysis
+    expect(fetchSpy).not.toHaveBeenCalled();
+  });
+
+  it("runs browser CHIRP analysis locally and loads a CHIRP-only workspace", async () => {
+    const user = userEvent.setup();
+    const onLoaded = vi.fn();
+    render(<OpenPage onLoaded={onLoaded} />);
+    await user.upload(
+      screen.getByTestId("bbl-file-input"),
+      new File([new Uint8Array([1, 2])], "Flight.BBL", { type: "application/octet-stream" }),
+    );
+    await waitFor(() => expect(screen.getByTestId("decode-status")).toBeInTheDocument());
+    await user.upload(screen.getByTestId("cli-file-input"), new File(["# dump"], "tune.txt", { type: "text/plain" }));
+    await user.click(screen.getByTestId("analyze-btn"));
+    await waitFor(() => expect(onLoaded).toHaveBeenCalled());
+    expect(vi.mocked(analyzeChirpFile)).toHaveBeenCalledWith(expect.any(File), { logIndex: 1 });
+    const ws = onLoaded.mock.calls[0]![0];
+    expect(ws.kind).toBe("gyrocore_browser_workspace");
+    expect(ws.chirp).toMatchObject({ available: false, reason: "no_chirp_segments", magnitude: [] });
+    expect(ws.tune).toBeNull();
+    expect(ws.safety).toBeNull();
+    expect(ws.cli).toMatchObject({ authorized: false, actionable: false });
+    expect(ws.overview.final_safety).toBeUndefined();
     expect(fetchSpy).not.toHaveBeenCalled();
   });
 

@@ -10,6 +10,11 @@ import { StatusAlert } from "@/components/ui/StatusAlert";
 import { SurfaceCard } from "@/components/ui/SurfaceCard";
 import { pageStack } from "@/lib/gyrocore-theme";
 
+/** A chart-ready CHIRP payload: available AND non-empty magnitude / phase / coherence. */
+export function chirpHasSeries(c: WorkspacePayload["chirp"]): boolean {
+  return Boolean(c?.available && c.magnitude?.length && c.phase?.length && c.coherence?.length);
+}
+
 export function ChirpPage({ ws }: { ws: WorkspacePayload }) {
   const c = ws.chirp;
   if (!c) {
@@ -20,7 +25,9 @@ export function ChirpPage({ ws }: { ws: WorkspacePayload }) {
       </SurfaceCard>
     );
   }
-  if (!c.available) {
+  if (!chirpHasSeries(c)) {
+    // available=true with empty series is a contradiction, never a PASS.
+    const reason = c.available ? "chirp_series_empty" : c.reason || "unavailable";
     return (
       <div className={pageStack}>
         <SurfaceCard data-testid="chirp-unavailable">
@@ -29,7 +36,12 @@ export function ChirpPage({ ws }: { ws: WorkspacePayload }) {
             subtitle="No valid CHIRP segment for Bode charts."
             actions={<StatusBadge value="NOT AVAILABLE" />}
           />
-          <KeyValue rows={[{ label: "Reason", value: c.reason || "unavailable", mono: true }]} />
+          <KeyValue
+            rows={[
+              { label: "Reason", value: reason, mono: true },
+              ...(c.status ? [{ label: "Status", value: c.status, mono: true }] : []),
+            ]}
+          />
           {(c.warnings || []).length > 0 && <ReasonList items={c.warnings || []} className="mt-4" />}
         </SurfaceCard>
       </div>
@@ -39,7 +51,7 @@ export function ChirpPage({ ws }: { ws: WorkspacePayload }) {
   return (
     <div className={pageStack} data-testid="chirp-available">
       <SurfaceCard>
-        <SectionHeader title="CHIRP / System ID" subtitle="Closed-loop system identification from the CHIRP segment." actions={<StatusBadge value="PASS" />} />
+        <SectionHeader title="CHIRP / System ID" subtitle="Closed-loop system identification from the CHIRP segment." actions={<StatusBadge value={c.status === "usable_with_warnings" ? "WARN" : "PASS"} />} />
         <div className="mb-4 grid grid-cols-3 gap-3">
           <MetricTile label="Axis" value={c.axis || "—"} />
           <MetricTile label="Sample rate" value={c.sample_rate_hz ?? "—"} unit={c.sample_rate_hz != null ? "Hz" : undefined} />

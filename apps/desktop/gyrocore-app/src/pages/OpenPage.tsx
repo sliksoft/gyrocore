@@ -12,6 +12,8 @@ import { StatusAlert } from "@/components/ui/StatusAlert";
 import { StatusBadge } from "@/components/ui/StatusBadge";
 import { SurfaceCard } from "@/components/ui/SurfaceCard";
 import { WizardCard } from "@/components/ui/WizardCard";
+import { analyzeChirpFile } from "@/chirp/client";
+import { browserChirpWorkspace } from "@/chirp/workspace";
 import { decodeBlackboxFile } from "@/decode/client";
 import type { NormalizedDecodedLog } from "@/decode/types";
 import {
@@ -104,7 +106,9 @@ export function OpenPage({
     : Boolean(path.trim());
 
   const canAnalyzeTauri = !browserMode && caps.analysis === "tauri-worker" && Boolean(path.trim()) && !busy;
-  const canAnalyzeBrowser = false; // analysis backend not migrated yet
+  // Browser analysis = CHIRP / system-ID only (Tune / Safety not migrated).
+  const canAnalyzeBrowser =
+    browserMode && caps.features.chirpAnalysis === "browser-worker" && Boolean(bblFile && cliFile && decoded);
 
   function setWorking(next: boolean) {
     setBusy(next);
@@ -128,9 +132,20 @@ export function OpenPage({
 
   async function doAnalyze() {
     if (browserMode) {
-      setError(
-        "Browser analysis backend is not available yet. Your files stay on this device and were not uploaded. Use Demo mode, or the temporary desktop host for Core analysis.",
-      );
+      if (!canAnalyzeBrowser || !bblFile) return;
+      setWorking(true);
+      setError(null);
+      try {
+        const analysis = await analyzeChirpFile(bblFile.file, { logIndex });
+        onLoaded(
+          browserChirpWorkspace({ analysis, decoded, bblName: bblFile.name, cliName: cliFile?.name ?? null }),
+          null,
+        );
+      } catch (e) {
+        setError(String(e));
+      } finally {
+        setWorking(false);
+      }
       return;
     }
     setWorking(true);
@@ -322,7 +337,7 @@ export function OpenPage({
                     ]}
                   />
                   <p className="m-0 mt-3 text-xs text-[var(--gc-text-tertiary)]" data-testid="decode-status">
-                    Blackbox decoded — browser analysis migration not yet complete.
+                    Blackbox decoded — browser CHIRP analysis available; Tune / Safety analysis migration not yet complete.
                   </p>
                 </div>
               )}
@@ -438,7 +453,7 @@ export function OpenPage({
             </ActionButton>
             <span className="text-xs text-[var(--gc-text-tertiary)]">
               {browserMode
-                ? "Browser analysis backend pending — files stay local."
+                ? "Browser CHIRP / system-ID analysis — files stay local. Tune / Safety not yet in browser."
                 : "Runs the local Python Core and blackbox_decode."}
             </span>
           </div>

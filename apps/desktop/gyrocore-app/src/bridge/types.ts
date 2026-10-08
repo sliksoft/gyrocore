@@ -32,6 +32,8 @@ export interface WorkspacePayload {
 
 export interface ChirpPayload {
   available: boolean;
+  /** Core / browser CHIRP status: ok | usable_with_warnings | unusable | error. */
+  status?: string;
   reason?: string;
   axis?: string;
   sample_rate_hz?: number;
