@@ -22,6 +22,11 @@
     "noFallthroughCasesInSwitch": true
   },
   "include": ["src"],
-  "exclude": ["src/bridge/workerCli.ts", "src/**/*.test.ts", "src/**/*.test.tsx"],
+  "exclude": [
+    "src/bridge/workerCli.ts",
+    "src/decode/parity.ts",
+    "src/**/*.test.ts",
+    "src/**/*.test.tsx"
+  ],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

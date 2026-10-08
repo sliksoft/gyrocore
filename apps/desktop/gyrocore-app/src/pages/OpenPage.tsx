@@ -12,6 +12,8 @@ import { StatusAlert } from "@/components/ui/StatusAlert";
 import { StatusBadge } from "@/components/ui/StatusBadge";
 import { SurfaceCard } from "@/components/ui/SurfaceCard";
 import { WizardCard } from "@/components/ui/WizardCard";
+import { decodeBlackboxFile } from "@/decode/client";
+import type { NormalizedDecodedLog } from "@/decode/types";
 import {
   BLACKBOX_ACCEPT,
   CLI_ACCEPT,
@@ -88,6 +90,7 @@ export function OpenPage({
   const [cliPath, setCliPath] = useState("");
   const [bblFile, setBblFile] = useState<SelectedLocalFile | null>(null);
   const [cliFile, setCliFile] = useState<SelectedLocalFile | null>(null);
+  const [decoded, setDecoded] = useState<NormalizedDecodedLog | null>(null);
   const [inspect, setInspect] = useState<InspectResult | null>(null);
   const [logIndex, setLogIndex] = useState(0);
   const [busy, setBusy] = useState(false);
@@ -159,7 +162,7 @@ export function OpenPage({
     }
   }
 
-  function onBblPicked(list: FileList | null) {
+  async function onBblPicked(list: FileList | null) {
     const file = list?.[0];
     if (!file) return; // cancel
     if (!isSupportedBlackboxName(file.name)) {
@@ -167,8 +170,25 @@ export function OpenPage({
       return;
     }
     setBblFile(toSelectedLocalFile(file));
+    setDecoded(null);
     setError(null);
     if (bblInputRef.current) bblInputRef.current.value = "";
+    // CSV is accepted for selection but browser FlightLog decode is BBL/BFL binary.
+    if (file.name.toLowerCase().endsWith(".csv")) {
+      setError("CSV selected. Browser decode currently supports .bbl / .bfl binary logs.");
+      return;
+    }
+    setWorking(true);
+    try {
+      const { result } = await decodeBlackboxFile(file, { includeSeries: false });
+      setDecoded(result);
+      setLogIndex(result.embedded.recommendedIndex);
+    } catch (e) {
+      setDecoded(null);
+      setError(String(e));
+    } finally {
+      setWorking(false);
+    }
   }
 
   function onCliPicked(list: FileList | null) {
@@ -252,10 +272,60 @@ export function OpenPage({
                     replaceTestId="replace-bbl"
                     removeTestId="remove-bbl"
                     onReplace={() => bblInputRef.current?.click()}
-                    onRemove={() => setBblFile(null)}
+                    onRemove={() => {
+                      setBblFile(null);
+                      setDecoded(null);
+                    }}
                   />
                 )}
               </FormField>
+
+              {decoded && (
+                <div
+                  className="rounded-lg border border-[var(--gc-border-subtle)] bg-[var(--gc-bg-inset)]/70 p-4"
+                  data-testid="browser-decode-meta"
+                >
+                  <KeyValue
+                    rows={[
+                      {
+                        label: "Embedded logs",
+                        value: decoded.embedded.logCount > 1 ? (
+                          <select
+                            className={cn(selectBase, "max-w-md")}
+                            value={logIndex}
+                            onChange={(e) => setLogIndex(Number(e.target.value))}
+                            data-testid="log-index"
+                          >
+                            {decoded.embedded.flights.map((f) => (
+                              <option key={f.index} value={f.index}>
+                                {f.index}: {f.label}
+                                {f.index === decoded.embedded.recommendedIndex ? " (recommended)" : ""}
+                              </option>
+                            ))}
+                          </select>
+                        ) : (
+                          <span>1 log</span>
+                        ),
+                      },
+                      {
+                        label: "Firmware",
+                        value: [decoded.metadata.firmwareType, decoded.metadata.firmwareVersion]
+                          .filter(Boolean)
+                          .join(" ") || "—",
+                        mono: true,
+                      },
+                      {
+                        label: "Fields",
+                        value: String(decoded.metadata.fieldNames.length),
+                        mono: true,
+                      },
+                    ]}
+                  />
+                  <p className="m-0 mt-3 text-xs text-[var(--gc-text-tertiary)]" data-testid="decode-status">
+                    Blackbox decoded — browser analysis migration not yet complete.
+                  </p>
+                </div>
+              )}
 
               <FormField label="CLI Dump" help="Betaflight CLI dump required for tuning analysis.">
                 {!cliFile ? (
@@ -288,8 +358,9 @@ export function OpenPage({
                   title="Files ready on this device"
                   data-testid="files-ready"
                 >
-                  Blackbox and CLI are selected locally. Browser analysis is not migrated yet — nothing was
-                  uploaded, and Begin analysis will not fabricate results.
+                  {decoded
+                    ? "Blackbox decoded locally. Browser analysis migration is not yet complete — nothing was uploaded, and Begin analysis stays disabled."
+                    : "Blackbox and CLI are selected locally. Browser analysis is not migrated yet — nothing was uploaded, and Begin analysis will not fabricate results."}
                 </StatusAlert>
               )}
             </>

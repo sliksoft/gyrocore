@@ -5,11 +5,43 @@ import { VitePWA } from "vite-plugin-pwa";
 import { fileURLToPath, URL } from "node:url";
 // @ts-expect-error type error without @types/node package
 import process from "node:process";
+
 const host = process.env.TAURI_DEV_HOST;
+const repoRoot = fileURLToPath(new URL("../../..", import.meta.url));
+const bfBlackboxSrc = fileURLToPath(
+  new URL("../../../third_party/betaflight/blackbox-log-viewer/src", import.meta.url),
+);
+const fieldsPresenterStub = fileURLToPath(
+  new URL("./src/decode/bf-stubs/flightlog_fields_presenter.js", import.meta.url),
+);
+const piniaStub = fileURLToPath(new URL("./src/decode/bf-stubs/pinia.js", import.meta.url));
+const settingsStoreStub = fileURLToPath(
+  new URL("./src/decode/bf-stubs/settings-store.js", import.meta.url),
+);
+
+function stubFlightLogUiDeps() {
+  return {
+    name: "gyrocore-stub-flightlog-ui-deps",
+    enforce: "pre" as const,
+    resolveId(id: string) {
+      if (id.includes("flightlog_fields_presenter")) {
+        return fieldsPresenterStub;
+      }
+      if (id === "pinia" || id.endsWith("/pinia") || id.endsWith("/pinia.js")) {
+        return piniaStub;
+      }
+      if (id.includes("stores/settings")) {
+        return settingsStoreStub;
+      }
+      return null;
+    },
+  };
+}
 
 // https://vite.dev/config/
 export default defineConfig(() => ({
   plugins: [
+    stubFlightLogUiDeps(),
     react(),
     tailwindcss(),
     VitePWA({
@@ -49,8 +81,6 @@ export default defineConfig(() => ({
         // App shell / static assets only — never user BBL/CLI/decoded data.
         globPatterns: ["**/*.{js,css,html,ico,png,svg,woff,woff2,json}"],
         navigateFallback: "/index.html",
-        // Do not precache large demo fixtures as "flight data" — demos are UI fixtures only.
-        // Still allow small JSON under demo/ for offline demo mode; max size keeps huge logs out.
         maximumFileSizeToCacheInBytes: 5 * 1024 * 1024,
         runtimeCaching: [],
       },
@@ -60,14 +90,21 @@ export default defineConfig(() => ({
     }),
   ],
   resolve: {
-    alias: { "@": fileURLToPath(new URL("./src", import.meta.url)) },
+    alias: [
+      { find: "@", replacement: fileURLToPath(new URL("./src", import.meta.url)) },
+      // GPL-3.0 vendored Betaflight Blackbox Log Viewer (see docs/browser-blackbox-decoder.md)
+      { find: "@bf-blackbox", replacement: bfBlackboxSrc },
+      { find: "semver", replacement: fileURLToPath(new URL("./node_modules/semver", import.meta.url)) },
+      { find: "pinia", replacement: piniaStub },
+      // Decode-only stub — avoid Pinia/Vue UI stores in the worker.
+    ],
+  },
+  worker: {
+    format: "es",
+    plugins: () => [stubFlightLogUiDeps()],
   },
 
-  // Vite options tailored for Tauri development and only applied in `tauri dev` or `tauri build`
-  //
-  // 1. prevent Vite from obscuring rust errors
   clearScreen: false,
-  // 2. tauri expects a fixed port, fail if that port is not available
   server: {
     port: 1420,
     strictPort: true,
@@ -79,8 +116,10 @@ export default defineConfig(() => ({
           port: 1421,
         }
       : undefined,
+    fs: {
+      allow: [repoRoot],
+    },
     watch: {
-      // 3. tell Vite to ignore watching `src-tauri`
       ignored: ["**/src-tauri/**"],
     },
   },
