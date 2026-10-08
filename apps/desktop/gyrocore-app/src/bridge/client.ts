@@ -1,3 +1,4 @@
+import { isTauriRuntime } from "@/runtime/capabilities";
 import type { InspectResult, WorkspacePayload } from "./types";
 
 export interface WorkerResponse<T> {
@@ -22,6 +23,16 @@ async function invokeWorker<T>(op: string, params: Record<string, unknown> = {})
 
   if (typeof window !== "undefined" && window.__GYROCORE_WORKER__) {
     return window.__GYROCORE_WORKER__<T>(op, params);
+  }
+
+  // PWA / browser: never touch Tauri invoke (would throw TypeError).
+  if (!isTauriRuntime()) {
+    if (op === "demo" || op === "list_demos" || op === "ping") {
+      return runDemoFixtureFallback<T>(op, params);
+    }
+    throw new Error(
+      "Browser analysis backend is not available yet. Demo fixtures work offline; real Blackbox analysis arrives in a later update.",
+    );
   }
 
   try {
