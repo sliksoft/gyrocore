@@ -21,8 +21,13 @@ export function SafetyPage({ ws }: { ws: WorkspacePayload }) {
   if (!s) {
     return (
       <SurfaceCard>
-        <SectionHeader title="Safety" />
-        <EmptyState icon={<ShieldCheck className="h-5 w-5" aria-hidden />} title="Safety stages unavailable." />
+        <SectionHeader title="Safety" actions={<StatusBadge value="NOT AVAILABLE" />} />
+        <EmptyState
+          icon={<ShieldCheck className="h-5 w-5" aria-hidden />}
+          title="Safety stages unavailable."
+          description={ws.unavailable_reason}
+          data-testid="safety-unavailable"
+        />
       </SurfaceCard>
     );
   }

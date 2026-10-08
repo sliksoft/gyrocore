@@ -10,17 +10,25 @@ export type AnalysisCapability =
   | "tauri-worker"; // temporary desktop host
 
 /**
- * Per-feature availability. `analysis` above stays the general Tune/Safety
+ * Per-feature availability. `analysis` above stays the general Python-Core
  * pipeline; browser features are listed individually so a migrated piece
- * (CHIRP) never implies the whole analysis is complete.
+ * (decode, CHIRP) never implies the whole analysis is complete.
  */
 export type FeatureCapabilities = {
   blackboxDecode: "browser-worker" | "tauri-worker";
   cliSelection: "browser-file" | "native-path";
   /** CHIRP / system-ID analysis; results still carry their own validity state. */
   chirpAnalysis: "browser-worker" | "tauri-worker";
-  /** Final Tune / PID / Safety generation — NOT migrated to the browser. */
-  tuneSafety: "unavailable" | "tauri-worker";
+  /** Resonance / noise / quality analysis — NOT migrated to the browser. */
+  generalAnalysis: "unavailable" | "tauri-worker";
+  /** PID / filter tune generation — NOT migrated to the browser. */
+  tune: "unavailable" | "tauri-worker";
+  /** Mechanical / tuning-output safety verdict — NOT migrated to the browser. */
+  safety: "unavailable" | "tauri-worker";
+  /** Current vs safe-target compare (needs Tune + Safety). */
+  compare: "unavailable" | "tauri-worker";
+  /** Authorized apply / rollback CLI generation. */
+  cliApply: "unavailable" | "tauri-worker";
 };
 
 export type RuntimeCapabilities = {
@@ -52,7 +60,11 @@ export function getRuntimeCapabilities(): RuntimeCapabilities {
         blackboxDecode: "tauri-worker",
         cliSelection: "native-path",
         chirpAnalysis: "tauri-worker",
-        tuneSafety: "tauri-worker",
+        generalAnalysis: "tauri-worker",
+        tune: "tauri-worker",
+        safety: "tauri-worker",
+        compare: "tauri-worker",
+        cliApply: "tauri-worker",
       },
       nativePaths: true,
       browserFiles: true,
@@ -65,9 +77,22 @@ export function getRuntimeCapabilities(): RuntimeCapabilities {
       blackboxDecode: "browser-worker",
       cliSelection: "browser-file",
       chirpAnalysis: "browser-worker",
-      tuneSafety: "unavailable",
+      generalAnalysis: "unavailable",
+      tune: "unavailable",
+      safety: "unavailable",
+      compare: "unavailable",
+      cliApply: "unavailable",
     },
     nativePaths: false,
     browserFiles: true,
   };
+}
+
+/** Workspace-facing view of the feature map: what this workspace can and cannot show. */
+export function featureAvailability(features: FeatureCapabilities): Record<keyof FeatureCapabilities, "available" | "unavailable"> {
+  const out = {} as Record<keyof FeatureCapabilities, "available" | "unavailable">;
+  for (const [k, v] of Object.entries(features) as Array<[keyof FeatureCapabilities, string]>) {
+    out[k] = v === "unavailable" ? "unavailable" : "available";
+  }
+  return out;
 }

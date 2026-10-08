@@ -5,12 +5,15 @@ The Python implementation (`core/gyrocore/chirp/`) remains the reference and was
 not modified. Analysis only: no gain recommendation, PID/filter output, MSP or CLI.
 
 ```
-Browser File ─▶ chirpAnalysis.worker (Web Worker)
-                 ├─ FlightLog decode (same vendored decoder as blackboxDecode.worker)
-                 ├─ chirpFramesFromFlightLog   (every valid main frame, CHIRP columns only)
-                 ├─ identifyChirpSystem        (src/chirp/*.ts, float64 typed arrays)
-                 └─ ChirpBrowserAnalysis       (series buffers transferred, not cloned)
-             ─▶ chirpPayloadFromAnalysis ─▶ existing ChirpPage
+Browser File ─▶ browserSession.worker (one Web Worker per selected BBL)
+                 open:    FlightLog decode once (same vendored decoder as blackboxDecode.worker)
+                          ─▶ NormalizedDecodedLog summary (Open page: logs, metadata)
+                 analyze(logIndex), reusing that FlightLog:
+                          ├─ NormalizedDecodedLog for the selected log
+                          ├─ chirpFramesFromFlightLog   (every valid main frame, CHIRP columns only)
+                          ├─ identifyChirpSystem        (src/chirp/*.ts, float64 typed arrays)
+                          └─ ChirpBrowserAnalysis       (series buffers transferred, not cloned)
+             ─▶ browserWorkspace ─▶ Overview / Blackbox / CHIRP / CLI pages
 ```
 
 ## 1. Python reference audit
@@ -78,8 +81,12 @@ they surface through the spacing gates.
 - Float64 iterative radix-2 FFT with directly evaluated twiddles (direct DFT for
   non-pow2); no dependency added. Gate means reproduce NumPy's pairwise
   summation (8192-element blocks) bit for bit; `rint` is half-to-even.
-- `src/chirp/chirpAnalysis.worker.ts` decodes and analyses in one worker and
-  transfers the result buffers; the full log never reaches the main thread.
+- `src/session/` (`sessionCore.ts`, `browserSession.worker.ts`, `client.ts`) decodes
+  the file once when it is selected and keeps it in worker memory only. Begin
+  analysis reuses that FlightLog for the selected log; it is never decoded again.
+  Reuse is proven equal to a fresh decode for every log, in any order
+  (`session.test.ts`). The full log never reaches the main thread, and the bytes
+  are released when the BBL is replaced or removed, or the Open page unmounts.
 
 ## 5. Parity gate
 
@@ -114,11 +121,29 @@ structure and within tolerance (in band ≤ 3.1e-11 dB, ≤ 1.1e-10°).
 
 ## 6. UI / capability
 
-`runtime/capabilities.ts` lists features separately: browser `blackboxDecode`,
-`cliSelection`, `chirpAnalysis` are available; `tuneSafety` stays `unavailable`
-and `analysis` (general Tune/Safety) stays `unavailable`. The browser workspace
-contains CHIRP only; Tune / Safety / Compare are `null`, CLI is
-`NOT AVAILABLE` / not authorised / not actionable, all FC controls off.
+`runtime/capabilities.ts` lists features separately.
+
+- **Available in the browser:** `blackboxDecode`, `cliSelection`, `chirpAnalysis`.
+- **Unavailable in the browser:** `generalAnalysis`, `tune`, `safety`, `compare`, `cliApply`.
+
+**Begin analysis** is enabled once a BBL and a CLI are selected, the BBL has decoded,
+and the selected embedded log is valid. CHIRP itself does not have to pass.
+
+**What the workspace contains** (`chirp/workspace.ts:browserWorkspace`):
+
+- **Overview:** BBL and CLI filenames, the selected log, decode status, the CHIRP status
+- **Blackbox page:** the local decode of the selected log, with no viewer iframe and no localhost
+- **CHIRP page:** the result for the selected log
+- **CLI page:** context from the selected dump (firmware, board, debug mode), read
+  locally; the dump text is not kept
+
+**What it never contains:**
+
+- Analysis, Tune, Safety and Compare are `null`, shown as NOT AVAILABLE with the
+  reason (not migrated)
+- CLI is `NOT AVAILABLE`, not authorised and not actionable, with no apply or rollback text
+- all FC controls are off
+- no demo, Tauri or localhost data
 Every CHIRP display uses one mapping, `src/lib/chirpStatus.ts:chirpDisplay`
 (Overview and CHIRP page):
 
@@ -154,6 +179,15 @@ It proves:
 - the app loads without Tauri, with a manifest and an activated service worker
 - BBL + CLI selection and decode
 - multi-log selection is honoured
-- the CHIRP worker returns non-empty equal-length series, rendered as PASS
+- the session worker returns non-empty equal-length CHIRP series, rendered as PASS
 - a rejected fixture never shows PASS
-- every request is a same-origin GET; the CHIRP worker chunk GET is the positive control
+- Begin analysis on a multi-log BBL with log 1 chosen manually builds a workspace
+  whose Overview, Blackbox, CHIRP and CLI pages all refer to that log, and it
+  survives navigation
+- Tune and Safety show NOT AVAILABLE
+- exactly one session worker runs (one decode), and the retired decode-only and
+  CHIRP-only workers never run
+- every request is a same-origin GET; the session worker chunk GET is the positive control
+- the page never requests demo fixtures
+- Cache Storage holds only build assets; localStorage holds only the sidebar
+  preference; sessionStorage and IndexedDB hold no flight data

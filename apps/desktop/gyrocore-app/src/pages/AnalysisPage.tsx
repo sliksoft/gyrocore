@@ -25,8 +25,13 @@ export function AnalysisPage({ ws }: { ws: WorkspacePayload }) {
   if (!a) {
     return (
       <SurfaceCard>
-        <SectionHeader title="Analysis" />
-        <EmptyState icon={<BarChart3 className="h-5 w-5" aria-hidden />} title="No analysis payload." />
+        <SectionHeader title="Analysis" actions={<StatusBadge value="NOT AVAILABLE" />} />
+        <EmptyState
+          icon={<BarChart3 className="h-5 w-5" aria-hidden />}
+          title="No analysis payload."
+          description={ws.unavailable_reason}
+          data-testid="analysis-unavailable"
+        />
       </SurfaceCard>
     );
   }

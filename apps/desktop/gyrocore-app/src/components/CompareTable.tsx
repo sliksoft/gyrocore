@@ -1,5 +1,6 @@
 import { GitCompareArrows } from "lucide-react";
 import type { ComparePayload } from "@/bridge/types";
+import { StatusBadge } from "@/components/StatusBadge";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { MetricTile } from "@/components/ui/MetricTile";
 import { SectionHeader } from "@/components/ui/SectionHeader";
@@ -23,16 +24,17 @@ function deltaClass(delta: number | null) {
   return delta > 0 ? "text-[#6ee7b7]" : "text-[#fca5a5]";
 }
 
-export function CompareTable({ compare }: { compare: ComparePayload | null }) {
+export function CompareTable({ compare, unavailableReason }: { compare: ComparePayload | null; unavailableReason?: string }) {
   if (!compare) {
     return (
       <div className={pageStack}>
         <SurfaceCard>
-          <SectionHeader title="Compare" />
+          <SectionHeader title="Compare" actions={<StatusBadge value="NOT AVAILABLE" />} />
           <EmptyState
             icon={<GitCompareArrows className="h-5 w-5" aria-hidden />}
             title="No compare data available."
-            description="Compare needs a current tune baseline and a final safe target from the safety pipeline."
+            description={unavailableReason ?? "Compare needs a current tune baseline and a final safe target from the safety pipeline."}
+            data-testid="compare-unavailable"
           />
         </SurfaceCard>
       </div>

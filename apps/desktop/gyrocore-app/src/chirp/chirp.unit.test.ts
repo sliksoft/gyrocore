@@ -3,7 +3,6 @@ import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { gunzipSync } from "node:zlib";
 import { describe, expect, it, vi } from "vitest";
-import { analyzeChirpBuffer } from "./client";
 import { complexFftInPlace, realFft } from "./fft";
 import { ChirpFramesError, chirpFramesFromFlightLog, type FrameSource } from "./frames";
 import { jsRound, npMedian, npRint, npSum } from "./numeric";
@@ -161,48 +160,7 @@ describe("parity comparator detects deviations (mutation check)", () => {
   });
 });
 
-describe("worker client", () => {
-  type Listener = (ev: unknown) => void;
-  function fakeWorker(reply: (req: unknown) => { type: "message"; data: ChirpResponse } | { type: "error"; message: string }) {
-    const listeners: Record<string, Listener[]> = { message: [], error: [] };
-    return {
-      terminate: vi.fn(),
-      addEventListener: (t: string, l: Listener) => listeners[t]!.push(l),
-      removeEventListener: (t: string, l: Listener) => {
-        listeners[t] = listeners[t]!.filter((x) => x !== l);
-      },
-      postMessage: (req: unknown, transfer: unknown[]) => {
-        expect(transfer.length).toBe(1);
-        const r = reply(req);
-        queueMicrotask(() => {
-          if (r.type === "message") listeners.message!.forEach((l) => l({ data: r.data }));
-          else listeners.error!.forEach((l) => l({ message: r.message }));
-        });
-      },
-    };
-  }
-
-  it("returns the analysis and records timings", async () => {
-    const analysis = runChirpOnBytes(fixture("clean_single_axis"), { filename: "x.bbl" });
-    const w = fakeWorker(() => ({ type: "message", data: { ok: true, analysis } }));
-    const out = await analyzeChirpBuffer(new ArrayBuffer(8), "x.bbl", { createWorker: () => w as unknown as Worker });
-    expect(out.rejection).toBeNull();
-    expect(out.timingsMs.round_trip).toBeGreaterThanOrEqual(0);
-    expect(w.terminate).toHaveBeenCalled();
-  });
-  it("propagates worker-reported errors", async () => {
-    const w = fakeWorker(() => ({ type: "message", data: { ok: false, error: "no_embedded_logs" } }));
-    await expect(
-      analyzeChirpBuffer(new ArrayBuffer(8), "x.bbl", { createWorker: () => w as unknown as Worker }),
-    ).rejects.toThrow("no_embedded_logs");
-    expect(w.terminate).toHaveBeenCalled();
-  });
-  it("propagates worker crashes", async () => {
-    const w = fakeWorker(() => ({ type: "error", message: "boom" }));
-    await expect(
-      analyzeChirpBuffer(new ArrayBuffer(8), "x.bbl", { createWorker: () => w as unknown as Worker }),
-    ).rejects.toThrow("boom");
-  });
+describe("no network / no Tauri", () => {
   it("garbage bytes reject without network or Tauri", () => {
     const fetchSpy = vi.fn(() => {
       throw new Error("unexpected_network");

@@ -28,6 +28,10 @@ export interface WorkspacePayload {
     copy_rollback_cli: boolean;
   };
   error_state?: string;
+  /** Browser workspace: which features this workspace can show (absent on Core workspaces). */
+  capabilities?: Record<string, "available" | "unavailable">;
+  /** Browser workspace: why Analysis / Tune / Safety / Compare are empty. */
+  unavailable_reason?: string;
 }
 
 export interface ChirpPayload {

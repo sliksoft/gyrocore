@@ -25,6 +25,7 @@
   "exclude": [
     "src/bridge/workerCli.ts",
     "src/decode/parity.ts",
+    "src/test/inProcessSession.ts",
     "src/**/*.test.ts",
     "src/**/*.test.tsx"
   ],

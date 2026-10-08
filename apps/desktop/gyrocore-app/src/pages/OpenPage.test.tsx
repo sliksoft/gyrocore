@@ -1,87 +1,19 @@
 import { cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { analyzeChirpFile } from "@/chirp/client";
-import { decodeBlackboxFile } from "@/decode/client";
+import { invoke } from "@tauri-apps/api/core";
+import { bridge } from "@/bridge/client";
+import type { WorkspacePayload } from "@/bridge/types";
+import { chirpDisplay } from "@/lib/chirpStatus";
+import { fixtureFile, multiLogFile, sessionLog } from "@/test/inProcessSession";
 import { OpenPage } from "./OpenPage";
 
 const fetchSpy = vi.fn();
 
-vi.mock("@/decode/client", () => ({
-  decodeBlackboxFile: vi.fn(async (file: File) => ({
-    timingsMs: { total: 1 },
-    result: {
-      schemaVersion: 1,
-      source: {
-        filename: file.name,
-        sizeBytes: file.size,
-        decoder: "betaflight-flightlog-js",
-        licenseNote: "GPL-3.0 (vendored Betaflight blackbox-log-viewer)",
-      },
-      embedded: {
-        logCount: 2,
-        selectedIndex: 1,
-        recommendedIndex: 1,
-        flights: [
-          {
-            index: 0,
-            label: "log 0",
-            startTimeUs: 0,
-            endTimeUs: 1000,
-            durationUs: 1000,
-            sampleCount: 0,
-          },
-          {
-            index: 1,
-            label: "log 1",
-            startTimeUs: 0,
-            endTimeUs: 5000,
-            durationUs: 5000,
-            sampleCount: 0,
-          },
-        ],
-      },
-      metadata: {
-        firmwareType: "Betaflight",
-        firmwareVersion: "4.5.0",
-        fieldNames: ["time", "gyroADC[0]"],
-      },
-      timeUs: new Float64Array(0),
-      series: {},
-    },
-  })),
-}));
+vi.mock("@/session/client", async () => ({ BrowserSession: (await import("@/test/inProcessSession")).InProcessSession }));
+vi.mock("@tauri-apps/api/core", () => ({ invoke: vi.fn(async () => undefined) }));
 
-vi.mock("@/chirp/client", () => ({
-  analyzeChirpFile: vi.fn(async (file: File) => ({
-    schemaVersion: 1,
-    engine: "gyrocore-browser-chirp",
-    result: {
-      status: "unusable",
-      usable: false,
-      detected: false,
-      analysis_only: true,
-      tuning_recommendations: null,
-      sysconfig: null,
-      extraction: null,
-      axes: {},
-      warnings: ["no_chirp_segments_detected"],
-      errors: ["no_chirp_segments"],
-      provenance: {},
-    },
-    rejection: { code: "no_chirp_segments", detail: "No CHIRP-active segment in the selected log." },
-    source: {
-      filename: file.name,
-      sizeBytes: file.size,
-      logIndex: 1,
-      logCount: 2,
-      decoder: "betaflight-flightlog-js",
-      framesDecoded: 10,
-      inputPolicy: "full_frame",
-    },
-    timingsMs: { total: 1 },
-  })),
-}));
+const cliFile = () => new File(["# diff all\n# Betaflight / STM32F405 (S405) 4.5.0\nset debug_mode = CHIRP\n"], "tune.txt", { type: "text/plain" });
 
 describe("OpenPage browser file selection", () => {
   afterEach(() => {
@@ -91,6 +23,9 @@ describe("OpenPage browser file selection", () => {
   });
 
   beforeEach(() => {
+    sessionLog.sessions.length = 0;
+    sessionLog.holdOpen = null;
+    vi.mocked(invoke).mockClear();
     fetchSpy.mockReset();
     vi.stubGlobal("fetch", fetchSpy);
     window.__GYROCORE_WORKER__ = async <T,>(op: string) => {
@@ -110,61 +45,121 @@ describe("OpenPage browser file selection", () => {
     expect(screen.queryByTestId("log-path")).toBeNull();
   });
 
-  it("selects BBL and CLI without network upload", async () => {
-    const user = userEvent.setup();
-    render(<OpenPage onLoaded={() => undefined} />);
+  async function pick(user: ReturnType<typeof userEvent.setup>, testId: string, file: File) {
+    await user.upload(screen.getByTestId(testId), file);
+  }
 
-    const bbl = new File([new Uint8Array([1, 2, 3])], "Flight.BBL", { type: "application/octet-stream" });
-    const cli = new File(["# dump"], "tune.TXT", { type: "text/plain" });
+  describe("Begin analysis gating", () => {
+    it("neither file -> disabled", () => {
+      render(<OpenPage onLoaded={() => undefined} />);
+      expect(screen.getByTestId("analyze-btn")).toBeDisabled();
+    });
 
-    await user.upload(screen.getByTestId("bbl-file-input"), bbl);
-    expect(screen.getByTestId("bbl-selected")).toHaveTextContent("Flight.BBL");
-    await waitFor(() => expect(screen.getByTestId("decode-status")).toBeInTheDocument());
-    expect(screen.getByTestId("decode-status")).toHaveTextContent(/analysis migration not yet complete/i);
-    expect(screen.getByTestId("log-index")).toBeInTheDocument();
-    expect(screen.getByTestId("analyze-btn")).toBeDisabled(); // CLI required
-    expect(vi.mocked(decodeBlackboxFile)).toHaveBeenCalled();
+    it("BBL only (decoded) -> disabled", async () => {
+      const user = userEvent.setup();
+      render(<OpenPage onLoaded={() => undefined} />);
+      await pick(user, "bbl-file-input", fixtureFile("clean_single_axis"));
+      await waitFor(() => expect(screen.getByTestId("decode-status")).toBeInTheDocument());
+      expect(screen.getByTestId("analyze-btn")).toBeDisabled();
+      expect(screen.queryByTestId("files-ready")).toBeNull();
+    });
 
-    await user.upload(screen.getByTestId("cli-file-input"), cli);
-    expect(screen.getByTestId("cli-selected")).toHaveTextContent("tune.TXT");
-    expect(screen.getByTestId("files-ready")).toBeInTheDocument();
-    expect(screen.getByTestId("analyze-btn")).toBeEnabled(); // browser CHIRP analysis
-    expect(fetchSpy).not.toHaveBeenCalled();
+    it("CLI only -> disabled", async () => {
+      const user = userEvent.setup();
+      render(<OpenPage onLoaded={() => undefined} />);
+      await pick(user, "cli-file-input", cliFile());
+      expect(screen.getByTestId("cli-selected")).toHaveTextContent("tune.txt");
+      expect(screen.getByTestId("analyze-btn")).toBeDisabled();
+    });
+
+    it("BBL + CLI before decode finishes -> disabled; after decode -> enabled", async () => {
+      let release!: () => void;
+      sessionLog.holdOpen = new Promise((r) => (release = r));
+      const user = userEvent.setup();
+      render(<OpenPage onLoaded={() => undefined} />);
+      await pick(user, "bbl-file-input", fixtureFile("clean_single_axis"));
+      await pick(user, "cli-file-input", cliFile());
+      expect(screen.getByTestId("files-ready")).toHaveTextContent(/Waiting for the local Blackbox decode/);
+      expect(screen.getByTestId("analyze-btn")).toBeDisabled();
+      release();
+      sessionLog.holdOpen = null;
+      await waitFor(() => expect(screen.getByTestId("analyze-btn")).toBeEnabled());
+      expect(screen.getByTestId("files-ready")).toHaveTextContent("Ready for local browser analysis.");
+      expect(screen.getByTestId("files-ready")).toHaveTextContent(/nothing is uploaded, no FC connection/);
+      expect(screen.getByTestId("files-ready")).not.toHaveTextContent(/stays disabled|backend pending/i);
+    });
+
+    it("failed decode -> disabled with the decode error", async () => {
+      const user = userEvent.setup();
+      render(<OpenPage onLoaded={() => undefined} />);
+      await pick(user, "cli-file-input", cliFile());
+      await pick(user, "bbl-file-input", new File([new Uint8Array([1, 2, 3])], "bad.bbl"));
+      expect(await screen.findByTestId("open-error")).toHaveTextContent("no_embedded_logs");
+      expect(screen.getByTestId("analyze-btn")).toBeDisabled();
+    });
   });
 
-  it("runs browser CHIRP analysis locally and loads a CHIRP-only workspace", async () => {
+  async function begin(bbl: File, logIndex?: number): Promise<WorkspacePayload> {
     const user = userEvent.setup();
     const onLoaded = vi.fn();
     render(<OpenPage onLoaded={onLoaded} />);
-    await user.upload(
-      screen.getByTestId("bbl-file-input"),
-      new File([new Uint8Array([1, 2])], "Flight.BBL", { type: "application/octet-stream" }),
-    );
+    await pick(user, "bbl-file-input", bbl);
     await waitFor(() => expect(screen.getByTestId("decode-status")).toBeInTheDocument());
-    await user.upload(screen.getByTestId("cli-file-input"), new File(["# dump"], "tune.txt", { type: "text/plain" }));
+    if (logIndex != null) await user.selectOptions(screen.getByTestId("log-index"), String(logIndex));
+    await pick(user, "cli-file-input", cliFile());
+    await waitFor(() => expect(screen.getByTestId("analyze-btn")).toBeEnabled());
     await user.click(screen.getByTestId("analyze-btn"));
-    await waitFor(() => expect(onLoaded).toHaveBeenCalled());
-    expect(vi.mocked(analyzeChirpFile)).toHaveBeenCalledWith(expect.any(File), { logIndex: 1 });
-    const ws = onLoaded.mock.calls[0]![0];
+    await waitFor(() => expect(onLoaded).toHaveBeenCalledTimes(1));
+    expect(onLoaded.mock.calls[0]![1]).toBeNull();
+    return onLoaded.mock.calls[0]![0] as WorkspacePayload;
+  }
+
+  it("Begin analysis creates the browser workspace from the existing decode (no second decode)", async () => {
+    const ws = await begin(fixtureFile("clean_single_axis", "Flight.BBL"));
     expect(ws.kind).toBe("gyrocore_browser_workspace");
-    expect(ws.chirp).toMatchObject({ available: false, reason: "no_chirp_segments", magnitude: [] });
-    expect(ws.tune).toBeNull();
-    expect(ws.safety).toBeNull();
-    expect(ws.cli).toMatchObject({ authorized: false, actionable: false });
-    expect(ws.overview.final_safety).toBeUndefined();
-    expect(fetchSpy).not.toHaveBeenCalled();
+    expect(ws.demo).toBe(false);
+    expect(ws.overview).toMatchObject({ bbl_filename: "Flight.BBL", cli_filename: "tune.txt", log_index: 0, log_count: 1 });
+    expect(ws.blackbox).toMatchObject({ source: "browser", filename: "Flight.BBL", selected_log_index: 0 });
+    expect((ws.blackbox.fields_hint as string[]).length).toBeGreaterThan(5);
+    expect(ws.chirp).toMatchObject({ available: true, status: "ok" });
+    expect(ws.cli.firmware_provenance).toMatchObject({ filename: "tune.txt", firmware: "Betaflight / STM32F405 (S405) 4.5.0" });
+    expect([ws.analysis, ws.tune, ws.safety, ws.compare]).toEqual([null, null, null, null]);
+    expect(ws.capabilities).toMatchObject({ blackboxDecode: "available", chirpAnalysis: "available", tune: "unavailable", safety: "unavailable", cliApply: "unavailable", generalAnalysis: "unavailable", compare: "unavailable" });
+    expect(sessionLog.sessions).toHaveLength(1);
+    expect(sessionLog.sessions[0]!.core.flightLogBuilds()).toBe(1);
   });
 
-  it("keeps analyze disabled when only CLI is missing after decode", async () => {
-    const user = userEvent.setup();
-    render(<OpenPage onLoaded={() => undefined} />);
-    await user.upload(
-      screen.getByTestId("bbl-file-input"),
-      new File([new Uint8Array([1])], "only.bbl", { type: "application/octet-stream" }),
-    );
-    await waitFor(() => expect(screen.getByTestId("decode-status")).toBeInTheDocument());
-    expect(screen.getByTestId("analyze-btn")).toBeDisabled();
-    expect(screen.queryByTestId("files-ready")).toBeNull();
+  it("multi-log: recommended log is the default, manual selection wins and is preserved everywhere", async () => {
+    const ws = await begin(multiLogFile(["clean_single_axis", "three_axis_sequence", "poor_coherence"]), 2);
+    expect(sessionLog.sessions[0]!.analyzed).toEqual([2]);
+    expect(ws.overview).toMatchObject({ log_index: 2, log_count: 3 });
+    expect(ws.blackbox).toMatchObject({ selected_log_index: 2, log_count: 3 });
+    expect(ws.scenario).toBe("browser · log 3/3");
+    expect(ws.chirp).toMatchObject({ available: false, reason: "chirp_unusable" });
+    const flights = ws.blackbox.flights as Array<{ index: number; durationUs: number }>;
+    expect(ws.overview.log_duration_s).toBe(Number((flights[2]!.durationUs / 1e6).toFixed(2)));
+    expect(sessionLog.sessions[0]!.core.flightLogBuilds()).toBe(1);
+  });
+
+  it.each([
+    ["clean_single_axis", "PASS", null],
+    ["repeated_axis", "WARN", null],
+    ["poor_coherence", "NOT AVAILABLE", "chirp_unusable"],
+    ["mode_events", "NOT AVAILABLE", "not_chirp_debug_mode"],
+  ])("%s: workspace opens with CHIRP %s", async (name, badge, reason) => {
+    const ws = await begin(fixtureFile(name));
+    expect(ws.kind).toBe("gyrocore_browser_workspace");
+    expect(chirpDisplay(ws.chirp)).toMatchObject({ badge, ...(reason ? { reason } : {}) });
+  });
+
+  it("browser Begin never calls Tauri, the bridge, demo fixtures or the network", async () => {
+    const analyze = vi.spyOn(bridge, "analyze");
+    const loadDemo = vi.spyOn(bridge, "loadDemo");
+    await begin(fixtureFile("clean_single_axis"));
+    expect(vi.mocked(invoke)).not.toHaveBeenCalled();
+    expect(analyze).not.toHaveBeenCalled();
+    expect(loadDemo).not.toHaveBeenCalled();
+    expect(fetchSpy).not.toHaveBeenCalled();
   });
 
   it("rejects unsupported extensions case-insensitively messaging", async () => {
@@ -201,5 +196,8 @@ describe("OpenPage browser file selection", () => {
     await user.click(screen.getByTestId("remove-bbl"));
     await waitFor(() => expect(screen.getByTestId("choose-bbl")).toBeInTheDocument());
     expect(fetchSpy).not.toHaveBeenCalled();
+    // Replacing and removing the BBL releases its session (bytes leave worker memory).
+    expect(sessionLog.sessions).toHaveLength(2);
+    expect(sessionLog.sessions.every((x) => x.disposed)).toBe(true);
   });
 });

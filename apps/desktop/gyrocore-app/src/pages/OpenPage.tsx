@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { FileText, Loader2, Play, Search, ShieldOff, TriangleAlert, WifiOff } from "lucide-react";
 import { bridge } from "@/bridge/client";
 import type { InspectResult, WorkspacePayload } from "@/bridge/types";
@@ -12,9 +12,7 @@ import { StatusAlert } from "@/components/ui/StatusAlert";
 import { StatusBadge } from "@/components/ui/StatusBadge";
 import { SurfaceCard } from "@/components/ui/SurfaceCard";
 import { WizardCard } from "@/components/ui/WizardCard";
-import { analyzeChirpFile } from "@/chirp/client";
-import { browserChirpWorkspace } from "@/chirp/workspace";
-import { decodeBlackboxFile } from "@/decode/client";
+import { browserWorkspace, cliContextFromText } from "@/chirp/workspace";
 import type { NormalizedDecodedLog } from "@/decode/types";
 import {
   BLACKBOX_ACCEPT,
@@ -30,6 +28,7 @@ import { selectBase } from "@/lib/premium-theme";
 import { cn } from "@/lib/utils";
 import { pwaUpdates } from "@/pwa/update";
 import { getRuntimeCapabilities } from "@/runtime/capabilities";
+import { BrowserSession } from "@/session/client";
 
 const DEMOS = ["pass", "warn", "block", "no_chirp", "merge_review", "no_autotune"] as const;
 
@@ -100,15 +99,33 @@ export function OpenPage({
 
   const bblInputRef = useRef<HTMLInputElement>(null);
   const cliInputRef = useRef<HTMLInputElement>(null);
+  // One local session per selected BBL: decoded once, reused by Begin analysis.
+  const sessionRef = useRef<BrowserSession | null>(null);
+
+  function replaceSession(next: BrowserSession | null) {
+    sessionRef.current?.dispose();
+    sessionRef.current = next;
+  }
+
+  useEffect(() => () => replaceSession(null), []);
 
   const filesReady = browserMode
     ? Boolean(bblFile && cliFile)
     : Boolean(path.trim());
 
   const canAnalyzeTauri = !browserMode && caps.analysis === "tauri-worker" && Boolean(path.trim()) && !busy;
-  // Browser analysis = CHIRP / system-ID only (Tune / Safety not migrated).
+  // Browser workspace = decoded Blackbox + CHIRP / system-ID (Tune / Safety not migrated).
+  // CHIRP does not have to pass: no-CHIRP / rejected / WARN results still open the workspace.
+  const selectedFlight = decoded?.embedded.flights[logIndex];
+  const logResolved = Boolean(
+    decoded && Number.isInteger(logIndex) && logIndex >= 0 && logIndex < decoded.embedded.logCount && selectedFlight && !selectedFlight.error,
+  );
   const canAnalyzeBrowser =
-    browserMode && caps.features.chirpAnalysis === "browser-worker" && Boolean(bblFile && cliFile && decoded);
+    browserMode &&
+    caps.features.blackboxDecode === "browser-worker" &&
+    caps.features.chirpAnalysis === "browser-worker" &&
+    Boolean(bblFile && cliFile && decoded && sessionRef.current) &&
+    logResolved;
 
   function setWorking(next: boolean) {
     setBusy(next);
@@ -132,17 +149,26 @@ export function OpenPage({
 
   async function doAnalyze() {
     if (browserMode) {
-      if (!canAnalyzeBrowser || !bblFile) return;
+      const session = sessionRef.current;
+      if (!canAnalyzeBrowser || !bblFile || !cliFile || !session) return;
       setWorking(true);
       setError(null);
       try {
-        const analysis = await analyzeChirpFile(bblFile.file, { logIndex });
+        // Reuses the session's decode of this file: no second decode, no upload.
+        const [{ decoded: selected, analysis }, cliText] = await Promise.all([session.analyze(logIndex), cliFile.file.text()]);
+        if (sessionRef.current !== session) return;
         onLoaded(
-          browserChirpWorkspace({ analysis, decoded, bblName: bblFile.name, cliName: cliFile?.name ?? null }),
+          browserWorkspace({
+            decoded: selected,
+            analysis,
+            bbl: { name: bblFile.name, sizeBytes: bblFile.size },
+            cli: cliContextFromText(cliFile.name, cliFile.size, cliText),
+            features: caps.features,
+          }),
           null,
         );
       } catch (e) {
-        setError(String(e));
+        if (sessionRef.current === session) setError(String(e));
       } finally {
         setWorking(false);
       }
@@ -187,18 +213,24 @@ export function OpenPage({
     setBblFile(toSelectedLocalFile(file));
     setDecoded(null);
     setError(null);
+    replaceSession(null);
     if (bblInputRef.current) bblInputRef.current.value = "";
     // CSV is accepted for selection but browser FlightLog decode is BBL/BFL binary.
     if (file.name.toLowerCase().endsWith(".csv")) {
       setError("CSV selected. Browser decode currently supports .bbl / .bfl binary logs.");
       return;
     }
+    const session = new BrowserSession();
+    replaceSession(session);
     setWorking(true);
     try {
-      const { result } = await decodeBlackboxFile(file, { includeSeries: false });
+      const { decoded: result } = await session.open(file);
+      if (sessionRef.current !== session) return; // replaced while decoding
       setDecoded(result);
       setLogIndex(result.embedded.recommendedIndex);
     } catch (e) {
+      if (sessionRef.current !== session) return;
+      replaceSession(null);
       setDecoded(null);
       setError(String(e));
     } finally {
@@ -288,6 +320,7 @@ export function OpenPage({
                     removeTestId="remove-bbl"
                     onReplace={() => bblInputRef.current?.click()}
                     onRemove={() => {
+                      replaceSession(null);
                       setBblFile(null);
                       setDecoded(null);
                     }}
@@ -337,7 +370,7 @@ export function OpenPage({
                     ]}
                   />
                   <p className="m-0 mt-3 text-xs text-[var(--gc-text-tertiary)]" data-testid="decode-status">
-                    Blackbox decoded — browser CHIRP analysis available; Tune / Safety analysis migration not yet complete.
+                    Blackbox decoded locally — Blackbox and CHIRP analysis available in the browser; Tune / Safety not yet.
                   </p>
                 </div>
               )}
@@ -373,9 +406,11 @@ export function OpenPage({
                   title="Files ready on this device"
                   data-testid="files-ready"
                 >
-                  {decoded
-                    ? "Blackbox decoded locally. Browser analysis migration is not yet complete — nothing was uploaded, and Begin analysis stays disabled."
-                    : "Blackbox and CLI are selected locally. Browser analysis is not migrated yet — nothing was uploaded, and Begin analysis will not fabricate results."}
+                  {canAnalyzeBrowser
+                    ? "Ready for local browser analysis. Files stay on this device — nothing is uploaded, no FC connection."
+                    : decoded
+                      ? "Blackbox decoded locally. Select a valid embedded log to begin — nothing is uploaded, no FC connection."
+                      : "Blackbox and CLI are selected locally. Waiting for the local Blackbox decode — nothing is uploaded, no FC connection."}
                 </StatusAlert>
               )}
             </>
@@ -453,7 +488,7 @@ export function OpenPage({
             </ActionButton>
             <span className="text-xs text-[var(--gc-text-tertiary)]">
               {browserMode
-                ? "Browser CHIRP / system-ID analysis — files stay local. Tune / Safety not yet in browser."
+                ? "Local browser analysis: Blackbox + CHIRP. Files stay local. Tune / Safety not yet in the browser."
                 : "Runs the local Python Core and blackbox_decode."}
             </span>
           </div>

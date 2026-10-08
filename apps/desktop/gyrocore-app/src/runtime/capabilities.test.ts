@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it } from "vitest";
-import { getRuntimeCapabilities, isTauriRuntime } from "./capabilities";
+import { featureAvailability, getRuntimeCapabilities, isTauriRuntime } from "./capabilities";
 
 describe("runtime capabilities", () => {
   afterEach(() => {
@@ -18,7 +18,21 @@ describe("runtime capabilities", () => {
       blackboxDecode: "browser-worker",
       cliSelection: "browser-file",
       chirpAnalysis: "browser-worker",
-      tuneSafety: "unavailable",
+      generalAnalysis: "unavailable",
+      tune: "unavailable",
+      safety: "unavailable",
+      compare: "unavailable",
+      cliApply: "unavailable",
+    });
+    expect(featureAvailability(caps.features)).toEqual({
+      blackboxDecode: "available",
+      cliSelection: "available",
+      chirpAnalysis: "available",
+      generalAnalysis: "unavailable",
+      tune: "unavailable",
+      safety: "unavailable",
+      compare: "unavailable",
+      cliApply: "unavailable",
     });
   });
 
@@ -29,5 +43,6 @@ describe("runtime capabilities", () => {
     expect(caps.mode).toBe("tauri");
     expect(caps.analysis).toBe("tauri-worker");
     expect(caps.nativePaths).toBe(true);
+    expect(Object.values(featureAvailability(caps.features)).every((v) => v === "available")).toBe(true);
   });
 });

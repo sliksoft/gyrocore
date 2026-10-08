@@ -49,6 +49,14 @@ export function OverviewPage({ ws }: { ws: WorkspacePayload }) {
           </div>
           <KeyValue
             rows={[
+              ...(o.bbl_filename != null
+                ? [
+                    { label: "BBL", value: String(o.bbl_filename), mono: true },
+                    { label: "CLI", value: String(o.cli_filename ?? "—"), mono: true },
+                    { label: "Log index", value: `${o.log_index} of ${o.log_count}`, mono: true },
+                    { label: "Decode", value: String(o.decode_status ?? "—"), mono: true },
+                  ]
+                : []),
               { label: "CHIRP", value: <StatusBadge value={chirpDisplay(ws.chirp).badge} /> },
               { label: "Tune rec.", value: String(o.tune_recommendation || "—"), mono: true },
             ]}

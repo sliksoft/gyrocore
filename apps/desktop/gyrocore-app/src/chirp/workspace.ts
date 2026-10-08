@@ -3,11 +3,12 @@
  *
  * `available` is true only for a usable result with non-empty, equal-length
  * magnitude / phase / coherence series: never available=true with empty arrays.
- * Tune, Safety, Compare and CLI stay explicitly not available in the browser.
+ * Tune, Safety, Compare and CLI apply stay explicitly not available in the browser.
  */
 
 import type { ChirpPayload, WorkspacePayload } from "@/bridge/types";
 import type { NormalizedDecodedLog } from "@/decode/types";
+import { featureAvailability, type FeatureCapabilities } from "@/runtime/capabilities";
 import { primaryUsableAxis } from "./runChirp";
 import type { ChirpBrowserAnalysis } from "./types";
 
@@ -84,31 +85,80 @@ export function chirpPayloadFromAnalysis(analysis: ChirpBrowserAnalysis): ChirpP
   };
 }
 
-const NOT_IN_BROWSER = "Not available in the browser yet (Tune / Safety analysis not migrated).";
+export const NOT_IN_BROWSER =
+  "Not available in the browser yet: general analysis, Tune, Safety, Compare and CLI apply have not been migrated from the Python Core.";
 
-export function browserChirpWorkspace(opts: {
+/** Selected CLI dump context, read locally (the dump text itself is not kept in the workspace). */
+export type CliContext = {
+  filename: string;
+  size_bytes: number;
+  lines: number;
+  firmware?: string;
+  board_name?: string;
+  craft_name?: string;
+  debug_mode?: string;
+};
+
+export function cliContextFromText(filename: string, sizeBytes: number, text: string): CliContext {
+  const lines = text.split(/\r?\n/);
+  const find = (re: RegExp) => {
+    for (const line of lines) {
+      const m = re.exec(line.trim());
+      if (m) return m[1]!.trim();
+    }
+    return undefined;
+  };
+  const ctx: CliContext = { filename, size_bytes: sizeBytes, lines: lines.filter((l) => l.trim()).length };
+  const firmware = find(/^#\s*((?:Betaflight|INAV|Emuflight)\b.*)$/i);
+  const board = find(/^board_name\s+(\S+)/i);
+  const craft = find(/^set\s+craft_name\s*=\s*(.*)$/i);
+  const debug = find(/^set\s+debug_mode\s*=\s*(\S+)/i);
+  if (firmware) ctx.firmware = firmware;
+  if (board) ctx.board_name = board;
+  if (craft) ctx.craft_name = craft;
+  if (debug) ctx.debug_mode = debug;
+  return ctx;
+}
+
+/**
+ * Real browser/PWA workspace from the session's decode of the selected log and its
+ * CHIRP result. Everything not migrated stays null / NOT AVAILABLE: no demo, no
+ * Tauri, no fabricated Tune / Safety / Compare / CLI output.
+ */
+export function browserWorkspace(opts: {
+  decoded: NormalizedDecodedLog;
   analysis: ChirpBrowserAnalysis;
-  decoded: NormalizedDecodedLog | null;
-  bblName: string;
-  cliName: string | null;
+  bbl: { name: string; sizeBytes: number };
+  cli: CliContext;
+  features: FeatureCapabilities;
 }): WorkspacePayload {
-  const chirp = chirpPayloadFromAnalysis(opts.analysis);
-  const md = opts.decoded?.metadata;
-  const flight = opts.decoded?.embedded.flights[opts.analysis.source.logIndex];
+  const { decoded, analysis } = opts;
+  const chirp = chirpPayloadFromAnalysis(analysis);
+  const md = decoded.metadata;
+  const logIndex = analysis.source.logIndex;
+  if (decoded.embedded.selectedIndex !== logIndex) throw new Error(`workspace_log_mismatch:${decoded.embedded.selectedIndex}:${logIndex}`);
+  const flight = decoded.embedded.flights[logIndex];
+  const logCount = decoded.embedded.logCount;
   return {
     kind: "gyrocore_browser_workspace",
     demo: false,
-    scenario: "browser · CHIRP",
+    scenario: `browser · log ${logIndex + 1}/${logCount}`,
     overview: {
-      message: "Browser analysis: CHIRP / system-ID only. Tune, Safety and CLI generation are not available in the browser yet.",
-      target: md?.boardInformation,
-      betaflight_version: [md?.firmwareType, md?.firmwareVersion].filter(Boolean).join(" ") || undefined,
-      craft: md?.craftName,
+      message:
+        "Local browser workspace: Blackbox decode and CHIRP / system-ID. General analysis, Tune, Safety and CLI apply are not available in the browser yet. Nothing was uploaded.",
+      target: md.boardInformation,
+      betaflight_version: [md.firmwareType, md.firmwareVersion].filter(Boolean).join(" ") || undefined,
+      craft: md.craftName,
       log_duration_s: flight?.durationUs != null ? Number((flight.durationUs / 1e6).toFixed(2)) : undefined,
-      sample_rate_hz: chirp.sample_rate_hz,
+      sample_rate_hz: chirp.sample_rate_hz ?? (md.sampleRateHzEstimate != null ? Math.round(md.sampleRateHzEstimate) : undefined),
       chirp_detected: chirp.available,
       tune_recommendation: "not available (browser)",
       detected_issues: [],
+      bbl_filename: opts.bbl.name,
+      cli_filename: opts.cli.filename,
+      log_index: logIndex,
+      log_count: logCount,
+      decode_status: `decoded in browser · ${analysis.source.framesDecoded} frames`,
     },
     analysis: null,
     chirp,
@@ -119,18 +169,33 @@ export function browserChirpWorkspace(opts: {
       state: "NOT AVAILABLE",
       authorized: false,
       actionable: false,
-      label: "CLI generation is not available in the browser.",
+      label: "CLI apply / rollback generation is not available in the browser.",
       reasons: [NOT_IN_BROWSER],
+      firmware_provenance: { ...opts.cli },
     },
-    diagnostics: { note: NOT_IN_BROWSER, chirp_timings_ms: opts.analysis.timingsMs },
+    capabilities: featureAvailability(opts.features),
+    unavailable_reason: NOT_IN_BROWSER,
+    diagnostics: { note: NOT_IN_BROWSER, chirp_timings_ms: analysis.timingsMs },
     blackbox: {
       source: "browser",
-      filename: opts.bblName,
-      cli_filename: opts.cliName,
-      log_index: opts.analysis.source.logIndex,
-      log_count: opts.analysis.source.logCount,
-      frames_decoded: opts.analysis.source.framesDecoded,
-      decoder: opts.analysis.source.decoder,
+      filename: opts.bbl.name,
+      size_bytes: opts.bbl.sizeBytes,
+      selected_log_index: logIndex,
+      log_count: logCount,
+      flights: decoded.embedded.flights.map((f) => ({ ...f })),
+      frames_decoded: analysis.source.framesDecoded,
+      decoder: analysis.source.decoder,
+      metadata: {
+        firmware: [md.firmwareType, md.firmwareVersion].filter(Boolean).join(" ") || undefined,
+        board: md.boardInformation,
+        craft: md.craftName,
+        looptime_us: md.looptimeUs,
+        pid_process_denom: md.pidProcessDenom,
+        debug_mode: md.debugMode,
+        sample_rate_hz_estimate: md.sampleRateHzEstimate,
+        log_start: md.logStartDatetime,
+      },
+      fields_hint: [...md.fieldNames],
     },
     controls: {
       fc_apply_button: false,

@@ -132,9 +132,23 @@ export function runChirpOnBytes(
   bytes: Uint8Array,
   opts: { filename: string; logIndex?: number | null },
 ): ChirpBrowserAnalysis {
-  const timingsMs: Record<string, number> = {};
   const t0 = performance.now();
   const log = new FlightLog(bytes) as unknown as FlightLogLike;
+  return runChirpOnLog(log, bytes, opts, performance.now() - t0);
+}
+
+/**
+ * CHIRP on an already-indexed FlightLog of `bytes` (the browser session reuses the
+ * FlightLog built at decode time instead of decoding the file a second time).
+ */
+export function runChirpOnLog(
+  log: FlightLogLike,
+  bytes: Uint8Array,
+  opts: { filename: string; logIndex?: number | null },
+  indexMs = 0,
+): ChirpBrowserAnalysis {
+  const timingsMs: Record<string, number> = {};
+  const t0 = performance.now() - indexMs;
   const logCount = log.getLogCount();
   if (logCount < 1) throw new Error("no_embedded_logs");
   const logIndex = chooseLogIndex(log, bytes, opts.filename, opts.logIndex);

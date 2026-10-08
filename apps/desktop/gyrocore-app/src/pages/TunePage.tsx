@@ -87,10 +87,12 @@ export function TunePage({ ws }: { ws: WorkspacePayload }) {
   if (!t) {
     return (
       <SurfaceCard>
-        <SectionHeader title="Tune" />
+        <SectionHeader title="Tune" actions={<StatusBadge value="NOT AVAILABLE" />} />
         <EmptyState
           icon={<SlidersHorizontal className="h-5 w-5" aria-hidden />}
-          title="Tune stages unavailable (missing baseline or blocked upstream)."
+          title={ws.unavailable_reason ? "Tune stages unavailable." : "Tune stages unavailable (missing baseline or blocked upstream)."}
+          description={ws.unavailable_reason}
+          data-testid="tune-unavailable"
         />
       </SurfaceCard>
     );

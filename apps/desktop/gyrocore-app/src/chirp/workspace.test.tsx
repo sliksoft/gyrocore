@@ -7,16 +7,33 @@ import type { WorkspacePayload } from "@/bridge/types";
 import { chirpDisplay } from "@/lib/chirpStatus";
 import { ChirpPage } from "@/pages/ChirpPage";
 import { OverviewPage } from "@/pages/OverviewPage";
+import { getRuntimeCapabilities } from "@/runtime/capabilities";
+import { createSessionCore } from "@/session/sessionCore";
 import { runChirpOnBytes } from "./runChirp";
-import { browserChirpWorkspace, chirpPayloadFromAnalysis } from "./workspace";
+import { browserWorkspace, chirpPayloadFromAnalysis, cliContextFromText } from "./workspace";
 
 // jsdom env: import.meta.url is not a file: URL, resolve from the module directory.
 const WU7 = join(__dirname, "../../../../../tests/fixtures/chirp/wu7/bbl/");
 const analyze = (name: string) =>
   runChirpOnBytes(new Uint8Array(gunzipSync(readFileSync(WU7 + name + ".bbl.gz"))), { filename: `${name}.bbl` });
 
+const CLI_TEXT = "# diff all\n# version\n# Betaflight / STM32G47X (S47X) 2026.6.2 Oct  1 2026\nboard_name BETAFPVG473\nset debug_mode = CHIRP\n";
+
+/** Workspace exactly as the Open page builds it: one session decode, then analyse. */
 function workspace(name: string): WorkspacePayload {
-  return browserChirpWorkspace({ analysis: analyze(name), decoded: null, bblName: `${name}.bbl`, cliName: "cli.txt" });
+  const bytes = new Uint8Array(gunzipSync(readFileSync(WU7 + name + ".bbl.gz")));
+  const core = createSessionCore();
+  const buffer = bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength) as ArrayBuffer;
+  core.handle({ id: 1, type: "open", buffer, filename: `${name}.bbl` });
+  const r = core.handle({ id: 2, type: "analyze", logIndex: 0 }).response;
+  if (!r.ok || r.type !== "analyze") throw new Error(r.ok ? "protocol" : r.error);
+  return browserWorkspace({
+    decoded: r.decoded,
+    analysis: r.analysis,
+    bbl: { name: `${name}.bbl`, sizeBytes: bytes.byteLength },
+    cli: cliContextFromText("cli.txt", CLI_TEXT.length, CLI_TEXT),
+    features: getRuntimeCapabilities().features,
+  });
 }
 
 afterEach(cleanup);
@@ -53,10 +70,57 @@ describe("browser CHIRP -> UI payload", () => {
     expect(ws.safety).toBeNull();
     expect(ws.compare).toBeNull();
     expect(ws.analysis).toBeNull();
-    expect(ws.cli).toMatchObject({ authorized: false, actionable: false });
+    expect(ws.cli).toMatchObject({ state: "NOT AVAILABLE", authorized: false, actionable: false });
+    expect(ws.cli.apply_cli).toBeUndefined();
+    expect(ws.cli.rollback_cli).toBeUndefined();
     expect(Object.values(ws.controls).every((v) => v === false)).toBe(true);
     expect(ws.overview.chirp_detected).toBe(true);
     expect(ws.overview.final_safety).toBeUndefined();
+    expect(ws.demo).toBe(false);
+  });
+
+  it("browser workspace carries the real decode, files, log and CLI context", () => {
+    const ws = workspace("clean_single_axis");
+    expect(ws.overview).toMatchObject({ bbl_filename: "clean_single_axis.bbl", cli_filename: "cli.txt", log_index: 0, log_count: 1 });
+    expect(ws.blackbox).toMatchObject({ source: "browser", filename: "clean_single_axis.bbl", selected_log_index: 0, log_count: 1 });
+    expect((ws.blackbox.fields_hint as string[]).length).toBeGreaterThan(5);
+    expect(ws.blackbox.frames_decoded).toBeGreaterThan(2000);
+    expect(ws.cli.firmware_provenance).toEqual({
+      filename: "cli.txt",
+      size_bytes: CLI_TEXT.length,
+      lines: 5,
+      firmware: "Betaflight / STM32G47X (S47X) 2026.6.2 Oct  1 2026",
+      board_name: "BETAFPVG473",
+      debug_mode: "CHIRP",
+    });
+    expect(ws.capabilities).toEqual({
+      blackboxDecode: "available",
+      cliSelection: "available",
+      chirpAnalysis: "available",
+      generalAnalysis: "unavailable",
+      tune: "unavailable",
+      safety: "unavailable",
+      compare: "unavailable",
+      cliApply: "unavailable",
+    });
+  });
+
+  it("refuses a workspace whose decode and CHIRP refer to different logs", () => {
+    const bytes = new Uint8Array(gunzipSync(readFileSync(WU7 + "clean_single_axis.bbl.gz")));
+    const core = createSessionCore();
+    core.handle({ id: 1, type: "open", buffer: bytes.buffer as ArrayBuffer, filename: "x.bbl" });
+    const r = core.handle({ id: 2, type: "analyze", logIndex: 0 }).response;
+    if (!r.ok || r.type !== "analyze") throw new Error("protocol");
+    const decoded = { ...r.decoded, embedded: { ...r.decoded.embedded, selectedIndex: 1 } };
+    expect(() =>
+      browserWorkspace({
+        decoded,
+        analysis: r.analysis,
+        bbl: { name: "x.bbl", sizeBytes: 1 },
+        cli: cliContextFromText("cli.txt", 0, ""),
+        features: getRuntimeCapabilities().features,
+      }),
+    ).toThrow("workspace_log_mismatch");
   });
 });
 
