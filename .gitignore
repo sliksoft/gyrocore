@@ -17,6 +17,7 @@ dist/
 
 # Logs / generated
 *.log
+tools/simplified_tuning_reference/harness
 coverage/
 htmlcov/
 

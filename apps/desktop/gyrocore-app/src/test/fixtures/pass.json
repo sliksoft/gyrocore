@@ -1,0 +1,2672 @@
+{
+  "kind": "gyrocore_desktop_workspace",
+  "demo": true,
+  "demo_label": "SYNTHETIC / DEMO DATA \u2014 not a real flight blackbox",
+  "scenario": "pass",
+  "overview": {
+    "craft": "Demo F7X2",
+    "target": "STM32F7X2",
+    "betaflight_version": "2026.6.2",
+    "pid_profile": 0,
+    "log_duration_s": 42.5,
+    "sample_rate_hz": 2000.0,
+    "detected_issues": [],
+    "mechanical_safety": "PASS",
+    "chirp_detected": true,
+    "tune_recommendation": "proposed",
+    "cli_authorization": "AUTHORIZED",
+    "final_safety": "PASS"
+  },
+  "analysis": {
+    "ok": true,
+    "quality": {
+      "status": "ok",
+      "score": 90
+    },
+    "confidence": {
+      "score": 0.92,
+      "label": "high"
+    },
+    "problems": {
+      "problems": []
+    },
+    "metrics": {
+      "noise": {
+        "value": 90.0,
+        "hf_ratio": 0.05,
+        "level": "LOW"
+      }
+    },
+    "motors": {
+      "diagnostics": {
+        "motors": [],
+        "health": 100
+      }
+    },
+    "resonance": {
+      "severity": "low"
+    },
+    "spectral": {
+      "summary": "demo_fft",
+      "axes": {
+        "roll": {
+          "peaks": [
+            {
+              "hz": 120.0,
+              "magnitude": 0.4
+            }
+          ]
+        },
+        "pitch": {
+          "peaks": [
+            {
+              "hz": 125.0,
+              "magnitude": 0.35
+            }
+          ]
+        },
+        "yaw": {
+          "peaks": []
+        }
+      }
+    },
+    "step_response": {
+      "ok": true,
+      "demo": true
+    },
+    "d_effectiveness": {
+      "ok": true,
+      "demo": true
+    },
+    "erpm": {
+      "ok": true,
+      "demo": true
+    },
+    "saturation": {
+      "ok": true,
+      "level": "low"
+    },
+    "sample_rate_hz": 2000.0,
+    "duration_s": 42.5
+  },
+  "chirp": {
+    "available": true,
+    "status": "ok",
+    "axis": "roll",
+    "sample_rate_hz": 2000.0,
+    "sample_rate_source": "header_logged_rate",
+    "header_vs_timestamp": {
+      "agree": true,
+      "warning": null
+    },
+    "usable_frequency_hz": {
+      "min": 20.0,
+      "max": 200.0
+    },
+    "quality": "ok",
+    "segment": {
+      "start_s": 5.0,
+      "end_s": 12.0
+    },
+    "magnitude": [
+      {
+        "hz": 20.0,
+        "db": -12.5
+      },
+      {
+        "hz": 30.0,
+        "db": -12.75
+      },
+      {
+        "hz": 40.0,
+        "db": -13.0
+      },
+      {
+        "hz": 50.0,
+        "db": -13.25
+      },
+      {
+        "hz": 60.0,
+        "db": -13.5
+      },
+      {
+        "hz": 70.0,
+        "db": -13.75
+      },
+      {
+        "hz": 80.0,
+        "db": -14.0
+      },
+      {
+        "hz": 90.0,
+        "db": -14.25
+      },
+      {
+        "hz": 100.0,
+        "db": -14.5
+      },
+      {
+        "hz": 110.0,
+        "db": -14.75
+      },
+      {
+        "hz": 120.0,
+        "db": -15.0
+      },
+      {
+        "hz": 130.0,
+        "db": -15.25
+      },
+      {
+        "hz": 140.0,
+        "db": -15.5
+      },
+      {
+        "hz": 150.0,
+        "db": -15.75
+      },
+      {
+        "hz": 160.0,
+        "db": -16.0
+      },
+      {
+        "hz": 170.0,
+        "db": -16.25
+      },
+      {
+        "hz": 180.0,
+        "db": -16.5
+      },
+      {
+        "hz": 190.0,
+        "db": -16.75
+      },
+      {
+        "hz": 200.0,
+        "db": -17.0
+      }
+    ],
+    "phase": [
+      {
+        "hz": 20.0,
+        "deg": -34.0
+      },
+      {
+        "hz": 30.0,
+        "deg": -36.0
+      },
+      {
+        "hz": 40.0,
+        "deg": -38.0
+      },
+      {
+        "hz": 50.0,
+        "deg": -40.0
+      },
+      {
+        "hz": 60.0,
+        "deg": -42.0
+      },
+      {
+        "hz": 70.0,
+        "deg": -44.0
+      },
+      {
+        "hz": 80.0,
+        "deg": -46.0
+      },
+      {
+        "hz": 90.0,
+        "deg": -48.0
+      },
+      {
+        "hz": 100.0,
+        "deg": -50.0
+      },
+      {
+        "hz": 110.0,
+        "deg": -52.0
+      },
+      {
+        "hz": 120.0,
+        "deg": -54.0
+      },
+      {
+        "hz": 130.0,
+        "deg": -56.0
+      },
+      {
+        "hz": 140.0,
+        "deg": -58.0
+      },
+      {
+        "hz": 150.0,
+        "deg": -60.0
+      },
+      {
+        "hz": 160.0,
+        "deg": -62.0
+      },
+      {
+        "hz": 170.0,
+        "deg": -64.0
+      },
+      {
+        "hz": 180.0,
+        "deg": -66.0
+      },
+      {
+        "hz": 190.0,
+        "deg": -68.0
+      },
+      {
+        "hz": 200.0,
+        "deg": -70.0
+      }
+    ],
+    "coherence": [
+      {
+        "hz": 20.0,
+        "value": 0.8999999999999999
+      },
+      {
+        "hz": 30.0,
+        "value": 0.875
+      },
+      {
+        "hz": 40.0,
+        "value": 0.85
+      },
+      {
+        "hz": 50.0,
+        "value": 0.825
+      },
+      {
+        "hz": 60.0,
+        "value": 0.7999999999999999
+      },
+      {
+        "hz": 70.0,
+        "value": 0.7749999999999999
+      },
+      {
+        "hz": 80.0,
+        "value": 0.75
+      },
+      {
+        "hz": 90.0,
+        "value": 0.725
+      },
+      {
+        "hz": 100.0,
+        "value": 0.7
+      },
+      {
+        "hz": 110.0,
+        "value": 0.6749999999999999
+      },
+      {
+        "hz": 120.0,
+        "value": 0.6499999999999999
+      },
+      {
+        "hz": 130.0,
+        "value": 0.625
+      },
+      {
+        "hz": 140.0,
+        "value": 0.6
+      },
+      {
+        "hz": 150.0,
+        "value": 0.575
+      },
+      {
+        "hz": 160.0,
+        "value": 0.5499999999999999
+      },
+      {
+        "hz": 170.0,
+        "value": 0.5249999999999999
+      },
+      {
+        "hz": 180.0,
+        "value": 0.49999999999999994
+      },
+      {
+        "hz": 190.0,
+        "value": 0.475
+      },
+      {
+        "hz": 200.0,
+        "value": 0.44999999999999996
+      }
+    ],
+    "warnings": []
+  },
+  "tune": {
+    "merge_status": "proposed",
+    "review_reasons": [],
+    "per_axis_recommendations": {
+      "roll": {
+        "slider_master_multiplier": 100,
+        "slider_pi_gain": 108,
+        "slider_i_gain": 100,
+        "slider_d_gain": 100,
+        "slider_feedforward_gain": 100,
+        "slider_dterm_filter_multiplier": 100
+      },
+      "pitch": {
+        "slider_master_multiplier": 100,
+        "slider_pi_gain": 108,
+        "slider_i_gain": 100,
+        "slider_d_gain": 100,
+        "slider_feedforward_gain": 100,
+        "slider_dterm_filter_multiplier": 100
+      },
+      "yaw": {
+        "slider_master_multiplier": 100,
+        "slider_pi_gain": 108,
+        "slider_i_gain": 100,
+        "slider_d_gain": 100,
+        "slider_feedforward_gain": 100,
+        "slider_dterm_filter_multiplier": 100
+      }
+    },
+    "merged_sliders": {
+      "slider_master_multiplier": 100,
+      "slider_pi_gain": 108,
+      "slider_i_gain": 100,
+      "slider_d_gain": 100,
+      "slider_feedforward_gain": 100,
+      "slider_dterm_filter_multiplier": 100
+    },
+    "merge": {
+      "status": "merged",
+      "policy_id": "gyrocore.autotune.global_slider.merge.v1",
+      "policy_kind": "gyrocore",
+      "upstream_or_gyrocore": "gyrocore",
+      "participating_axes": [
+        "roll",
+        "pitch",
+        "yaw"
+      ],
+      "fields": {
+        "slider_master_multiplier": {
+          "key": "slider_master_multiplier",
+          "values_by_axis": {
+            "roll": 100,
+            "pitch": 100,
+            "yaw": 100
+          },
+          "agreed": true,
+          "chosen": 100,
+          "constrained_by": [
+            "roll",
+            "pitch",
+            "yaw"
+          ],
+          "reason": "unanimous"
+        },
+        "slider_pi_gain": {
+          "key": "slider_pi_gain",
+          "values_by_axis": {
+            "roll": 108,
+            "pitch": 108,
+            "yaw": 108
+          },
+          "agreed": true,
+          "chosen": 108,
+          "constrained_by": [
+            "roll",
+            "pitch",
+            "yaw"
+          ],
+          "reason": "unanimous"
+        },
+        "slider_i_gain": {
+          "key": "slider_i_gain",
+          "values_by_axis": {
+            "roll": 100,
+            "pitch": 100,
+            "yaw": 100
+          },
+          "agreed": true,
+          "chosen": 100,
+          "constrained_by": [
+            "roll",
+            "pitch",
+            "yaw"
+          ],
+          "reason": "unanimous"
+        },
+        "slider_d_gain": {
+          "key": "slider_d_gain",
+          "values_by_axis": {
+            "roll": 100,
+            "pitch": 100,
+            "yaw": 100
+          },
+          "agreed": true,
+          "chosen": 100,
+          "constrained_by": [
+            "roll",
+            "pitch",
+            "yaw"
+          ],
+          "reason": "unanimous"
+        },
+        "slider_feedforward_gain": {
+          "key": "slider_feedforward_gain",
+          "values_by_axis": {
+            "roll": 100,
+            "pitch": 100,
+            "yaw": 100
+          },
+          "agreed": true,
+          "chosen": 100,
+          "constrained_by": [
+            "roll",
+            "pitch",
+            "yaw"
+          ],
+          "reason": "unanimous"
+        },
+        "slider_dterm_filter_multiplier": {
+          "key": "slider_dterm_filter_multiplier",
+          "values_by_axis": {
+            "roll": 100,
+            "pitch": 100,
+            "yaw": 100
+          },
+          "agreed": true,
+          "chosen": 100,
+          "constrained_by": [
+            "roll",
+            "pitch",
+            "yaw"
+          ],
+          "reason": "unanimous"
+        }
+      },
+      "proposed_sliders": {
+        "slider_master_multiplier": 100,
+        "slider_pi_gain": 108,
+        "slider_i_gain": 100,
+        "slider_d_gain": 100,
+        "slider_feedforward_gain": 100,
+        "slider_dterm_filter_multiplier": 100
+      },
+      "simplified": {
+        "pids_mode": 2,
+        "master_multiplier": 100,
+        "i_gain": 100,
+        "d_gain": 100,
+        "pi_gain": 108,
+        "d_max_gain": 100,
+        "feedforward_gain": 100,
+        "pitch_d_gain": 100,
+        "pitch_pi_gain": 100,
+        "dterm_filter": 1,
+        "dterm_filter_multiplier": 100,
+        "gyro_filter": 1,
+        "gyro_filter_multiplier": 100
+      },
+      "review_reasons": [],
+      "notes": [
+        "GyroCore merge; upstream Autotune applies one selected axis with no merge.",
+        "Autotune does not propose d_max / pitch_pi / pitch_d / gyro-filter sliders; those stay at current."
+      ]
+    },
+    "current": {
+      "axes": {
+        "roll": {
+          "p": 45,
+          "i": 80,
+          "d": 30,
+          "d_max": 40,
+          "ff": 120
+        },
+        "pitch": {
+          "p": 47,
+          "i": 84,
+          "d": 34,
+          "d_max": 46,
+          "ff": 125
+        },
+        "yaw": {
+          "p": 45,
+          "i": 80,
+          "d": 0,
+          "d_max": 0,
+          "ff": 120
+        }
+      },
+      "filters": {
+        "gyro_lpf1_dyn_min_hz": 250,
+        "gyro_lpf1_dyn_max_hz": 500,
+        "gyro_lpf1_static_hz": 250,
+        "gyro_lpf2_static_hz": 500,
+        "dterm_lpf1_dyn_min_hz": 75,
+        "dterm_lpf1_dyn_max_hz": 150,
+        "dterm_lpf1_static_hz": 75,
+        "dterm_lpf2_static_hz": 150
+      },
+      "sliders": {
+        "pids_mode": 2,
+        "master_multiplier": 100,
+        "i_gain": 100,
+        "d_gain": 100,
+        "pi_gain": 100,
+        "d_max_gain": 100,
+        "feedforward_gain": 100,
+        "pitch_d_gain": 100,
+        "pitch_pi_gain": 100,
+        "dterm_filter": 1,
+        "dterm_filter_multiplier": 100,
+        "gyro_filter": 1,
+        "gyro_filter_multiplier": 100
+      }
+    },
+    "wu8_autotune": {
+      "note": "Per-axis Autotune slider recommendations (non-actionable)",
+      "axes": {
+        "roll": {
+          "slider_master_multiplier": 100,
+          "slider_pi_gain": 108,
+          "slider_i_gain": 100,
+          "slider_d_gain": 100,
+          "slider_feedforward_gain": 100,
+          "slider_dterm_filter_multiplier": 100
+        },
+        "pitch": {
+          "slider_master_multiplier": 100,
+          "slider_pi_gain": 108,
+          "slider_i_gain": 100,
+          "slider_d_gain": 100,
+          "slider_feedforward_gain": 100,
+          "slider_dterm_filter_multiplier": 100
+        },
+        "yaw": {
+          "slider_master_multiplier": 100,
+          "slider_pi_gain": 108,
+          "slider_i_gain": 100,
+          "slider_d_gain": 100,
+          "slider_feedforward_gain": 100,
+          "slider_dterm_filter_multiplier": 100
+        }
+      }
+    },
+    "wu9_absolute_proposal": {
+      "axes": {
+        "roll": {
+          "p": 48,
+          "i": 86,
+          "d": 30,
+          "d_max": 40,
+          "ff": 120
+        },
+        "pitch": {
+          "p": 50,
+          "i": 90,
+          "d": 34,
+          "d_max": 46,
+          "ff": 125
+        },
+        "yaw": {
+          "p": 48,
+          "i": 86,
+          "d": 0,
+          "d_max": 0,
+          "ff": 120
+        }
+      },
+      "filters": {
+        "gyro_lpf1_dyn_min_hz": 250,
+        "gyro_lpf1_dyn_max_hz": 500,
+        "gyro_lpf1_static_hz": 250,
+        "gyro_lpf2_static_hz": 500,
+        "dterm_lpf1_dyn_min_hz": 75,
+        "dterm_lpf1_dyn_max_hz": 150,
+        "dterm_lpf1_static_hz": 75,
+        "dterm_lpf2_static_hz": 150
+      },
+      "sliders": {
+        "pids_mode": 2,
+        "master_multiplier": 100,
+        "i_gain": 100,
+        "d_gain": 100,
+        "pi_gain": 108,
+        "d_max_gain": 100,
+        "feedforward_gain": 100,
+        "pitch_d_gain": 100,
+        "pitch_pi_gain": 100,
+        "dterm_filter": 1,
+        "dterm_filter_multiplier": 100,
+        "gyro_filter": 1,
+        "gyro_filter_multiplier": 100
+      }
+    },
+    "wu10_safe_target": {
+      "axes": {
+        "roll": {
+          "p": 48,
+          "i": 86,
+          "d": 30,
+          "d_max": 40,
+          "ff": 120
+        },
+        "pitch": {
+          "p": 50,
+          "i": 90,
+          "d": 34,
+          "d_max": 46,
+          "ff": 125
+        },
+        "yaw": {
+          "p": 48,
+          "i": 86,
+          "d": 0,
+          "d_max": 0,
+          "ff": 120
+        }
+      },
+      "filters": {
+        "gyro_lpf1_dyn_min_hz": 250,
+        "gyro_lpf1_dyn_max_hz": 500,
+        "gyro_lpf1_static_hz": 250,
+        "gyro_lpf2_static_hz": 500,
+        "dterm_lpf1_dyn_min_hz": 75,
+        "dterm_lpf1_dyn_max_hz": 150,
+        "dterm_lpf1_static_hz": 75,
+        "dterm_lpf2_static_hz": 150
+      },
+      "clamp_ids": [],
+      "status": "PASS"
+    }
+  },
+  "safety": {
+    "mechanical": {
+      "stage": "mechanical_safety",
+      "status": "pass",
+      "mechanical_block": false,
+      "mechanical_limited": false,
+      "mechanical_caution": false,
+      "mechanical_outcome": "mechanical_clear",
+      "recommended_action": "none",
+      "reasons": [],
+      "blocking_reasons": [],
+      "limited_reasons": [],
+      "caution_reasons": [],
+      "max_delta_scale": 1.0,
+      "evidence": {
+        "high_noise": false,
+        "low_confidence": false,
+        "resonance_severity": "low",
+        "broad_resonance": false,
+        "persistent_resonance": false,
+        "bad_motor_count": 0,
+        "relative_bad_motor_count": 0,
+        "warning_motor_count": 0,
+        "limited_tier": "none",
+        "max_delta_scale": 1.0,
+        "mechanical_outcome": "mechanical_clear",
+        "downgrade_reason": null,
+        "motor_correction_demand_uncertain": false,
+        "mechanical_evidence_strength": "none",
+        "independent_mechanical_evidence": false,
+        "aggressive_flight_context": false,
+        "measured_temperature_available": false
+      },
+      "checks": [
+        {
+          "rule_id": "mechanical.pass",
+          "verdict": "pass",
+          "message": "mechanical_clear",
+          "before": null,
+          "after": null,
+          "evidence": {
+            "high_noise": false,
+            "low_confidence": false,
+            "resonance_severity": "low",
+            "broad_resonance": false,
+            "persistent_resonance": false,
+            "bad_motor_count": 0,
+            "relative_bad_motor_count": 0,
+            "warning_motor_count": 0,
+            "limited_tier": "none",
+            "max_delta_scale": 1.0,
+            "mechanical_outcome": "mechanical_clear",
+            "downgrade_reason": null,
+            "motor_correction_demand_uncertain": false,
+            "mechanical_evidence_strength": "none",
+            "independent_mechanical_evidence": false,
+            "aggressive_flight_context": false,
+            "measured_temperature_available": false
+          }
+        }
+      ],
+      "provenance": {
+        "function": "build_mechanical_safety_gate",
+        "donor": "backend.services.mechanical_safety_gate",
+        "analysis_ok": true
+      }
+    },
+    "safe_tune": {
+      "stage": "safe_tune_clamps",
+      "status": "pass",
+      "actionable": false,
+      "clamp_ids": [],
+      "blocked_reasons": [],
+      "warnings": [],
+      "max_delta_used": {
+        "filters": {
+          "gyro_lpf1_static_hz": 44.0,
+          "gyro_lpf1_dyn_min_hz": 50.0,
+          "gyro_lpf1_dyn_max_hz": 60.0,
+          "gyro_lpf2_static_hz": 40.0,
+          "dterm_lpf1_dyn_min_hz": 20.0,
+          "dterm_lpf1_dyn_max_hz": 30.0,
+          "dterm_lpf2_static_hz": 30.0,
+          "dyn_notch_count": 1.0,
+          "dyn_notch_min_hz": 40.0,
+          "dyn_notch_max_hz": 80.0,
+          "dyn_notch_width_percent": 5.0,
+          "rpm_filter_harmonics": 1.0,
+          "rpm_filter_min_hz": 20.0,
+          "rpm_filter_max_hz": 100.0,
+          "rpm_filter_fade_range_hz": 20.0,
+          "feedforward_boost": 5.0,
+          "feedforward_smooth_factor": 5.0,
+          "feedforward_jitter_factor": 5.0,
+          "feedforward_transition": 5.0,
+          "rc_smoothing": 1.0,
+          "rc_smoothing_feedforward": 5.0,
+          "dyn_idle_min_rpm": 10.0,
+          "anti_gravity_gain": 1000.0,
+          "anti_gravity_cutoff": 2.0,
+          "anti_gravity_p_gain": 10.0,
+          "iterm_relax": 1.0,
+          "iterm_rotation": 1.0,
+          "tpa_rate": 5.0,
+          "tpa_breakpoint": 50.0,
+          "throttle_boost": 5.0,
+          "motor_output_limit": 5.0
+        },
+        "pid": {
+          "roll": {
+            "p": 4.0,
+            "i": 8.0,
+            "d": 6.0,
+            "ff": 8.0,
+            "d_max": 6.0
+          },
+          "pitch": {
+            "p": 4.0,
+            "i": 8.0,
+            "d": 6.0,
+            "ff": 8.0,
+            "d_max": 6.0
+          },
+          "yaw": {
+            "p": 4.0,
+            "i": 8.0,
+            "d": 6.0,
+            "ff": 8.0,
+            "d_max": 6.0
+          }
+        }
+      },
+      "current_config": {
+        "pid": {
+          "roll": {
+            "p": 45.0,
+            "i": 80.0,
+            "d": 30.0,
+            "ff": 120.0,
+            "d_max": 40.0
+          },
+          "pitch": {
+            "p": 47.0,
+            "i": 84.0,
+            "d": 34.0,
+            "ff": 125.0,
+            "d_max": 46.0
+          },
+          "yaw": {
+            "p": 45.0,
+            "i": 80.0,
+            "d": 0.0,
+            "ff": 120.0,
+            "d_max": 0.0
+          }
+        },
+        "filters": {
+          "dterm_lpf1_dyn_min_hz": 75.0,
+          "dterm_lpf1_dyn_max_hz": 150.0,
+          "dterm_lpf1_static_hz": 75.0,
+          "dterm_lpf2_static_hz": 150.0,
+          "gyro_lpf1_dyn_min_hz": 250.0,
+          "gyro_lpf1_dyn_max_hz": 500.0,
+          "gyro_lpf1_static_hz": 250.0,
+          "gyro_lpf2_static_hz": 500.0
+        }
+      },
+      "proposed_config": {
+        "pid": {
+          "roll": {
+            "p": 48.0,
+            "i": 86.0,
+            "d": 30.0,
+            "ff": 120.0,
+            "d_max": 40.0
+          },
+          "pitch": {
+            "p": 50.0,
+            "i": 90.0,
+            "d": 34.0,
+            "ff": 125.0,
+            "d_max": 46.0
+          },
+          "yaw": {
+            "p": 48.0,
+            "i": 86.0,
+            "d": 0.0,
+            "ff": 120.0,
+            "d_max": 0.0
+          }
+        },
+        "filters": {
+          "dterm_lpf1_dyn_min_hz": 75.0,
+          "dterm_lpf1_dyn_max_hz": 150.0,
+          "dterm_lpf1_static_hz": 75.0,
+          "dterm_lpf2_static_hz": 150.0,
+          "gyro_lpf1_dyn_min_hz": 250.0,
+          "gyro_lpf1_dyn_max_hz": 500.0,
+          "gyro_lpf1_static_hz": 250.0,
+          "gyro_lpf2_static_hz": 500.0
+        }
+      },
+      "clamped_config": {
+        "pid": {
+          "roll": {
+            "p": 48.0,
+            "i": 86.0,
+            "d": 30.0,
+            "ff": 120.0,
+            "d_max": 40.0
+          },
+          "pitch": {
+            "p": 50.0,
+            "i": 90.0,
+            "d": 34.0,
+            "ff": 125.0,
+            "d_max": 46.0
+          },
+          "yaw": {
+            "p": 48.0,
+            "i": 86.0,
+            "d": 0.0,
+            "ff": 120.0,
+            "d_max": 0.0
+          }
+        },
+        "filters": {
+          "dterm_lpf1_dyn_min_hz": 75.0,
+          "dterm_lpf1_dyn_max_hz": 150.0,
+          "dterm_lpf1_static_hz": 75.0,
+          "dterm_lpf2_static_hz": 150.0,
+          "gyro_lpf1_dyn_min_hz": 250.0,
+          "gyro_lpf1_dyn_max_hz": 500.0,
+          "gyro_lpf1_static_hz": 250.0,
+          "gyro_lpf2_static_hz": 500.0
+        }
+      },
+      "clamped_tune": {
+        "sliders": {
+          "pids_mode": 2,
+          "master_multiplier": 100,
+          "i_gain": 100,
+          "d_gain": 100,
+          "pi_gain": 108,
+          "d_max_gain": 100,
+          "feedforward_gain": 100,
+          "pitch_d_gain": 100,
+          "pitch_pi_gain": 100,
+          "dterm_filter": 1,
+          "dterm_filter_multiplier": 100,
+          "gyro_filter": 1,
+          "gyro_filter_multiplier": 100
+        },
+        "roll": {
+          "p": {
+            "name": "roll.p",
+            "value": 48,
+            "source": "inferred",
+            "origin": "safe_tune_clamp",
+            "raw": 48,
+            "note": "mapped from sliders"
+          },
+          "i": {
+            "name": "roll.i",
+            "value": 86,
+            "source": "inferred",
+            "origin": "safe_tune_clamp",
+            "raw": 86,
+            "note": "mapped from sliders"
+          },
+          "d": {
+            "name": "roll.d",
+            "value": 30,
+            "source": "inferred",
+            "origin": "safe_tune_clamp",
+            "raw": 30,
+            "note": "mapped from sliders"
+          },
+          "f": {
+            "name": "roll.f",
+            "value": 120,
+            "source": "inferred",
+            "origin": "safe_tune_clamp",
+            "raw": 120,
+            "note": "mapped from sliders"
+          },
+          "d_max": {
+            "name": "roll.d_max",
+            "value": 40,
+            "source": "inferred",
+            "origin": "safe_tune_clamp",
+            "raw": 40,
+            "note": "mapped from sliders"
+          }
+        },
+        "pitch": {
+          "p": {
+            "name": "pitch.p",
+            "value": 50,
+            "source": "inferred",
+            "origin": "safe_tune_clamp",
+            "raw": 50,
+            "note": "mapped from sliders"
+          },
+          "i": {
+            "name": "pitch.i",
+            "value": 90,
+            "source": "inferred",
+            "origin": "safe_tune_clamp",
+            "raw": 90,
+            "note": "mapped from sliders"
+          },
+          "d": {
+            "name": "pitch.d",
+            "value": 34,
+            "source": "inferred",
+            "origin": "safe_tune_clamp",
+            "raw": 34,
+            "note": "mapped from sliders"
+          },
+          "f": {
+            "name": "pitch.f",
+            "value": 125,
+            "source": "inferred",
+            "origin": "safe_tune_clamp",
+            "raw": 125,
+            "note": "mapped from sliders"
+          },
+          "d_max": {
+            "name": "pitch.d_max",
+            "value": 46,
+            "source": "inferred",
+            "origin": "safe_tune_clamp",
+            "raw": 46,
+            "note": "mapped from sliders"
+          }
+        },
+        "yaw": {
+          "p": {
+            "name": "yaw.p",
+            "value": 48,
+            "source": "inferred",
+            "origin": "safe_tune_clamp",
+            "raw": 48,
+            "note": "mapped from sliders"
+          },
+          "i": {
+            "name": "yaw.i",
+            "value": 86,
+            "source": "inferred",
+            "origin": "safe_tune_clamp",
+            "raw": 86,
+            "note": "mapped from sliders"
+          },
+          "d": {
+            "name": "yaw.d",
+            "value": 0,
+            "source": "inferred",
+            "origin": "safe_tune_clamp",
+            "raw": 0,
+            "note": "mapped from sliders"
+          },
+          "f": {
+            "name": "yaw.f",
+            "value": 120,
+            "source": "inferred",
+            "origin": "safe_tune_clamp",
+            "raw": 120,
+            "note": "mapped from sliders"
+          },
+          "d_max": {
+            "name": "yaw.d_max",
+            "value": 0,
+            "source": "inferred",
+            "origin": "safe_tune_clamp",
+            "raw": 0,
+            "note": "mapped from sliders"
+          }
+        },
+        "dterm": {
+          "lpf1_dyn_min_hz": {
+            "name": "dterm.lpf1_dyn_min_hz",
+            "value": 75,
+            "source": "inferred",
+            "origin": "safe_tune_clamp",
+            "raw": 75,
+            "note": "mapped from sliders"
+          },
+          "lpf1_dyn_max_hz": {
+            "name": "dterm.lpf1_dyn_max_hz",
+            "value": 150,
+            "source": "inferred",
+            "origin": "safe_tune_clamp",
+            "raw": 150,
+            "note": "mapped from sliders"
+          },
+          "lpf1_static_hz": {
+            "name": "dterm.lpf1_static_hz",
+            "value": 75,
+            "source": "inferred",
+            "origin": "safe_tune_clamp",
+            "raw": 75,
+            "note": "mapped from sliders"
+          },
+          "lpf2_static_hz": {
+            "name": "dterm.lpf2_static_hz",
+            "value": 150,
+            "source": "inferred",
+            "origin": "safe_tune_clamp",
+            "raw": 150,
+            "note": "mapped from sliders"
+          }
+        },
+        "gyro": {
+          "lpf1_dyn_min_hz": {
+            "name": "gyro.lpf1_dyn_min_hz",
+            "value": 250,
+            "source": "inferred",
+            "origin": "safe_tune_clamp",
+            "raw": 250,
+            "note": "mapped from sliders"
+          },
+          "lpf1_dyn_max_hz": {
+            "name": "gyro.lpf1_dyn_max_hz",
+            "value": 500,
+            "source": "inferred",
+            "origin": "safe_tune_clamp",
+            "raw": 500,
+            "note": "mapped from sliders"
+          },
+          "lpf1_static_hz": {
+            "name": "gyro.lpf1_static_hz",
+            "value": 250,
+            "source": "inferred",
+            "origin": "safe_tune_clamp",
+            "raw": 250,
+            "note": "mapped from sliders"
+          },
+          "lpf2_static_hz": {
+            "name": "gyro.lpf2_static_hz",
+            "value": 500,
+            "source": "inferred",
+            "origin": "safe_tune_clamp",
+            "raw": 500,
+            "note": "mapped from sliders"
+          }
+        },
+        "active_pid_profile": {
+          "name": "active_pid_profile",
+          "value": 0,
+          "source": "parsed",
+          "origin": "cli:profile",
+          "raw": null,
+          "note": "confidence=high"
+        },
+        "warnings": [],
+        "sources_used": [
+          "firmware_simplified_tuning",
+          "cli_dump",
+          "safe_tune_clamp"
+        ]
+      },
+      "checks": [
+        {
+          "rule_id": "safe_tune.max_delta_scale",
+          "verdict": "pass",
+          "message": "mechanical max_delta_scale",
+          "before": 1.0,
+          "after": 1.0,
+          "evidence": {}
+        }
+      ],
+      "mechanical": {
+        "stage": "mechanical_safety",
+        "status": "pass",
+        "mechanical_block": false,
+        "mechanical_limited": false,
+        "mechanical_caution": false,
+        "mechanical_outcome": "mechanical_clear",
+        "recommended_action": "none",
+        "reasons": [],
+        "blocking_reasons": [],
+        "limited_reasons": [],
+        "caution_reasons": [],
+        "max_delta_scale": 1.0,
+        "evidence": {
+          "high_noise": false,
+          "low_confidence": false,
+          "resonance_severity": "low",
+          "broad_resonance": false,
+          "persistent_resonance": false,
+          "bad_motor_count": 0,
+          "relative_bad_motor_count": 0,
+          "warning_motor_count": 0,
+          "limited_tier": "none",
+          "max_delta_scale": 1.0,
+          "mechanical_outcome": "mechanical_clear",
+          "downgrade_reason": null,
+          "motor_correction_demand_uncertain": false,
+          "mechanical_evidence_strength": "none",
+          "independent_mechanical_evidence": false,
+          "aggressive_flight_context": false,
+          "measured_temperature_available": false
+        },
+        "checks": [
+          {
+            "rule_id": "mechanical.pass",
+            "verdict": "pass",
+            "message": "mechanical_clear",
+            "before": null,
+            "after": null,
+            "evidence": {
+              "high_noise": false,
+              "low_confidence": false,
+              "resonance_severity": "low",
+              "broad_resonance": false,
+              "persistent_resonance": false,
+              "bad_motor_count": 0,
+              "relative_bad_motor_count": 0,
+              "warning_motor_count": 0,
+              "limited_tier": "none",
+              "max_delta_scale": 1.0,
+              "mechanical_outcome": "mechanical_clear",
+              "downgrade_reason": null,
+              "motor_correction_demand_uncertain": false,
+              "mechanical_evidence_strength": "none",
+              "independent_mechanical_evidence": false,
+              "aggressive_flight_context": false,
+              "measured_temperature_available": false
+            }
+          }
+        ],
+        "provenance": {
+          "function": "build_mechanical_safety_gate",
+          "donor": "backend.services.mechanical_safety_gate",
+          "analysis_ok": true
+        }
+      },
+      "provenance": {
+        "stage": "safe_tune_clamps",
+        "donor": [
+          "tuning_safe_v2.apply_to_baseline",
+          "tuning_safe_v2.apply_safety",
+          "tuning_safety_policy.clamp_targets_to_baseline_thermal"
+        ],
+        "gyrocore_bridges": [
+          "d_max_uses_d_step_cap",
+          "zero_hz_filter_off_preserved",
+          "zero_pid_yaw_d_preserved",
+          "firmware_pid_gain_ceilings"
+        ]
+      }
+    },
+    "tuning_output_safety": {
+      "stage": "tuning_output_safety",
+      "status": "pass",
+      "donor_status": "actionable",
+      "cli_actionable": false,
+      "blocking_reasons": [],
+      "warning_reasons": [],
+      "checks": [
+        {
+          "rule_id": "tos.mechanical_stage_present",
+          "verdict": "pass",
+          "message": "mechanical stage token present",
+          "before": null,
+          "after": null,
+          "evidence": {}
+        },
+        {
+          "rule_id": "tos.safe_tune_stage_present",
+          "verdict": "pass",
+          "message": "safe-tune stage token present",
+          "before": null,
+          "after": null,
+          "evidence": {}
+        },
+        {
+          "rule_id": "tos.cli_actionable_frozen_false",
+          "verdict": "pass",
+          "message": "WU10 never exposes actionable CLI",
+          "before": null,
+          "after": false,
+          "evidence": {}
+        },
+        {
+          "rule_id": "tos.final_verdict",
+          "verdict": "pass",
+          "message": "actionable",
+          "before": null,
+          "after": null,
+          "evidence": {
+            "blocking": [],
+            "warnings": []
+          }
+        }
+      ],
+      "candidate": {
+        "stage": "safe_tune_clamps",
+        "status": "pass",
+        "actionable": false,
+        "clamp_ids": [],
+        "blocked_reasons": [],
+        "warnings": [],
+        "max_delta_used": {
+          "filters": {
+            "gyro_lpf1_static_hz": 44.0,
+            "gyro_lpf1_dyn_min_hz": 50.0,
+            "gyro_lpf1_dyn_max_hz": 60.0,
+            "gyro_lpf2_static_hz": 40.0,
+            "dterm_lpf1_dyn_min_hz": 20.0,
+            "dterm_lpf1_dyn_max_hz": 30.0,
+            "dterm_lpf2_static_hz": 30.0,
+            "dyn_notch_count": 1.0,
+            "dyn_notch_min_hz": 40.0,
+            "dyn_notch_max_hz": 80.0,
+            "dyn_notch_width_percent": 5.0,
+            "rpm_filter_harmonics": 1.0,
+            "rpm_filter_min_hz": 20.0,
+            "rpm_filter_max_hz": 100.0,
+            "rpm_filter_fade_range_hz": 20.0,
+            "feedforward_boost": 5.0,
+            "feedforward_smooth_factor": 5.0,
+            "feedforward_jitter_factor": 5.0,
+            "feedforward_transition": 5.0,
+            "rc_smoothing": 1.0,
+            "rc_smoothing_feedforward": 5.0,
+            "dyn_idle_min_rpm": 10.0,
+            "anti_gravity_gain": 1000.0,
+            "anti_gravity_cutoff": 2.0,
+            "anti_gravity_p_gain": 10.0,
+            "iterm_relax": 1.0,
+            "iterm_rotation": 1.0,
+            "tpa_rate": 5.0,
+            "tpa_breakpoint": 50.0,
+            "throttle_boost": 5.0,
+            "motor_output_limit": 5.0
+          },
+          "pid": {
+            "roll": {
+              "p": 4.0,
+              "i": 8.0,
+              "d": 6.0,
+              "ff": 8.0,
+              "d_max": 6.0
+            },
+            "pitch": {
+              "p": 4.0,
+              "i": 8.0,
+              "d": 6.0,
+              "ff": 8.0,
+              "d_max": 6.0
+            },
+            "yaw": {
+              "p": 4.0,
+              "i": 8.0,
+              "d": 6.0,
+              "ff": 8.0,
+              "d_max": 6.0
+            }
+          }
+        },
+        "current_config": {
+          "pid": {
+            "roll": {
+              "p": 45.0,
+              "i": 80.0,
+              "d": 30.0,
+              "ff": 120.0,
+              "d_max": 40.0
+            },
+            "pitch": {
+              "p": 47.0,
+              "i": 84.0,
+              "d": 34.0,
+              "ff": 125.0,
+              "d_max": 46.0
+            },
+            "yaw": {
+              "p": 45.0,
+              "i": 80.0,
+              "d": 0.0,
+              "ff": 120.0,
+              "d_max": 0.0
+            }
+          },
+          "filters": {
+            "dterm_lpf1_dyn_min_hz": 75.0,
+            "dterm_lpf1_dyn_max_hz": 150.0,
+            "dterm_lpf1_static_hz": 75.0,
+            "dterm_lpf2_static_hz": 150.0,
+            "gyro_lpf1_dyn_min_hz": 250.0,
+            "gyro_lpf1_dyn_max_hz": 500.0,
+            "gyro_lpf1_static_hz": 250.0,
+            "gyro_lpf2_static_hz": 500.0
+          }
+        },
+        "proposed_config": {
+          "pid": {
+            "roll": {
+              "p": 48.0,
+              "i": 86.0,
+              "d": 30.0,
+              "ff": 120.0,
+              "d_max": 40.0
+            },
+            "pitch": {
+              "p": 50.0,
+              "i": 90.0,
+              "d": 34.0,
+              "ff": 125.0,
+              "d_max": 46.0
+            },
+            "yaw": {
+              "p": 48.0,
+              "i": 86.0,
+              "d": 0.0,
+              "ff": 120.0,
+              "d_max": 0.0
+            }
+          },
+          "filters": {
+            "dterm_lpf1_dyn_min_hz": 75.0,
+            "dterm_lpf1_dyn_max_hz": 150.0,
+            "dterm_lpf1_static_hz": 75.0,
+            "dterm_lpf2_static_hz": 150.0,
+            "gyro_lpf1_dyn_min_hz": 250.0,
+            "gyro_lpf1_dyn_max_hz": 500.0,
+            "gyro_lpf1_static_hz": 250.0,
+            "gyro_lpf2_static_hz": 500.0
+          }
+        },
+        "clamped_config": {
+          "pid": {
+            "roll": {
+              "p": 48.0,
+              "i": 86.0,
+              "d": 30.0,
+              "ff": 120.0,
+              "d_max": 40.0
+            },
+            "pitch": {
+              "p": 50.0,
+              "i": 90.0,
+              "d": 34.0,
+              "ff": 125.0,
+              "d_max": 46.0
+            },
+            "yaw": {
+              "p": 48.0,
+              "i": 86.0,
+              "d": 0.0,
+              "ff": 120.0,
+              "d_max": 0.0
+            }
+          },
+          "filters": {
+            "dterm_lpf1_dyn_min_hz": 75.0,
+            "dterm_lpf1_dyn_max_hz": 150.0,
+            "dterm_lpf1_static_hz": 75.0,
+            "dterm_lpf2_static_hz": 150.0,
+            "gyro_lpf1_dyn_min_hz": 250.0,
+            "gyro_lpf1_dyn_max_hz": 500.0,
+            "gyro_lpf1_static_hz": 250.0,
+            "gyro_lpf2_static_hz": 500.0
+          }
+        },
+        "clamped_tune": {
+          "sliders": {
+            "pids_mode": 2,
+            "master_multiplier": 100,
+            "i_gain": 100,
+            "d_gain": 100,
+            "pi_gain": 108,
+            "d_max_gain": 100,
+            "feedforward_gain": 100,
+            "pitch_d_gain": 100,
+            "pitch_pi_gain": 100,
+            "dterm_filter": 1,
+            "dterm_filter_multiplier": 100,
+            "gyro_filter": 1,
+            "gyro_filter_multiplier": 100
+          },
+          "roll": {
+            "p": {
+              "name": "roll.p",
+              "value": 48,
+              "source": "inferred",
+              "origin": "safe_tune_clamp",
+              "raw": 48,
+              "note": "mapped from sliders"
+            },
+            "i": {
+              "name": "roll.i",
+              "value": 86,
+              "source": "inferred",
+              "origin": "safe_tune_clamp",
+              "raw": 86,
+              "note": "mapped from sliders"
+            },
+            "d": {
+              "name": "roll.d",
+              "value": 30,
+              "source": "inferred",
+              "origin": "safe_tune_clamp",
+              "raw": 30,
+              "note": "mapped from sliders"
+            },
+            "f": {
+              "name": "roll.f",
+              "value": 120,
+              "source": "inferred",
+              "origin": "safe_tune_clamp",
+              "raw": 120,
+              "note": "mapped from sliders"
+            },
+            "d_max": {
+              "name": "roll.d_max",
+              "value": 40,
+              "source": "inferred",
+              "origin": "safe_tune_clamp",
+              "raw": 40,
+              "note": "mapped from sliders"
+            }
+          },
+          "pitch": {
+            "p": {
+              "name": "pitch.p",
+              "value": 50,
+              "source": "inferred",
+              "origin": "safe_tune_clamp",
+              "raw": 50,
+              "note": "mapped from sliders"
+            },
+            "i": {
+              "name": "pitch.i",
+              "value": 90,
+              "source": "inferred",
+              "origin": "safe_tune_clamp",
+              "raw": 90,
+              "note": "mapped from sliders"
+            },
+            "d": {
+              "name": "pitch.d",
+              "value": 34,
+              "source": "inferred",
+              "origin": "safe_tune_clamp",
+              "raw": 34,
+              "note": "mapped from sliders"
+            },
+            "f": {
+              "name": "pitch.f",
+              "value": 125,
+              "source": "inferred",
+              "origin": "safe_tune_clamp",
+              "raw": 125,
+              "note": "mapped from sliders"
+            },
+            "d_max": {
+              "name": "pitch.d_max",
+              "value": 46,
+              "source": "inferred",
+              "origin": "safe_tune_clamp",
+              "raw": 46,
+              "note": "mapped from sliders"
+            }
+          },
+          "yaw": {
+            "p": {
+              "name": "yaw.p",
+              "value": 48,
+              "source": "inferred",
+              "origin": "safe_tune_clamp",
+              "raw": 48,
+              "note": "mapped from sliders"
+            },
+            "i": {
+              "name": "yaw.i",
+              "value": 86,
+              "source": "inferred",
+              "origin": "safe_tune_clamp",
+              "raw": 86,
+              "note": "mapped from sliders"
+            },
+            "d": {
+              "name": "yaw.d",
+              "value": 0,
+              "source": "inferred",
+              "origin": "safe_tune_clamp",
+              "raw": 0,
+              "note": "mapped from sliders"
+            },
+            "f": {
+              "name": "yaw.f",
+              "value": 120,
+              "source": "inferred",
+              "origin": "safe_tune_clamp",
+              "raw": 120,
+              "note": "mapped from sliders"
+            },
+            "d_max": {
+              "name": "yaw.d_max",
+              "value": 0,
+              "source": "inferred",
+              "origin": "safe_tune_clamp",
+              "raw": 0,
+              "note": "mapped from sliders"
+            }
+          },
+          "dterm": {
+            "lpf1_dyn_min_hz": {
+              "name": "dterm.lpf1_dyn_min_hz",
+              "value": 75,
+              "source": "inferred",
+              "origin": "safe_tune_clamp",
+              "raw": 75,
+              "note": "mapped from sliders"
+            },
+            "lpf1_dyn_max_hz": {
+              "name": "dterm.lpf1_dyn_max_hz",
+              "value": 150,
+              "source": "inferred",
+              "origin": "safe_tune_clamp",
+              "raw": 150,
+              "note": "mapped from sliders"
+            },
+            "lpf1_static_hz": {
+              "name": "dterm.lpf1_static_hz",
+              "value": 75,
+              "source": "inferred",
+              "origin": "safe_tune_clamp",
+              "raw": 75,
+              "note": "mapped from sliders"
+            },
+            "lpf2_static_hz": {
+              "name": "dterm.lpf2_static_hz",
+              "value": 150,
+              "source": "inferred",
+              "origin": "safe_tune_clamp",
+              "raw": 150,
+              "note": "mapped from sliders"
+            }
+          },
+          "gyro": {
+            "lpf1_dyn_min_hz": {
+              "name": "gyro.lpf1_dyn_min_hz",
+              "value": 250,
+              "source": "inferred",
+              "origin": "safe_tune_clamp",
+              "raw": 250,
+              "note": "mapped from sliders"
+            },
+            "lpf1_dyn_max_hz": {
+              "name": "gyro.lpf1_dyn_max_hz",
+              "value": 500,
+              "source": "inferred",
+              "origin": "safe_tune_clamp",
+              "raw": 500,
+              "note": "mapped from sliders"
+            },
+            "lpf1_static_hz": {
+              "name": "gyro.lpf1_static_hz",
+              "value": 250,
+              "source": "inferred",
+              "origin": "safe_tune_clamp",
+              "raw": 250,
+              "note": "mapped from sliders"
+            },
+            "lpf2_static_hz": {
+              "name": "gyro.lpf2_static_hz",
+              "value": 500,
+              "source": "inferred",
+              "origin": "safe_tune_clamp",
+              "raw": 500,
+              "note": "mapped from sliders"
+            }
+          },
+          "active_pid_profile": {
+            "name": "active_pid_profile",
+            "value": 0,
+            "source": "parsed",
+            "origin": "cli:profile",
+            "raw": null,
+            "note": "confidence=high"
+          },
+          "warnings": [],
+          "sources_used": [
+            "firmware_simplified_tuning",
+            "cli_dump",
+            "safe_tune_clamp"
+          ]
+        },
+        "checks": [
+          {
+            "rule_id": "safe_tune.max_delta_scale",
+            "verdict": "pass",
+            "message": "mechanical max_delta_scale",
+            "before": 1.0,
+            "after": 1.0,
+            "evidence": {}
+          }
+        ],
+        "mechanical": {
+          "stage": "mechanical_safety",
+          "status": "pass",
+          "mechanical_block": false,
+          "mechanical_limited": false,
+          "mechanical_caution": false,
+          "mechanical_outcome": "mechanical_clear",
+          "recommended_action": "none",
+          "reasons": [],
+          "blocking_reasons": [],
+          "limited_reasons": [],
+          "caution_reasons": [],
+          "max_delta_scale": 1.0,
+          "evidence": {
+            "high_noise": false,
+            "low_confidence": false,
+            "resonance_severity": "low",
+            "broad_resonance": false,
+            "persistent_resonance": false,
+            "bad_motor_count": 0,
+            "relative_bad_motor_count": 0,
+            "warning_motor_count": 0,
+            "limited_tier": "none",
+            "max_delta_scale": 1.0,
+            "mechanical_outcome": "mechanical_clear",
+            "downgrade_reason": null,
+            "motor_correction_demand_uncertain": false,
+            "mechanical_evidence_strength": "none",
+            "independent_mechanical_evidence": false,
+            "aggressive_flight_context": false,
+            "measured_temperature_available": false
+          },
+          "checks": [
+            {
+              "rule_id": "mechanical.pass",
+              "verdict": "pass",
+              "message": "mechanical_clear",
+              "before": null,
+              "after": null,
+              "evidence": {
+                "high_noise": false,
+                "low_confidence": false,
+                "resonance_severity": "low",
+                "broad_resonance": false,
+                "persistent_resonance": false,
+                "bad_motor_count": 0,
+                "relative_bad_motor_count": 0,
+                "warning_motor_count": 0,
+                "limited_tier": "none",
+                "max_delta_scale": 1.0,
+                "mechanical_outcome": "mechanical_clear",
+                "downgrade_reason": null,
+                "motor_correction_demand_uncertain": false,
+                "mechanical_evidence_strength": "none",
+                "independent_mechanical_evidence": false,
+                "aggressive_flight_context": false,
+                "measured_temperature_available": false
+              }
+            }
+          ],
+          "provenance": {
+            "function": "build_mechanical_safety_gate",
+            "donor": "backend.services.mechanical_safety_gate",
+            "analysis_ok": true
+          }
+        },
+        "provenance": {
+          "stage": "safe_tune_clamps",
+          "donor": [
+            "tuning_safe_v2.apply_to_baseline",
+            "tuning_safe_v2.apply_safety",
+            "tuning_safety_policy.clamp_targets_to_baseline_thermal"
+          ],
+          "gyrocore_bridges": [
+            "d_max_uses_d_step_cap",
+            "zero_hz_filter_off_preserved",
+            "zero_pid_yaw_d_preserved",
+            "firmware_pid_gain_ceilings"
+          ]
+        }
+      },
+      "provenance": {
+        "donor": "backend.routes.analyze._build_tuning_output_safety",
+        "not_migrated": [
+          "generated_cli_missing_or_invalid",
+          "hardware_source_default_*",
+          "motor_poles_pipeline",
+          "support_matrix_policy",
+          "HTTP attach_tuning_output_safety"
+        ],
+        "gyrocore_only": [
+          "unresolved_merge_requires_review",
+          "system_id_unusable",
+          "slider_inconsistency",
+          "missing_required_analysis",
+          "missing_required_pid_or_filter_baseline",
+          "cli_actionable_always_false_wu10"
+        ]
+      }
+    },
+    "final": {
+      "status": "PASS",
+      "actionable": false,
+      "warnings": [],
+      "blocked_reasons": []
+    }
+  },
+  "compare": {
+    "current": {
+      "axes": {
+        "roll": {
+          "p": 45,
+          "i": 80,
+          "d": 30,
+          "d_max": 40,
+          "ff": 120
+        },
+        "pitch": {
+          "p": 47,
+          "i": 84,
+          "d": 34,
+          "d_max": 46,
+          "ff": 125
+        },
+        "yaw": {
+          "p": 45,
+          "i": 80,
+          "d": 0,
+          "d_max": 0,
+          "ff": 120
+        }
+      },
+      "filters": {
+        "gyro_lpf1_dyn_min_hz": 250,
+        "gyro_lpf1_dyn_max_hz": 500,
+        "gyro_lpf1_static_hz": 250,
+        "gyro_lpf2_static_hz": 500,
+        "dterm_lpf1_dyn_min_hz": 75,
+        "dterm_lpf1_dyn_max_hz": 150,
+        "dterm_lpf1_static_hz": 75,
+        "dterm_lpf2_static_hz": 150
+      },
+      "flat": {
+        "p_roll": 45,
+        "i_roll": 80,
+        "d_roll": 30,
+        "f_roll": 120,
+        "d_min_roll": 40,
+        "p_pitch": 47,
+        "i_pitch": 84,
+        "d_pitch": 34,
+        "f_pitch": 125,
+        "d_min_pitch": 46,
+        "p_yaw": 45,
+        "i_yaw": 80,
+        "d_yaw": 0,
+        "f_yaw": 120,
+        "d_min_yaw": 0,
+        "gyro_lpf1_dyn_min_hz": 250,
+        "gyro_lpf1_dyn_max_hz": 500,
+        "gyro_lpf1_static_hz": 250,
+        "gyro_lpf2_static_hz": 500,
+        "dterm_lpf1_dyn_min_hz": 75,
+        "dterm_lpf1_dyn_max_hz": 150,
+        "dterm_lpf1_static_hz": 75,
+        "dterm_lpf2_static_hz": 150
+      }
+    },
+    "final_safe": {
+      "axes": {
+        "roll": {
+          "p": 48,
+          "i": 86,
+          "d": 30,
+          "d_max": 40,
+          "ff": 120
+        },
+        "pitch": {
+          "p": 50,
+          "i": 90,
+          "d": 34,
+          "d_max": 46,
+          "ff": 125
+        },
+        "yaw": {
+          "p": 48,
+          "i": 86,
+          "d": 0,
+          "d_max": 0,
+          "ff": 120
+        }
+      },
+      "filters": {
+        "gyro_lpf1_dyn_min_hz": 250,
+        "gyro_lpf1_dyn_max_hz": 500,
+        "gyro_lpf1_static_hz": 250,
+        "gyro_lpf2_static_hz": 500,
+        "dterm_lpf1_dyn_min_hz": 75,
+        "dterm_lpf1_dyn_max_hz": 150,
+        "dterm_lpf1_static_hz": 75,
+        "dterm_lpf2_static_hz": 150
+      },
+      "flat": {
+        "p_roll": 48,
+        "i_roll": 86,
+        "d_roll": 30,
+        "f_roll": 120,
+        "d_min_roll": 40,
+        "p_pitch": 50,
+        "i_pitch": 90,
+        "d_pitch": 34,
+        "f_pitch": 125,
+        "d_min_pitch": 46,
+        "p_yaw": 48,
+        "i_yaw": 86,
+        "d_yaw": 0,
+        "f_yaw": 120,
+        "d_min_yaw": 0,
+        "gyro_lpf1_dyn_min_hz": 250,
+        "gyro_lpf1_dyn_max_hz": 500,
+        "gyro_lpf1_static_hz": 250,
+        "gyro_lpf2_static_hz": 500,
+        "dterm_lpf1_dyn_min_hz": 75,
+        "dterm_lpf1_dyn_max_hz": 150,
+        "dterm_lpf1_static_hz": 75,
+        "dterm_lpf2_static_hz": 150
+      }
+    }
+  },
+  "cli": {
+    "state": "authorized",
+    "authorized": true,
+    "actionable": true,
+    "label": "AUTHORIZED SAFE OUTPUT",
+    "apply_cli": "profile 0\nset p_roll = 48\nset i_roll = 86\nset p_pitch = 50\nset i_pitch = 90\nset p_yaw = 48\nset i_yaw = 86\nsave\n",
+    "rollback_cli": "profile 0\nset p_roll = 45\nset i_roll = 80\nset p_pitch = 47\nset i_pitch = 84\nset p_yaw = 45\nset i_yaw = 80\nsave\n",
+    "source_profile": 0,
+    "target_profile": 0,
+    "changed_settings": {
+      "p_roll": 48,
+      "i_roll": 86,
+      "p_pitch": 50,
+      "i_pitch": 90,
+      "p_yaw": 48,
+      "i_yaw": 86
+    },
+    "bundle_id": "f020829b56df062bb7b5522d5bc3413866bed8ce953db5a0eba22319bcfcc7a9",
+    "firmware_provenance": {
+      "repository": "https://github.com/betaflight/betaflight",
+      "version": "2026.6.2",
+      "commit": "e0b7bb01b17b21351057e9ead2d1ab39dd44fa16",
+      "functions": [
+        "simplified_tuning.c:applySimplifiedTuning",
+        "simplified_tuning.c:applySimplifiedTuningPids",
+        "simplified_tuning.c:calculateNewPidValues",
+        "simplified_tuning.c:applySimplifiedTuningDtermFilters",
+        "simplified_tuning.c:calculateNewDTermFilterValues",
+        "simplified_tuning.c:applySimplifiedTuningGyroFilters",
+        "simplified_tuning.c:calculateNewGyroFilterValues",
+        "msp.c:MSP_VALIDATE_SIMPLIFIED_TUNING",
+        "common/maths.h:constrain"
+      ],
+      "cli_names": [
+        "fc/parameter_names.h",
+        "WU2 core/gyrocore/betaflight/cli.py:_PID_CLI_OUTPUT",
+        "blackbox-log-viewer flightlog_parser.js alias d_max\u2192d_min"
+      ]
+    },
+    "safety_provenance": {
+      "mechanical": {
+        "stage": "mechanical_safety",
+        "status": "pass",
+        "mechanical_block": false,
+        "mechanical_limited": false,
+        "mechanical_caution": false,
+        "mechanical_outcome": "mechanical_clear",
+        "recommended_action": "none",
+        "reasons": [],
+        "blocking_reasons": [],
+        "limited_reasons": [],
+        "caution_reasons": [],
+        "max_delta_scale": 1.0,
+        "evidence": {
+          "high_noise": false,
+          "low_confidence": false,
+          "resonance_severity": "low",
+          "broad_resonance": false,
+          "persistent_resonance": false,
+          "bad_motor_count": 0,
+          "relative_bad_motor_count": 0,
+          "warning_motor_count": 0,
+          "limited_tier": "none",
+          "max_delta_scale": 1.0,
+          "mechanical_outcome": "mechanical_clear",
+          "downgrade_reason": null,
+          "motor_correction_demand_uncertain": false,
+          "mechanical_evidence_strength": "none",
+          "independent_mechanical_evidence": false,
+          "aggressive_flight_context": false,
+          "measured_temperature_available": false
+        },
+        "checks": [
+          {
+            "rule_id": "mechanical.pass",
+            "verdict": "pass",
+            "message": "mechanical_clear",
+            "before": null,
+            "after": null,
+            "evidence": {
+              "high_noise": false,
+              "low_confidence": false,
+              "resonance_severity": "low",
+              "broad_resonance": false,
+              "persistent_resonance": false,
+              "bad_motor_count": 0,
+              "relative_bad_motor_count": 0,
+              "warning_motor_count": 0,
+              "limited_tier": "none",
+              "max_delta_scale": 1.0,
+              "mechanical_outcome": "mechanical_clear",
+              "downgrade_reason": null,
+              "motor_correction_demand_uncertain": false,
+              "mechanical_evidence_strength": "none",
+              "independent_mechanical_evidence": false,
+              "aggressive_flight_context": false,
+              "measured_temperature_available": false
+            }
+          }
+        ],
+        "provenance": {
+          "function": "build_mechanical_safety_gate",
+          "donor": "backend.services.mechanical_safety_gate",
+          "analysis_ok": true
+        }
+      },
+      "clamps": {
+        "clamp_ids": [],
+        "checks": [
+          {
+            "rule_id": "safe_tune.max_delta_scale",
+            "verdict": "pass",
+            "message": "mechanical max_delta_scale",
+            "before": 1.0,
+            "after": 1.0,
+            "evidence": {}
+          }
+        ],
+        "status": "pass"
+      },
+      "tuning_output_safety": {
+        "stage": "tuning_output_safety",
+        "status": "pass",
+        "donor_status": "actionable",
+        "cli_actionable": false,
+        "blocking_reasons": [],
+        "warning_reasons": [],
+        "checks": [
+          {
+            "rule_id": "tos.mechanical_stage_present",
+            "verdict": "pass",
+            "message": "mechanical stage token present",
+            "before": null,
+            "after": null,
+            "evidence": {}
+          },
+          {
+            "rule_id": "tos.safe_tune_stage_present",
+            "verdict": "pass",
+            "message": "safe-tune stage token present",
+            "before": null,
+            "after": null,
+            "evidence": {}
+          },
+          {
+            "rule_id": "tos.cli_actionable_frozen_false",
+            "verdict": "pass",
+            "message": "WU10 never exposes actionable CLI",
+            "before": null,
+            "after": false,
+            "evidence": {}
+          },
+          {
+            "rule_id": "tos.final_verdict",
+            "verdict": "pass",
+            "message": "actionable",
+            "before": null,
+            "after": null,
+            "evidence": {
+              "blocking": [],
+              "warnings": []
+            }
+          }
+        ],
+        "candidate": {
+          "stage": "safe_tune_clamps",
+          "status": "pass",
+          "actionable": false,
+          "clamp_ids": [],
+          "blocked_reasons": [],
+          "warnings": [],
+          "max_delta_used": {
+            "filters": {
+              "gyro_lpf1_static_hz": 44.0,
+              "gyro_lpf1_dyn_min_hz": 50.0,
+              "gyro_lpf1_dyn_max_hz": 60.0,
+              "gyro_lpf2_static_hz": 40.0,
+              "dterm_lpf1_dyn_min_hz": 20.0,
+              "dterm_lpf1_dyn_max_hz": 30.0,
+              "dterm_lpf2_static_hz": 30.0,
+              "dyn_notch_count": 1.0,
+              "dyn_notch_min_hz": 40.0,
+              "dyn_notch_max_hz": 80.0,
+              "dyn_notch_width_percent": 5.0,
+              "rpm_filter_harmonics": 1.0,
+              "rpm_filter_min_hz": 20.0,
+              "rpm_filter_max_hz": 100.0,
+              "rpm_filter_fade_range_hz": 20.0,
+              "feedforward_boost": 5.0,
+              "feedforward_smooth_factor": 5.0,
+              "feedforward_jitter_factor": 5.0,
+              "feedforward_transition": 5.0,
+              "rc_smoothing": 1.0,
+              "rc_smoothing_feedforward": 5.0,
+              "dyn_idle_min_rpm": 10.0,
+              "anti_gravity_gain": 1000.0,
+              "anti_gravity_cutoff": 2.0,
+              "anti_gravity_p_gain": 10.0,
+              "iterm_relax": 1.0,
+              "iterm_rotation": 1.0,
+              "tpa_rate": 5.0,
+              "tpa_breakpoint": 50.0,
+              "throttle_boost": 5.0,
+              "motor_output_limit": 5.0
+            },
+            "pid": {
+              "roll": {
+                "p": 4.0,
+                "i": 8.0,
+                "d": 6.0,
+                "ff": 8.0,
+                "d_max": 6.0
+              },
+              "pitch": {
+                "p": 4.0,
+                "i": 8.0,
+                "d": 6.0,
+                "ff": 8.0,
+                "d_max": 6.0
+              },
+              "yaw": {
+                "p": 4.0,
+                "i": 8.0,
+                "d": 6.0,
+                "ff": 8.0,
+                "d_max": 6.0
+              }
+            }
+          },
+          "current_config": {
+            "pid": {
+              "roll": {
+                "p": 45.0,
+                "i": 80.0,
+                "d": 30.0,
+                "ff": 120.0,
+                "d_max": 40.0
+              },
+              "pitch": {
+                "p": 47.0,
+                "i": 84.0,
+                "d": 34.0,
+                "ff": 125.0,
+                "d_max": 46.0
+              },
+              "yaw": {
+                "p": 45.0,
+                "i": 80.0,
+                "d": 0.0,
+                "ff": 120.0,
+                "d_max": 0.0
+              }
+            },
+            "filters": {
+              "dterm_lpf1_dyn_min_hz": 75.0,
+              "dterm_lpf1_dyn_max_hz": 150.0,
+              "dterm_lpf1_static_hz": 75.0,
+              "dterm_lpf2_static_hz": 150.0,
+              "gyro_lpf1_dyn_min_hz": 250.0,
+              "gyro_lpf1_dyn_max_hz": 500.0,
+              "gyro_lpf1_static_hz": 250.0,
+              "gyro_lpf2_static_hz": 500.0
+            }
+          },
+          "proposed_config": {
+            "pid": {
+              "roll": {
+                "p": 48.0,
+                "i": 86.0,
+                "d": 30.0,
+                "ff": 120.0,
+                "d_max": 40.0
+              },
+              "pitch": {
+                "p": 50.0,
+                "i": 90.0,
+                "d": 34.0,
+                "ff": 125.0,
+                "d_max": 46.0
+              },
+              "yaw": {
+                "p": 48.0,
+                "i": 86.0,
+                "d": 0.0,
+                "ff": 120.0,
+                "d_max": 0.0
+              }
+            },
+            "filters": {
+              "dterm_lpf1_dyn_min_hz": 75.0,
+              "dterm_lpf1_dyn_max_hz": 150.0,
+              "dterm_lpf1_static_hz": 75.0,
+              "dterm_lpf2_static_hz": 150.0,
+              "gyro_lpf1_dyn_min_hz": 250.0,
+              "gyro_lpf1_dyn_max_hz": 500.0,
+              "gyro_lpf1_static_hz": 250.0,
+              "gyro_lpf2_static_hz": 500.0
+            }
+          },
+          "clamped_config": {
+            "pid": {
+              "roll": {
+                "p": 48.0,
+                "i": 86.0,
+                "d": 30.0,
+                "ff": 120.0,
+                "d_max": 40.0
+              },
+              "pitch": {
+                "p": 50.0,
+                "i": 90.0,
+                "d": 34.0,
+                "ff": 125.0,
+                "d_max": 46.0
+              },
+              "yaw": {
+                "p": 48.0,
+                "i": 86.0,
+                "d": 0.0,
+                "ff": 120.0,
+                "d_max": 0.0
+              }
+            },
+            "filters": {
+              "dterm_lpf1_dyn_min_hz": 75.0,
+              "dterm_lpf1_dyn_max_hz": 150.0,
+              "dterm_lpf1_static_hz": 75.0,
+              "dterm_lpf2_static_hz": 150.0,
+              "gyro_lpf1_dyn_min_hz": 250.0,
+              "gyro_lpf1_dyn_max_hz": 500.0,
+              "gyro_lpf1_static_hz": 250.0,
+              "gyro_lpf2_static_hz": 500.0
+            }
+          },
+          "clamped_tune": {
+            "sliders": {
+              "pids_mode": 2,
+              "master_multiplier": 100,
+              "i_gain": 100,
+              "d_gain": 100,
+              "pi_gain": 108,
+              "d_max_gain": 100,
+              "feedforward_gain": 100,
+              "pitch_d_gain": 100,
+              "pitch_pi_gain": 100,
+              "dterm_filter": 1,
+              "dterm_filter_multiplier": 100,
+              "gyro_filter": 1,
+              "gyro_filter_multiplier": 100
+            },
+            "roll": {
+              "p": {
+                "name": "roll.p",
+                "value": 48,
+                "source": "inferred",
+                "origin": "safe_tune_clamp",
+                "raw": 48,
+                "note": "mapped from sliders"
+              },
+              "i": {
+                "name": "roll.i",
+                "value": 86,
+                "source": "inferred",
+                "origin": "safe_tune_clamp",
+                "raw": 86,
+                "note": "mapped from sliders"
+              },
+              "d": {
+                "name": "roll.d",
+                "value": 30,
+                "source": "inferred",
+                "origin": "safe_tune_clamp",
+                "raw": 30,
+                "note": "mapped from sliders"
+              },
+              "f": {
+                "name": "roll.f",
+                "value": 120,
+                "source": "inferred",
+                "origin": "safe_tune_clamp",
+                "raw": 120,
+                "note": "mapped from sliders"
+              },
+              "d_max": {
+                "name": "roll.d_max",
+                "value": 40,
+                "source": "inferred",
+                "origin": "safe_tune_clamp",
+                "raw": 40,
+                "note": "mapped from sliders"
+              }
+            },
+            "pitch": {
+              "p": {
+                "name": "pitch.p",
+                "value": 50,
+                "source": "inferred",
+                "origin": "safe_tune_clamp",
+                "raw": 50,
+                "note": "mapped from sliders"
+              },
+              "i": {
+                "name": "pitch.i",
+                "value": 90,
+                "source": "inferred",
+                "origin": "safe_tune_clamp",
+                "raw": 90,
+                "note": "mapped from sliders"
+              },
+              "d": {
+                "name": "pitch.d",
+                "value": 34,
+                "source": "inferred",
+                "origin": "safe_tune_clamp",
+                "raw": 34,
+                "note": "mapped from sliders"
+              },
+              "f": {
+                "name": "pitch.f",
+                "value": 125,
+                "source": "inferred",
+                "origin": "safe_tune_clamp",
+                "raw": 125,
+                "note": "mapped from sliders"
+              },
+              "d_max": {
+                "name": "pitch.d_max",
+                "value": 46,
+                "source": "inferred",
+                "origin": "safe_tune_clamp",
+                "raw": 46,
+                "note": "mapped from sliders"
+              }
+            },
+            "yaw": {
+              "p": {
+                "name": "yaw.p",
+                "value": 48,
+                "source": "inferred",
+                "origin": "safe_tune_clamp",
+                "raw": 48,
+                "note": "mapped from sliders"
+              },
+              "i": {
+                "name": "yaw.i",
+                "value": 86,
+                "source": "inferred",
+                "origin": "safe_tune_clamp",
+                "raw": 86,
+                "note": "mapped from sliders"
+              },
+              "d": {
+                "name": "yaw.d",
+                "value": 0,
+                "source": "inferred",
+                "origin": "safe_tune_clamp",
+                "raw": 0,
+                "note": "mapped from sliders"
+              },
+              "f": {
+                "name": "yaw.f",
+                "value": 120,
+                "source": "inferred",
+                "origin": "safe_tune_clamp",
+                "raw": 120,
+                "note": "mapped from sliders"
+              },
+              "d_max": {
+                "name": "yaw.d_max",
+                "value": 0,
+                "source": "inferred",
+                "origin": "safe_tune_clamp",
+                "raw": 0,
+                "note": "mapped from sliders"
+              }
+            },
+            "dterm": {
+              "lpf1_dyn_min_hz": {
+                "name": "dterm.lpf1_dyn_min_hz",
+                "value": 75,
+                "source": "inferred",
+                "origin": "safe_tune_clamp",
+                "raw": 75,
+                "note": "mapped from sliders"
+              },
+              "lpf1_dyn_max_hz": {
+                "name": "dterm.lpf1_dyn_max_hz",
+                "value": 150,
+                "source": "inferred",
+                "origin": "safe_tune_clamp",
+                "raw": 150,
+                "note": "mapped from sliders"
+              },
+              "lpf1_static_hz": {
+                "name": "dterm.lpf1_static_hz",
+                "value": 75,
+                "source": "inferred",
+                "origin": "safe_tune_clamp",
+                "raw": 75,
+                "note": "mapped from sliders"
+              },
+              "lpf2_static_hz": {
+                "name": "dterm.lpf2_static_hz",
+                "value": 150,
+                "source": "inferred",
+                "origin": "safe_tune_clamp",
+                "raw": 150,
+                "note": "mapped from sliders"
+              }
+            },
+            "gyro": {
+              "lpf1_dyn_min_hz": {
+                "name": "gyro.lpf1_dyn_min_hz",
+                "value": 250,
+                "source": "inferred",
+                "origin": "safe_tune_clamp",
+                "raw": 250,
+                "note": "mapped from sliders"
+              },
+              "lpf1_dyn_max_hz": {
+                "name": "gyro.lpf1_dyn_max_hz",
+                "value": 500,
+                "source": "inferred",
+                "origin": "safe_tune_clamp",
+                "raw": 500,
+                "note": "mapped from sliders"
+              },
+              "lpf1_static_hz": {
+                "name": "gyro.lpf1_static_hz",
+                "value": 250,
+                "source": "inferred",
+                "origin": "safe_tune_clamp",
+                "raw": 250,
+                "note": "mapped from sliders"
+              },
+              "lpf2_static_hz": {
+                "name": "gyro.lpf2_static_hz",
+                "value": 500,
+                "source": "inferred",
+                "origin": "safe_tune_clamp",
+                "raw": 500,
+                "note": "mapped from sliders"
+              }
+            },
+            "active_pid_profile": {
+              "name": "active_pid_profile",
+              "value": 0,
+              "source": "parsed",
+              "origin": "cli:profile",
+              "raw": null,
+              "note": "confidence=high"
+            },
+            "warnings": [],
+            "sources_used": [
+              "firmware_simplified_tuning",
+              "cli_dump",
+              "safe_tune_clamp"
+            ]
+          },
+          "checks": [
+            {
+              "rule_id": "safe_tune.max_delta_scale",
+              "verdict": "pass",
+              "message": "mechanical max_delta_scale",
+              "before": 1.0,
+              "after": 1.0,
+              "evidence": {}
+            }
+          ],
+          "mechanical": {
+            "stage": "mechanical_safety",
+            "status": "pass",
+            "mechanical_block": false,
+            "mechanical_limited": false,
+            "mechanical_caution": false,
+            "mechanical_outcome": "mechanical_clear",
+            "recommended_action": "none",
+            "reasons": [],
+            "blocking_reasons": [],
+            "limited_reasons": [],
+            "caution_reasons": [],
+            "max_delta_scale": 1.0,
+            "evidence": {
+              "high_noise": false,
+              "low_confidence": false,
+              "resonance_severity": "low",
+              "broad_resonance": false,
+              "persistent_resonance": false,
+              "bad_motor_count": 0,
+              "relative_bad_motor_count": 0,
+              "warning_motor_count": 0,
+              "limited_tier": "none",
+              "max_delta_scale": 1.0,
+              "mechanical_outcome": "mechanical_clear",
+              "downgrade_reason": null,
+              "motor_correction_demand_uncertain": false,
+              "mechanical_evidence_strength": "none",
+              "independent_mechanical_evidence": false,
+              "aggressive_flight_context": false,
+              "measured_temperature_available": false
+            },
+            "checks": [
+              {
+                "rule_id": "mechanical.pass",
+                "verdict": "pass",
+                "message": "mechanical_clear",
+                "before": null,
+                "after": null,
+                "evidence": {
+                  "high_noise": false,
+                  "low_confidence": false,
+                  "resonance_severity": "low",
+                  "broad_resonance": false,
+                  "persistent_resonance": false,
+                  "bad_motor_count": 0,
+                  "relative_bad_motor_count": 0,
+                  "warning_motor_count": 0,
+                  "limited_tier": "none",
+                  "max_delta_scale": 1.0,
+                  "mechanical_outcome": "mechanical_clear",
+                  "downgrade_reason": null,
+                  "motor_correction_demand_uncertain": false,
+                  "mechanical_evidence_strength": "none",
+                  "independent_mechanical_evidence": false,
+                  "aggressive_flight_context": false,
+                  "measured_temperature_available": false
+                }
+              }
+            ],
+            "provenance": {
+              "function": "build_mechanical_safety_gate",
+              "donor": "backend.services.mechanical_safety_gate",
+              "analysis_ok": true
+            }
+          },
+          "provenance": {
+            "stage": "safe_tune_clamps",
+            "donor": [
+              "tuning_safe_v2.apply_to_baseline",
+              "tuning_safe_v2.apply_safety",
+              "tuning_safety_policy.clamp_targets_to_baseline_thermal"
+            ],
+            "gyrocore_bridges": [
+              "d_max_uses_d_step_cap",
+              "zero_hz_filter_off_preserved",
+              "zero_pid_yaw_d_preserved",
+              "firmware_pid_gain_ceilings"
+            ]
+          }
+        },
+        "provenance": {
+          "donor": "backend.routes.analyze._build_tuning_output_safety",
+          "not_migrated": [
+            "generated_cli_missing_or_invalid",
+            "hardware_source_default_*",
+            "motor_poles_pipeline",
+            "support_matrix_policy",
+            "HTTP attach_tuning_output_safety"
+          ],
+          "gyrocore_only": [
+            "unresolved_merge_requires_review",
+            "system_id_unusable",
+            "slider_inconsistency",
+            "missing_required_analysis",
+            "missing_required_pid_or_filter_baseline",
+            "cli_actionable_always_false_wu10"
+          ]
+        }
+      },
+      "final": {
+        "status": "pass",
+        "actionable_wu10": false,
+        "blocked_reasons": [],
+        "warnings": []
+      },
+      "cli_authorization": "authorize_cli"
+    },
+    "warnings": []
+  },
+  "diagnostics": {
+    "filter_evidence": {
+      "available": true,
+      "actionable": false,
+      "overall_noise_level": "medium",
+      "confidence": "medium",
+      "noise_floor_db": {
+        "roll": -38.0,
+        "pitch": -37.0,
+        "yaw": -32.0
+      },
+      "group_delay": {
+        "gyro_total_ms": 1.2,
+        "dterm_total_ms": 2.1,
+        "gyro_over_budget": false
+      },
+      "dynamic_lpf": {
+        "recommended": false,
+        "summary": "demo dynamic LPF evidence"
+      },
+      "candidate": {
+        "actionable": false,
+        "gyro_lpf1_hz": 220,
+        "dterm_lpf1_hz": 140
+      },
+      "warnings": [],
+      "label": "SYNTHETIC filter evidence"
+    },
+    "throttle": {
+      "available": true,
+      "actionable": false,
+      "tpa_advisory": "stable_across_throttle",
+      "tpa_value": null,
+      "tpa_cli": null,
+      "usable_bands": 4,
+      "high_throttle_degradation": false,
+      "label": "SYNTHETIC throttle / TPA advisory"
+    },
+    "verification": {
+      "available": true,
+      "actionable": false,
+      "comparable": true,
+      "overall_status": "IMPROVING",
+      "rollback_advisory": false,
+      "auto_rollback": false,
+      "label": "SYNTHETIC verification (no second log in demo)"
+    },
+    "note": "WU13 diagnostics are non-actionable; CLI still requires WU10/WU11 only."
+  },
+  "blackbox": {
+    "viewer": "third_party/betaflight/blackbox-log-viewer",
+    "host": "apps/desktop/blackbox-host",
+    "filename": "demo_pass.synthetic",
+    "size_bytes": 0,
+    "log_count": 1,
+    "selected_log_index": 0,
+    "fields_hint": [
+      "gyroADC[0]",
+      "gyroADC[1]",
+      "gyroADC[2]",
+      "axisP[0]",
+      "axisI[0]",
+      "axisD[0]",
+      "motor[0]",
+      "rcCommand[0]"
+    ]
+  },
+  "controls": {
+    "fc_apply_button": false,
+    "msp": false,
+    "serial": false,
+    "copy_apply_cli": true,
+    "copy_rollback_cli": true
+  }
+}

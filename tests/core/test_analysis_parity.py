@@ -13,8 +13,6 @@ import pytest
 REPO = Path(__file__).resolve().parents[2]
 GL001 = REPO / "tests/fixtures/legacy/gl001_clean/input/flight.csv"
 GL002 = REPO / "tests/fixtures/legacy/gl002_noisy/input/flight.csv"
-GOLDEN_ROOT = Path("/home/sliksoft/aerotuner/backend/test/golden_logs")
-
 # Tight tolerances for float DSP parity (numpy FFT / filtering).
 TOL_FFT_AMP = 1e-9
 TOL_SCORE = 1e-9
@@ -23,6 +21,13 @@ TOL_HZ = 1e-9
 
 def _donor_root() -> Path:
     return Path(os.environ.get("AEROTUNER_ROOT", REPO.parent / "aerotuner"))
+
+
+def _golden_root() -> Path:
+    return _donor_root() / "backend" / "test" / "golden_logs"
+
+
+GOLDEN_ROOT = _golden_root()
 
 
 @pytest.fixture(scope="module")
@@ -224,5 +229,9 @@ def test_parity_flight_split_empty_and_synthetic(donor):
 
 
 def test_gl003_exists_for_matrix():
-    path = GOLDEN_ROOT / "GL-003-motor_issue" / "log.csv"
-    assert path.is_file()
+    """Donor matrix fixture; skip when AeroTuner golden_logs are not checked out."""
+    root = _golden_root()
+    path = root / "GL-003-motor_issue" / "log.csv"
+    if not root.is_dir():
+        pytest.skip(f"AeroTuner golden_logs not available at {root}")
+    assert path.is_file(), path

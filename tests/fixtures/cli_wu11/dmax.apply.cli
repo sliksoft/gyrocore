@@ -1,0 +1,4 @@
+profile 0
+set d_min_roll = 44
+set d_min_pitch = 50
+save

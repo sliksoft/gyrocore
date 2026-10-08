@@ -1,0 +1,139 @@
+name: ci
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: ["review/**"]
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  core-tests:
+    name: core-tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install GyroCore + test deps
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -e ".[dev]"
+          python -m pip install -r requirements-dev.txt
+
+      # WU7/WU8 BBL end-to-end tests skip without blackbox_decode; build it from
+      # the vendored source out of tree so third_party/ stays untouched.
+      - name: Build blackbox_decode (vendored, out of tree)
+        run: |
+          cp -r third_party/betaflight/blackbox-tools "$RUNNER_TEMP/blackbox-tools"
+          make -C "$RUNNER_TEMP/blackbox-tools" obj/blackbox_decode
+          echo "$RUNNER_TEMP/blackbox-tools/obj" >> "$GITHUB_PATH"
+
+      - name: Require blackbox_decode
+        run: command -v blackbox_decode
+
+      - name: Complete Python test suite
+        run: python -m pytest
+        env:
+          PYTHONPATH: ".:core"
+
+  desktop:
+    name: desktop
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: apps/desktop/gyrocore-app
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          cache: npm
+          cache-dependency-path: apps/desktop/gyrocore-app/package-lock.json
+
+      - name: Install desktop dependencies
+        run: npm ci
+
+      # Browser decoder parity tests (src/decode/parity.fixtures.test.ts) skip without
+      # blackbox_decode; build it from the vendored source out of tree.
+      - name: Build blackbox_decode (vendored, out of tree)
+        working-directory: .
+        run: |
+          cp -r third_party/betaflight/blackbox-tools "$RUNNER_TEMP/blackbox-tools"
+          make -C "$RUNNER_TEMP/blackbox-tools" obj/blackbox_decode
+          echo "$RUNNER_TEMP/blackbox-tools/obj" >> "$GITHUB_PATH"
+
+      - name: Require blackbox_decode
+        run: command -v blackbox_decode
+
+      - name: Desktop unit tests
+        run: npm test
+
+      - name: TypeScript typecheck
+        run: npm run typecheck
+
+      - name: Vite production build
+        run: npm run build
+
+      # Built-PWA proof (real Chromium against `vite preview` of dist/, synthetic fixtures only).
+      - name: Install Playwright Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: PWA browser proof (Playwright)
+        run: npm run test:e2e
+
+      # Tauri bridge unit tests (worker/repo-root path resolution); the crate links WebKitGTK.
+      - name: Install Tauri system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libwebkit2gtk-4.1-dev libsoup-3.0-dev libgtk-3-dev
+
+      - name: Tauri Rust tests
+        working-directory: apps/desktop/gyrocore-app/src-tauri
+        run: cargo test --locked --lib
+
+  integrity:
+    name: integrity
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install GyroCore + test deps
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -e ".[dev]"
+          python -m pip install -r requirements-dev.txt
+
+      # WU7/WU8 BBL end-to-end tests skip without blackbox_decode; build it from
+      # the vendored source out of tree so third_party/ stays untouched.
+      - name: Build blackbox_decode (vendored, out of tree)
+        run: |
+          cp -r third_party/betaflight/blackbox-tools "$RUNNER_TEMP/blackbox-tools"
+          make -C "$RUNNER_TEMP/blackbox-tools" obj/blackbox_decode
+          echo "$RUNNER_TEMP/blackbox-tools/obj" >> "$GITHUB_PATH"
+
+      - name: Require blackbox_decode
+        run: command -v blackbox_decode
+
+      - name: Frozen contract integrity
+        run: bash tools/ci/integrity.sh
+        env:
+          PYTHONPATH: ".:core"

@@ -1,0 +1,680 @@
+{
+ "cases": [
+  {
+   "case_id": "nominal",
+   "description": "20 Hz crossover, 3 ms delay (upstream test baseline).",
+   "classification": [
+    "exact_upstream_parity"
+   ],
+   "make_synthetic_tf": {
+    "crossoverHz": 20,
+    "delayMs": 3
+   },
+   "coherence_overrides": [],
+   "sliders": {
+    "masterMultiplier": 1,
+    "piGain": 1,
+    "iGain": 1,
+    "dGain": 1,
+    "feedforwardGain": 1,
+    "dtermFilterMultiplier": 1
+   },
+   "presets": [
+    50.0,
+    60.0,
+    72.5,
+    95.0
+   ],
+   "covers": [
+    "nominal",
+    "target_unreachable_above_ceiling"
+   ]
+  },
+  {
+   "case_id": "delayed_plant",
+   "description": "20 Hz crossover, 8 ms delay.",
+   "classification": [
+    "exact_upstream_parity"
+   ],
+   "make_synthetic_tf": {
+    "crossoverHz": 20,
+    "delayMs": 8
+   },
+   "coherence_overrides": [],
+   "sliders": {
+    "masterMultiplier": 1,
+    "piGain": 1,
+    "iGain": 1,
+    "dGain": 1,
+    "feedforwardGain": 1,
+    "dtermFilterMultiplier": 1
+   },
+   "presets": [
+    50.0,
+    60.0,
+    72.5
+   ],
+   "covers": [
+    "delayed_plant"
+   ]
+  },
+  {
+   "case_id": "fast_plant",
+   "description": "20 Hz crossover, 2 ms delay.",
+   "classification": [
+    "exact_upstream_parity"
+   ],
+   "make_synthetic_tf": {
+    "crossoverHz": 20,
+    "delayMs": 2
+   },
+   "coherence_overrides": [],
+   "sliders": {
+    "masterMultiplier": 1,
+    "piGain": 1,
+    "iGain": 1,
+    "dGain": 1,
+    "feedforwardGain": 1,
+    "dtermFilterMultiplier": 1
+   },
+   "presets": [
+    50.0,
+    60.0,
+    72.5
+   ],
+   "covers": []
+  },
+  {
+   "case_id": "low_plant_gain",
+   "description": "3 Hz crossover: asks for > 2x, per-pass clamp at 2.",
+   "classification": [
+    "exact_upstream_parity"
+   ],
+   "make_synthetic_tf": {
+    "crossoverHz": 3,
+    "delayMs": 3
+   },
+   "coherence_overrides": [],
+   "sliders": {
+    "masterMultiplier": 1,
+    "piGain": 1,
+    "iGain": 1,
+    "dGain": 1,
+    "feedforwardGain": 1,
+    "dtermFilterMultiplier": 1
+   },
+   "presets": [
+    50.0,
+    60.0,
+    72.5
+   ],
+   "covers": [
+    "low_plant_gain",
+    "gain_clamped_upper"
+   ]
+  },
+  {
+   "case_id": "high_plant_gain",
+   "description": "200 Hz crossover: asks for < 0.5x, per-pass clamp at 0.5.",
+   "classification": [
+    "exact_upstream_parity"
+   ],
+   "make_synthetic_tf": {
+    "crossoverHz": 200,
+    "delayMs": 3
+   },
+   "coherence_overrides": [],
+   "sliders": {
+    "masterMultiplier": 1,
+    "piGain": 1,
+    "iGain": 1,
+    "dGain": 1,
+    "feedforwardGain": 1,
+    "dtermFilterMultiplier": 1
+   },
+   "presets": [
+    50.0,
+    60.0,
+    72.5
+   ],
+   "covers": [
+    "high_plant_gain",
+    "gain_clamped_lower"
+   ]
+  },
+  {
+   "case_id": "phase_never_reaches_target",
+   "description": "0 ms delay, 40 Hz band: phase stays above target, gain held.",
+   "classification": [
+    "exact_upstream_parity"
+   ],
+   "make_synthetic_tf": {
+    "crossoverHz": 20,
+    "delayMs": 0,
+    "maxHz": 40
+   },
+   "coherence_overrides": [],
+   "sliders": {
+    "masterMultiplier": 1,
+    "piGain": 1,
+    "iGain": 1,
+    "dGain": 1,
+    "feedforwardGain": 1,
+    "dtermFilterMultiplier": 1
+   },
+   "presets": [
+    50.0,
+    60.0,
+    72.5
+   ],
+   "covers": [
+    "target_unreachable_in_band"
+   ]
+  },
+  {
+   "case_id": "fragile_resonance",
+   "description": "70 Hz mode zeta 0.2: sensitivity bound binds.",
+   "classification": [
+    "exact_upstream_parity"
+   ],
+   "make_synthetic_tf": {
+    "crossoverHz": 20,
+    "delayMs": 3,
+    "resonanceHz": 70,
+    "resonanceZeta": 0.2
+   },
+   "coherence_overrides": [],
+   "sliders": {
+    "masterMultiplier": 1,
+    "piGain": 1,
+    "iGain": 1,
+    "dGain": 1,
+    "feedforwardGain": 1,
+    "dtermFilterMultiplier": 1
+   },
+   "presets": [
+    50.0,
+    60.0,
+    72.5
+   ],
+   "covers": [
+    "sensitivity_binds"
+   ]
+  },
+  {
+   "case_id": "nonmonotonic_sensitivity",
+   "description": "15 Hz crossover, 40 Hz mode zeta 0.05 (Ms not monotonic in gain).",
+   "classification": [
+    "exact_upstream_parity"
+   ],
+   "make_synthetic_tf": {
+    "crossoverHz": 15,
+    "delayMs": 3,
+    "resonanceHz": 40,
+    "resonanceZeta": 0.05
+   },
+   "coherence_overrides": [],
+   "sliders": {
+    "masterMultiplier": 1,
+    "piGain": 1,
+    "iGain": 1,
+    "dGain": 1,
+    "feedforwardGain": 1,
+    "dtermFilterMultiplier": 1
+   },
+   "presets": [
+    50.0,
+    60.0,
+    72.5
+   ],
+   "covers": [
+    "nonmonotonic_ms"
+   ]
+  },
+  {
+   "case_id": "sharp_resonance_120",
+   "description": "40 Hz crossover, 2 ms, 120 Hz mode zeta 0.05.",
+   "classification": [
+    "exact_upstream_parity"
+   ],
+   "make_synthetic_tf": {
+    "crossoverHz": 40,
+    "delayMs": 2,
+    "resonanceHz": 120,
+    "resonanceZeta": 0.05
+   },
+   "coherence_overrides": [],
+   "sliders": {
+    "masterMultiplier": 1,
+    "piGain": 1,
+    "iGain": 1,
+    "dGain": 1,
+    "feedforwardGain": 1,
+    "dtermFilterMultiplier": 1
+   },
+   "presets": [
+    50.0,
+    60.0,
+    72.5
+   ],
+   "covers": []
+  },
+  {
+   "case_id": "resonant_peak_backoff",
+   "description": "8 Hz crossover with a 12 Hz zeta 0.08 mode: closed-loop peak > 6 dB.",
+   "classification": [
+    "exact_upstream_parity"
+   ],
+   "make_synthetic_tf": {
+    "crossoverHz": 8,
+    "delayMs": 3,
+    "resonanceHz": 12,
+    "resonanceZeta": 0.08
+   },
+   "coherence_overrides": [],
+   "sliders": {
+    "masterMultiplier": 1,
+    "piGain": 1,
+    "iGain": 1,
+    "dGain": 1,
+    "feedforwardGain": 1,
+    "dtermFilterMultiplier": 1
+   },
+   "presets": [
+    50.0,
+    60.0,
+    72.5
+   ],
+   "covers": [
+    "resonance_backoff"
+   ]
+  },
+  {
+   "case_id": "incoherent",
+   "description": "Coherence 0.2 everywhere: nothing inferred, every slider held.",
+   "classification": [
+    "exact_upstream_parity"
+   ],
+   "make_synthetic_tf": {
+    "crossoverHz": 20,
+    "delayMs": 3,
+    "coherence": 0.2
+   },
+   "coherence_overrides": [],
+   "sliders": {
+    "masterMultiplier": 1,
+    "piGain": 1,
+    "iGain": 1,
+    "dGain": 1,
+    "feedforwardGain": 1,
+    "dtermFilterMultiplier": 1
+   },
+   "presets": [
+    50.0,
+    60.0,
+    72.5
+   ],
+   "covers": [
+    "low_coherence_hold"
+   ]
+  },
+  {
+   "case_id": "coherence_at_gate",
+   "description": "Coherence exactly 0.5 (gate is >= 0.5).",
+   "classification": [
+    "exact_upstream_parity"
+   ],
+   "make_synthetic_tf": {
+    "crossoverHz": 20,
+    "delayMs": 3,
+    "coherence": 0.5
+   },
+   "coherence_overrides": [],
+   "sliders": {
+    "masterMultiplier": 1,
+    "piGain": 1,
+    "iGain": 1,
+    "dGain": 1,
+    "feedforwardGain": 1,
+    "dtermFilterMultiplier": 1
+   },
+   "presets": [
+    50.0,
+    60.0,
+    72.5
+   ],
+   "covers": [
+    "near_quality_threshold"
+   ]
+  },
+  {
+   "case_id": "coherence_below_gate",
+   "description": "Coherence 0.4999 (just below the 0.5 gate).",
+   "classification": [
+    "exact_upstream_parity"
+   ],
+   "make_synthetic_tf": {
+    "crossoverHz": 20,
+    "delayMs": 3,
+    "coherence": 0.4999
+   },
+   "coherence_overrides": [],
+   "sliders": {
+    "masterMultiplier": 1,
+    "piGain": 1,
+    "iGain": 1,
+    "dGain": 1,
+    "feedforwardGain": 1,
+    "dtermFilterMultiplier": 1
+   },
+   "presets": [
+    50.0,
+    60.0,
+    72.5
+   ],
+   "covers": [
+    "near_quality_threshold"
+   ]
+  },
+  {
+   "case_id": "coherent_to_60hz",
+   "description": "Coherent below 60 Hz, 0.1 above: real noise floor tightens D-term filter.",
+   "classification": [
+    "exact_upstream_parity"
+   ],
+   "make_synthetic_tf": {
+    "crossoverHz": 20,
+    "delayMs": 3
+   },
+   "coherence_overrides": [
+    [
+     60.0000001,
+     1000000000.0,
+     0.1
+    ]
+   ],
+   "sliders": {
+    "masterMultiplier": 1,
+    "piGain": 1,
+    "iGain": 1,
+    "dGain": 1,
+    "feedforwardGain": 1,
+    "dtermFilterMultiplier": 1
+   },
+   "presets": [
+    50.0,
+    60.0,
+    72.5
+   ],
+   "covers": [
+    "noise_floor_filter"
+   ]
+  },
+  {
+   "case_id": "narrow_coherent_band",
+   "description": "Coherent only 2-12 Hz: insufficient usable frequency range.",
+   "classification": [
+    "exact_upstream_parity"
+   ],
+   "make_synthetic_tf": {
+    "crossoverHz": 20,
+    "delayMs": 3
+   },
+   "coherence_overrides": [
+    [
+     0,
+     1.9,
+     0.1
+    ],
+    [
+     12.0000001,
+     1000000000.0,
+     0.1
+    ]
+   ],
+   "sliders": {
+    "masterMultiplier": 1,
+    "piGain": 1,
+    "iGain": 1,
+    "dGain": 1,
+    "feedforwardGain": 1,
+    "dtermFilterMultiplier": 1
+   },
+   "presets": [
+    50.0,
+    60.0,
+    72.5
+   ],
+   "covers": [
+    "insufficient_frequency_range"
+   ]
+  },
+  {
+   "case_id": "noisy_bin",
+   "description": "One bad bin at 12 Hz (coherence 0.05) kept out of the unwrap.",
+   "classification": [
+    "exact_upstream_parity"
+   ],
+   "make_synthetic_tf": {
+    "crossoverHz": 20,
+    "delayMs": 3,
+    "badBins": [
+     [
+      12,
+      0.05,
+      0.2,
+      0.3
+     ]
+    ]
+   },
+   "coherence_overrides": [],
+   "sliders": {
+    "masterMultiplier": 1,
+    "piGain": 1,
+    "iGain": 1,
+    "dGain": 1,
+    "feedforwardGain": 1,
+    "dtermFilterMultiplier": 1
+   },
+   "presets": [
+    50.0,
+    60.0,
+    72.5
+   ],
+   "covers": [
+    "noisy_usable"
+   ]
+  },
+  {
+   "case_id": "coarse_bins",
+   "description": "1 Hz bins to 250 Hz (different resolution).",
+   "classification": [
+    "exact_upstream_parity"
+   ],
+   "make_synthetic_tf": {
+    "crossoverHz": 25,
+    "delayMs": 4,
+    "binHz": 1,
+    "maxHz": 250
+   },
+   "coherence_overrides": [],
+   "sliders": {
+    "masterMultiplier": 1,
+    "piGain": 1,
+    "iGain": 1,
+    "dGain": 1,
+    "feedforwardGain": 1,
+    "dtermFilterMultiplier": 1
+   },
+   "presets": [
+    50.0,
+    60.0,
+    72.5
+   ],
+   "covers": []
+  },
+  {
+   "case_id": "unusual_sliders",
+   "description": "Unusual current sliders: slider clamps at 25 / 250.",
+   "classification": [
+    "exact_upstream_parity"
+   ],
+   "make_synthetic_tf": {
+    "crossoverHz": 3,
+    "delayMs": 3
+   },
+   "coherence_overrides": [],
+   "sliders": {
+    "masterMultiplier": 1.5,
+    "piGain": 2.4,
+    "iGain": 0.3,
+    "dGain": 1.7,
+    "feedforwardGain": 0.25,
+    "dtermFilterMultiplier": 2.4
+   },
+   "presets": [
+    50.0,
+    60.0,
+    72.5
+   ],
+   "covers": [
+    "unusual_current_values",
+    "slider_clamp_upper",
+    "slider_clamp_lower"
+   ]
+  },
+  {
+   "case_id": "unusual_sliders_backoff",
+   "description": "Unusual sliders with a < 0.5x request.",
+   "classification": [
+    "exact_upstream_parity"
+   ],
+   "make_synthetic_tf": {
+    "crossoverHz": 200,
+    "delayMs": 3
+   },
+   "coherence_overrides": [],
+   "sliders": {
+    "masterMultiplier": 1.5,
+    "piGain": 2.4,
+    "iGain": 0.3,
+    "dGain": 1.7,
+    "feedforwardGain": 0.25,
+    "dtermFilterMultiplier": 2.4
+   },
+   "presets": [
+    50.0,
+    60.0,
+    72.5
+   ],
+   "covers": [
+    "slider_clamp_lower"
+   ]
+  },
+  {
+   "case_id": "rounding_ties",
+   "description": "Sliders producing exact .5 products (Math.round half-up).",
+   "classification": [
+    "exact_upstream_parity"
+   ],
+   "make_synthetic_tf": {
+    "crossoverHz": 20,
+    "delayMs": 3
+   },
+   "coherence_overrides": [],
+   "sliders": {
+    "masterMultiplier": 2.125,
+    "piGain": 1,
+    "iGain": 1.005,
+    "dGain": 0.625,
+    "feedforwardGain": 1,
+    "dtermFilterMultiplier": 1
+   },
+   "presets": [
+    50.0,
+    60.0,
+    72.5
+   ],
+   "covers": [
+    "rounding_ties"
+   ]
+  },
+  {
+   "case_id": "sliders_undefined",
+   "description": "Empty CurrentSliders object: every `?? 1` default applies.",
+   "classification": [
+    "exact_upstream_parity"
+   ],
+   "make_synthetic_tf": {
+    "crossoverHz": 20,
+    "delayMs": 3
+   },
+   "coherence_overrides": [],
+   "sliders": {},
+   "presets": [
+    50.0,
+    60.0,
+    72.5
+   ],
+   "covers": [
+    "missing_slider_defaults"
+   ]
+  },
+  {
+   "case_id": "sliders_zero",
+   "description": "Explicit 0 sliders (not reachable via extractCurrentSliders).",
+   "classification": [
+    "exact_upstream_parity"
+   ],
+   "make_synthetic_tf": {
+    "crossoverHz": 20,
+    "delayMs": 3
+   },
+   "coherence_overrides": [],
+   "sliders": {
+    "masterMultiplier": 0,
+    "piGain": 0,
+    "iGain": 0,
+    "dGain": 0,
+    "feedforwardGain": 0,
+    "dtermFilterMultiplier": 0
+   },
+   "presets": [
+    50.0,
+    60.0,
+    72.5
+   ],
+   "covers": []
+  },
+  {
+   "case_id": "low_freq_error_high",
+   "description": "8 Hz mode (zeta 0.5) lifts the 2-10 Hz closed-loop magnitude above +2 dB, I backs off.",
+   "classification": [
+    "exact_upstream_parity"
+   ],
+   "make_synthetic_tf": {
+    "crossoverHz": 20,
+    "delayMs": 2,
+    "resonanceHz": 8,
+    "resonanceZeta": 0.5
+   },
+   "coherence_overrides": [],
+   "sliders": {
+    "masterMultiplier": 1,
+    "piGain": 1,
+    "iGain": 1,
+    "dGain": 1,
+    "feedforwardGain": 1,
+    "dtermFilterMultiplier": 1
+   },
+   "presets": [
+    50.0,
+    60.0,
+    72.5
+   ],
+   "covers": [
+    "integral_decrease"
+   ]
+  }
+ ]
+}

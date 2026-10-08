@@ -1,0 +1,10 @@
+profile 0
+set p_roll = 48
+set i_roll = 86
+set p_pitch = 50
+set i_pitch = 90
+set p_yaw = 48
+set i_yaw = 86
+set dterm_lpf1_dyn_max_hz = 151
+set dterm_lpf2_static_hz = 151
+save
