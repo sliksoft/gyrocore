@@ -18,6 +18,9 @@ import type { NormalizedDecodedLog } from "./types";
 
 const FIXTURES = fileURLToPath(new URL("../../../../../tests/fixtures/chirp/wu7/bbl", import.meta.url));
 const HAS_NATIVE = spawnSync("blackbox_decode", ["--help"]).error === undefined;
+/** CI (and anyone setting GYROCORE_REQUIRE_NATIVE=1) must not silently skip native parity. */
+const REQUIRE_NATIVE = process.env.CI === "true" || process.env.GYROCORE_REQUIRE_NATIVE === "1";
+const MODE_EVENTS = fileURLToPath(new URL("../../../../../tests/fixtures/decode", import.meta.url));
 
 const workDir = mkdtempSync(join(tmpdir(), "gyrocore-parity-"));
 const written: string[] = [];
@@ -59,7 +62,30 @@ function multilogBytes(): Uint8Array {
   return out;
 }
 
+describe("native decoder availability", () => {
+  it.runIf(REQUIRE_NATIVE)("blackbox_decode is on PATH (parity suites must not skip)", () => {
+    expect(HAS_NATIVE).toBe(true);
+  });
+});
+
 describe.skipIf(!HAS_NATIVE)("committed fixture parity vs native blackbox_decode", () => {
+  it("mode_events: native keeps every frame across FLIGHT_MODE / DISARM events", () => {
+    const meta = JSON.parse(readFileSync(join(MODE_EVENTS, "mode_events.json"), "utf8")) as {
+      frame_count: number;
+      unpatched_native_frame_count: number;
+    };
+    const bytes = new Uint8Array(gunzipSync(readFileSync(join(MODE_EVENTS, "mode_events.bbl.gz"))));
+    const path = writeTemp("mode_events.bbl", bytes);
+    const report = runBrowserNativeParity({ bblPath: path, logIndex: 0 });
+    console.log(`PARITY\n${summarizeParity(report)}`);
+    expect(report.samples.unpatchedNativeSignature, "blackbox_decode on PATH is unpatched").toBe(false);
+    expect(report.samples.browserSamples).toBe(meta.frame_count);
+    expect(report.samples.nativeSamples).toBe(meta.frame_count);
+    // An unpatched decoder would lose exactly these frames.
+    expect(report.samples.predictedNativeExclusions).toBe(meta.frame_count - meta.unpatched_native_frame_count);
+    expect(report.ok, summarizeParity(report)).toBe(true);
+  });
+
   it("clean_single_axis is sample-exact; axisP is absent in the log, not dropped", () => {
     const path = writeTemp("clean_single_axis.bbl", fixtureBytes("clean_single_axis"));
     const report = runBrowserNativeParity({ bblPath: path, logIndex: 0 });

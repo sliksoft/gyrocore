@@ -2,10 +2,11 @@
  * Compare browser FlightLog-normalized output against native blackbox_decode CSV.
  * Node/test-only — not bundled into the PWA shell.
  *
- * Parity is sample-exact: rows are joined on (loopIteration, time) and every
- * compared channel must match bit-for-bit. The only rows allowed to exist on one
- * side are the ones `predictNativeDesyncExclusions` predicts native drops (see
- * docs/browser-blackbox-decoder.md "Canonical sample inclusion").
+ * Parity is full-frame and sample-exact: rows are joined on (loopIteration, time),
+ * no row may exist on only one side, and every compared channel must match
+ * bit-for-bit (docs/browser-blackbox-decoder.md "Canonical sample policy").
+ * Requires the GyroCore-patched blackbox_decode (docs/upstream/PATCHES.md); an
+ * unpatched binary is detected via `predictNativeDesyncExclusions`.
  */
 
 import { spawnSync } from "node:child_process";
@@ -48,7 +49,7 @@ export type NativeExclusionPrediction = {
 };
 
 /**
- * Predict which valid frames native blackbox_decode drops.
+ * Predict which valid frames an *unpatched* blackbox_decode drops (diagnostic only).
  *
  * Native skips the payload of events it does not parse (FLIGHT_MODE, DISARM). When
  * the first leftover payload byte is not a frame marker, the parser sets
@@ -177,9 +178,12 @@ export type SampleAlignment = {
   aligned: number;
   browserOnly: number;
   nativeOnly: number;
+  /** Frames an unpatched native decoder would drop (diagnostic). */
   predictedNativeExclusions: number;
-  /** browser-only set === predicted set, and nothing native-only. */
+  /** Full-frame parity: no browser-only and no native-only rows. */
   exact: boolean;
+  /** browser-only rows are exactly the unpatched-decoder signature (wrong binary on PATH). */
+  unpatchedNativeSignature: boolean;
   /** Pairs of indices (browser, native) for aligned samples. */
   browserIndex: Int32Array;
   nativeIndex: Int32Array;
@@ -231,7 +235,8 @@ export function alignSamples(
     browserOnly,
     nativeOnly,
     predictedNativeExclusions: predicted,
-    exact: unpredicted === 0 && nativeOnly === 0,
+    exact: browserOnly === 0 && nativeOnly === 0,
+    unpatchedNativeSignature: browserOnly > 0 && unpredicted === 0 && nativeOnly === 0,
     browserIndex: Int32Array.from(bIdx),
     nativeIndex: Int32Array.from(nIdx),
   };
@@ -438,7 +443,7 @@ export function summarizeParity(report: ParityReport): string {
   const s = report.samples;
   const lines = [
     `log=${report.logIndex} ok=${report.ok} embedded=${report.embeddedLogs.browser}/${report.embeddedLogs.native}`,
-    `samples browser=${s.browserSamples} native=${s.nativeSamples} aligned=${s.aligned} browserOnly=${s.browserOnly} predicted=${s.predictedNativeExclusions} nativeOnly=${s.nativeOnly} exact=${s.exact} windows=${JSON.stringify(s.windows)} unmodeled=${JSON.stringify(s.unmodeledEvents)}`,
+    `samples browser=${s.browserSamples} native=${s.nativeSamples} aligned=${s.aligned} browserOnly=${s.browserOnly} unpatchedWouldDrop=${s.predictedNativeExclusions} nativeOnly=${s.nativeOnly} exact=${s.exact} unpatchedNativeSignature=${s.unpatchedNativeSignature} windows=${JSON.stringify(s.windows)} unmodeled=${JSON.stringify(s.unmodeledEvents)}`,
     `fields browserOnly=${JSON.stringify(report.fields.browserOnly)} nativeOnly=${JSON.stringify(report.fields.nativeOnly)}`,
   ];
   for (const g of report.groups) {

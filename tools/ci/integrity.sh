@@ -37,6 +37,9 @@ python3 -m pytest tests/core/cli
 echo "== WU13 no-actionable-path architectural guards =="
 python3 -m pytest tests/filter_evidence/test_no_actionable_path.py
 
+echo "== Full-frame decode across mode events (patched blackbox_decode) =="
+python3 -m pytest tests/core/test_decode_full_frame.py
+
 echo "== Vendored Betaflight trees must remain untouched by tests =="
 git diff --exit-code -- third_party/betaflight
 test -z "$(git status --porcelain --untracked-files=all -- third_party/betaflight)"

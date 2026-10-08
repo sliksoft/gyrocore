@@ -78,15 +78,23 @@ describe("alignSamples", () => {
   const nIter = keep.map((i) => iter[i]!);
   const nTime = keep.map((i) => time[i]!);
 
-  it("is exact when browser-only rows equal the predicted exclusions", () => {
+  it("is exact only when both sides carry every frame", () => {
+    const a = alignSamples(iter, time, iter, time, predicted);
+    expect(a).toMatchObject({ aligned: 10, browserOnly: 0, nativeOnly: 0, exact: true, unpatchedNativeSignature: false });
+  });
+
+  it("flags the unpatched-native signature but never treats it as parity", () => {
     const a = alignSamples(iter, time, nIter, nTime, predicted);
-    expect(a).toMatchObject({ aligned: 7, browserOnly: 3, nativeOnly: 0, predictedNativeExclusions: 3, exact: true });
+    expect(a).toMatchObject({ aligned: 7, browserOnly: 3, nativeOnly: 0, predictedNativeExclusions: 3 });
+    expect(a.exact).toBe(false);
+    expect(a.unpatchedNativeSignature).toBe(true);
     expect([...a.browserIndex]).toEqual(keep);
   });
 
   it("fails on an unpredicted browser-only row", () => {
     const a = alignSamples(iter, time, nIter.slice(1), nTime.slice(1), predicted);
     expect(a.exact).toBe(false);
+    expect(a.unpatchedNativeSignature).toBe(false);
   });
 
   it("fails on a native-only row", () => {
@@ -95,10 +103,6 @@ describe("alignSamples", () => {
     expect(a.exact).toBe(false);
   });
 
-  it("fails when a predicted exclusion is actually present natively", () => {
-    const a = alignSamples(iter, time, iter, time, predicted);
-    expect(a.exact).toBe(false);
-  });
 });
 
 describe("compareChannel", () => {

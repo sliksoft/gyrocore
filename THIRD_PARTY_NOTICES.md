@@ -50,3 +50,6 @@ binary.
 GyroCore contains original analysis, tuning, safety, desktop integration and workflow code in addition to code adapted from upstream open-source projects.
 
 Modified upstream components will retain their applicable upstream notices.
+
+Local modifications of vendored files are listed in `docs/upstream/PATCHES.md` (currently:
+blackbox-tools FLIGHTMODE/DISARM event payload parsing).

@@ -321,6 +321,15 @@ void onEvent(flightLog_t *log, flightLogEvent_t *event)
         case FLIGHT_LOG_EVENT_LOG_END:
             fprintf(eventFile, "{\"name\":\"Log clean end\", \"time\":%" PRId64 "}\n", lastFrameTime);
         break;
+        // GyroCore local patch (docs/upstream/PATCHES.md): events now parsed by parseEventFrame.
+        case FLIGHT_LOG_EVENT_DISARM:
+            fprintf(eventFile, "{\"name\":\"Disarm\", \"time\":%" PRId64 ", \"data\":{\"reason\":%u}}\n", lastFrameTime,
+                    event->data.disarm.reason);
+        break;
+        case FLIGHT_LOG_EVENT_FLIGHTMODE:
+            fprintf(eventFile, "{\"name\":\"Flight mode\", \"time\":%" PRId64 ", \"data\":{\"newFlags\":%u,\"lastFlags\":%u}}\n", lastFrameTime,
+                    event->data.flightMode.newFlags, event->data.flightMode.lastFlags);
+        break;
         default:
             fprintf(eventFile, "{\"name\":\"Unknown event\", \"time\":%" PRId64 ", \"data\":{\"eventID\":%d}}\n", lastFrameTime, event->event);
         break;

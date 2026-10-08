@@ -30,7 +30,7 @@ Exact upstream commits recorded at import time (also in each tree’s
 | betaflight-configurator | CHIRP deps: `data_storage.ts`, `debug_*.ts`, `utils/debugModes.ts`, `utils/common.ts` | `third_party/betaflight/configurator/src/js/` | GPL-3.0-or-later | copied |
 | betaflight-configurator | `test/js/blackbox_chirp_p_interval.test.js`, `spectral_analysis.test.js`, `test/components/autotuneApplyGate.test.ts` | `third_party/betaflight/configurator/test/` | GPL-3.0-or-later | copied |
 | betaflight-configurator | (integration pointer) | `apps/desktop/chirp/` | GPL-3.0 (adapter docs) | adapted (thin desktop adapter) |
-| blackbox-tools | `src/` (decode/parser; render/font assets excluded — see IMPORT_NOTES.md) | `third_party/betaflight/blackbox-tools/src/` | GPL-3.0 | copied (partial) |
+| blackbox-tools | `src/` (decode/parser; render/font assets excluded — see IMPORT_NOTES.md) | `third_party/betaflight/blackbox-tools/src/` | GPL-3.0 | copied (partial); **locally patched** — FLIGHTMODE/DISARM event payloads, see `docs/upstream/PATCHES.md` |
 | blackbox-tools | `test/`, `LICENSE`, `Makefile`, `Readme.md` | `third_party/betaflight/blackbox-tools/` | GPL-3.0 | copied |
 
 ## Firmware extract (WU9)
@@ -50,7 +50,7 @@ byte-identical from that tag (`git show`). Not a full firmware tree.
 | betaflight | `src/main/fc/parameter_names.h` | `third_party/betaflight/firmware/src/main/fc/parameter_names.h` | GPL-3.0-or-later | copied |
 | betaflight | `src/main/msp/msp.c` (simplified-tuning helpers + `MSP_VALIDATE_SIMPLIFIED_TUNING` / `MSP_SET_SIMPLIFIED_TUNING` slices) | `third_party/betaflight/firmware/src/main/msp/msp_simplified_tuning.c` | GPL-3.0-or-later | copied (extract; original line numbers retained) |
 
-Existing WU5 trees under `third_party/betaflight/{blackbox-log-viewer,configurator,blackbox-tools}/` are unchanged.
+Existing WU5 trees under `third_party/betaflight/{blackbox-log-viewer,configurator}/` are unchanged. `blackbox-tools/src/` carries one documented local patch (`docs/upstream/PATCHES.md`).
 
 ## Not imported (WU5)
 

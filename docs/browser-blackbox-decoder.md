@@ -64,53 +64,53 @@ GyroCore-owned files under `apps/desktop/gyrocore-app/src/decode/` are adapters/
 
 Consumers must not depend on FlightLog object shapes.
 
-## Canonical sample inclusion
+## Canonical sample policy
 
-**The normalized contract contains every main frame FlightLog validates.** No frames are
-filtered. Native `blackbox_decode` is *not* the definition of the sample set.
+GyroCore analysis input is the **complete valid frame set** of the selected embedded log, on
+every path (browser FlightLog worker, native `blackbox_decode` → Python Core):
 
-### Why native has fewer samples
+1. Include every main frame (I/P) the decoder validates in the selected embedded log.
+2. Never drop frames because an event (flight-mode change, disarm, …) precedes them.
+3. Malformed/truncated frames may be excluded only by the explicit, deterministic validity rules
+   both parsers share: frame not followed by a valid frame start, frame longer than the maximum,
+   loopIteration/time moving backwards or jumping beyond the parser limits, P-frames before a
+   resynchronising I-frame after genuine corruption.
+4. Browser and native/Python must yield the same sequence, joined on `(loopIteration, time)`.
 
-The vendored `blackbox-tools` `parseEventFrame` (`third_party/betaflight/blackbox-tools/src/parser.c`)
-only consumes payloads for SYNC_BEEP (0), INFLIGHT_ADJUSTMENT (13), LOGGING_RESUME (14) and
-LOG_END (255). FLIGHT_MODE (30) is declared but has no `case`, so only its type byte is read and
-the payload (`newFlags`, `lastFlags` as unsigned VB) stays in the stream:
+### Native decoder fix
 
-- payload byte not a frame marker (e.g. `0x44` 'D' on disarm 69→68, `0x05` on 69→5) →
-  `mainStreamIsValid = false`; P-frames cannot resync, so native drops every main frame
-  until the next I-frame (`loopIteration % I interval == 0`) or end of log.
-- payload byte `0x45` 'E' (arm 5→69) happens to re-enter event parsing → no loss.
+Unpatched `blackbox_decode` violated rule 2: `parseEventFrame` did not consume FLIGHT_MODE (30) /
+DISARM (15) payloads, desynchronised on a non-marker payload byte and dropped P-frames until the
+next I-frame (tail **and mid-log**). The vendored source is patched
+(`docs/upstream/PATCHES.md`, with the full byte-level reproduction table). The browser decoder
+was always correct and is unchanged.
 
-Byte evidence (multi-log fixture, log 1): `45 1e 44 45 53 …` at `0x1f8ae9` — `E`, type 30,
-newFlags 0x44, lastFlags 0x45, then an `S` frame. FlightLog parses the event; native desyncs.
+| Log (local 3-log BBL) | browser | native unpatched | native patched |
+| --- | ---: | ---: | ---: |
+| 1 | 51669 | 51608 | 51669 |
+| 2 | 36657 | 36641 | 36657 |
+| 3 | 246358 | 246200 | 246358 |
 
-Measured on the 3-log user BBL (all frames otherwise bit-identical):
+### Parity rule
 
-| Log | FlightLog | native | browser-only | predicted | windows |
-| --- | ---: | ---: | ---: | ---: | --- |
-| 1 | 51669 | 51608 | 61 | 61 | disarm flight-mode change at 20.611531 s (tail) |
-| 2 | 36657 | 36641 | 16 | 16 | disarm flight-mode change at 43.001305 s |
-| 3 | 246358 | 246200 | 158 | 158 | **mid-log** 68.84 s (46), 89.40 s (103), tail 110.89 s (9) |
-
-`native --raw` emits 51669 rows for log 1 (the dropped rows are flagged invalid, not absent),
-confirming the frames exist in the file.
-
-### Parity rule (option B: deterministic exclusion)
-
-`predictNativeDesyncExclusions` (`src/decode/parity.ts`) predicts the native-dropped set from
-FlightLog events + I interval. Parity requires, per log:
+Harness `src/decode/parity.ts`, per log:
 
 1. rows joined on `(loopIteration, time)` — no positional alignment;
-2. browser-only rows **exactly equal** the predicted set, and zero native-only rows;
+2. **zero** browser-only and **zero** native-only rows;
 3. every compared channel bit-identical on all aligned rows (max abs error 0).
 
-Events whose native effect is not modelled are reported (`unmodeledEvents`); any resulting
-mismatch fails rule 2.
+`predictNativeDesyncExclusions` remains only as a diagnostic: when the browser-only rows exactly
+match its prediction, the report sets `unpatchedNativeSignature` (an unpatched binary is on
+PATH) — this is always a FAIL, never parity.
 
-**Core impact:** the Python Core currently consumes native CSV, so on logs with FLIGHT_MODE
-transitions Core and the browser see different frame sets (native has holes). Which side Core
-should follow when CHIRP/PID analysis migrates is a product decision; the browser contract does
-not reproduce the native defect.
+### Core impact of the fix
+
+Python Core consumes native CSV, so its input now contains the recovered frames. On the local
+3-log BBL, final safety status, `tune`, `cli` and `chirp` outputs are unchanged; evidence-level
+values (resonance clusters, problem severity, confidence, mechanical resonance flags) move.
+Controlled re-runs show these are driven by Core's 20 000-sample decimation grid
+(`MAX_PARSED_SAMPLES`) and, for log 3, by the removed mid-log holes — not by the decoder change
+itself. See the gate report for the classification.
 
 ## Multi-log
 
@@ -122,7 +122,7 @@ longest duration (then sample count) — a UI policy, not decoder correctness; a
   exactly the standalone decode of part *i* (times, iterations, every series), and native parity
   passes for each index.
 - `parity.test.ts` (local user BBL, skipped in CI) checks all 3 embedded logs against native
-  `--index i+1`.
+  `--index i+1` with exact counts 51669 / 36657 / 246358.
 
 ## Metadata
 
@@ -152,7 +152,7 @@ channel on either side is `absent_in_log`, not a failure.
 Tests:
 
 - `parity.rules.test.ts` — exclusion rule, alignment, channel comparison (synthetic).
-- `parity.fixtures.test.ts` — committed CHIRP fixtures; requires `blackbox_decode` (built in both the `desktop` and `integrity` CI jobs).
+- `parity.fixtures.test.ts` — committed CHIRP fixtures + `tests/fixtures/decode/mode_events.bbl.gz` (mode/disarm events with P-frames); requires the patched `blackbox_decode` (built from the vendored source in every CI job). With `CI=true` or `GYROCORE_REQUIRE_NATIVE=1` a missing decoder fails instead of skipping.
 - `parity.test.ts` — local multi-log BBL (`GYROCORE_BBL_FIXTURE`), skipped when absent.
 
 The small CHIRP fixture (`clean_single_axis`) logs no PID terms: `axisP` is absent in both

@@ -809,6 +809,18 @@ static void parseEventFrame(flightLog_t *log, mmapStream_t *stream, bool raw)
             data->loggingResume.logIteration = streamReadUnsignedVB(stream);
             data->loggingResume.currentTime = streamReadUnsignedVB(stream) + log->private->timeRolloverAccumulator;
         break;
+        /*
+         * GyroCore local patch (docs/upstream/PATCHES.md): consume the payloads Betaflight writes for these
+         * events. Previously only the type byte was read, so a payload byte that is not a frame marker
+         * invalidated the main stream and every P-frame was dropped until the next I-frame.
+         */
+        case FLIGHT_LOG_EVENT_DISARM:
+            data->disarm.reason = streamReadUnsignedVB(stream);
+        break;
+        case FLIGHT_LOG_EVENT_FLIGHTMODE:
+            data->flightMode.newFlags = streamReadUnsignedVB(stream);
+            data->flightMode.lastFlags = streamReadUnsignedVB(stream);
+        break;
         case FLIGHT_LOG_EVENT_LOG_END:
             streamRead(stream, endMessage, END_OF_LOG_MESSAGE_LEN);
 
