@@ -87,6 +87,13 @@ jobs:
       - name: Vite production build
         run: npm run build
 
+      # Built-PWA proof (real Chromium against `vite preview` of dist/, synthetic fixtures only).
+      - name: Install Playwright Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: PWA browser proof (Playwright)
+        run: npm run test:e2e
+
       # Tauri bridge unit tests (worker/repo-root path resolution); the crate links WebKitGTK.
       - name: Install Tauri system dependencies
         run: |

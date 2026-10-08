@@ -43,11 +43,13 @@ NumPy operations: `fft.rfft`, `fft.fft`, `fft.ifft`, `cos`, `hypot`, `log10`, `a
 `diff`, `median`, `rint`, `mean` (pairwise summation), `sqrt`, `cumsum`, masks /
 `where`, float32 casts. No SciPy.
 
-Reference observation (not changed here): the desktop worker adapter
-`apps/desktop/worker/analyze_local.py:_series_from_tf` reads `frequency_hz` /
-`freq_hz`, but the reference emits `frequencies_hz`, so the Tauri path can send
-`available=true` with empty series and `quality=null`. The ChirpPage guard below
-now renders such a payload as unavailable (`chirp_series_empty`) instead of PASS.
+Desktop adapter (fixed in the CHIRP real-flight qualification work unit):
+`apps/desktop/worker/analyze_local.py:_series_from_tf` read `frequency_hz` /
+`freq_hz` instead of the reference `frequencies_hz`, and read a `quality.status`
+the reference does not emit. The Tauri path therefore sent `available=true` with
+empty series. It now reads `frequencies_hz`, passes the result `status` through,
+and returns `available=false` / `chirp_series_empty` whenever the series are
+empty or unequal (`tests/desktop/test_chirp_adapter.py`).
 
 ## 2. Browser contract
 
@@ -117,5 +119,41 @@ structure and within tolerance (in band ≤ 3.1e-11 dB, ≤ 1.1e-10°).
 and `analysis` (general Tune/Safety) stays `unavailable`. The browser workspace
 contains CHIRP only; Tune / Safety / Compare are `null`, CLI is
 `NOT AVAILABLE` / not authorised / not actionable, all FC controls off.
-ChirpPage shows charts only when `available` and all three series are
-non-empty; the badge follows status (`usable_with_warnings` → WARN).
+Every CHIRP display uses one mapping, `src/lib/chirpStatus.ts:chirpDisplay`
+(Overview and CHIRP page):
+
+- `ok` → PASS
+- `usable_with_warnings` → WARN
+- anything else → NOT AVAILABLE, with its reason
+
+PASS / WARN also require `available` and non-empty, equal-length
+magnitude / phase / coherence series. A missing or non-usable status is never a
+PASS.
+
+## 7. Contract invariants
+
+`runChirp.ts:chirpAxisViolation` gates every usable axis before it can be
+reported as available:
+
+- frequency, magnitude, phase and coherence are non-empty and equal length
+- a finite usable range with 0 ≤ lo ≤ hi inside the analysis band
+- a usable mask over the same bins with at least one usable bin
+- finite frequency, magnitude and phase, and coherence in [0, 1], on every usable bin
+
+Floored bins outside the usable band are legitimately −∞ dB. A usable result
+whose status is not `ok` / `usable_with_warnings` is rejected as
+`chirp_status_inconsistent`. Every violation becomes an explicit rejection code
+(`chirp.unit.test.ts`, mutation tests).
+
+## 8. Built-PWA browser proof (CI)
+
+`e2e/chirp-pwa.spec.ts` (Playwright, Chromium) runs against `vite preview` of
+`dist/` with synthetic WU7 fixtures only. Run it with `npm run build && npm run test:e2e`.
+It proves:
+
+- the app loads without Tauri, with a manifest and an activated service worker
+- BBL + CLI selection and decode
+- multi-log selection is honoured
+- the CHIRP worker returns non-empty equal-length series, rendered as PASS
+- a rejected fixture never shows PASS
+- every request is a same-origin GET; the CHIRP worker chunk GET is the positive control
